@@ -1,92 +1,86 @@
+// CONFIGURATION
 const API_KEY = '60defb38119575da952b28d206871c1b';
-const BASE_URL = 'https://api.themoviedb.org/3';
-const IMG_URL = 'https://image.tmdb.org/t/p/w500';
+const firebaseConfig = { /* PASTE YOUR FIREBASE CONFIG HERE */ };
+// firebase.initializeApp(firebaseConfig);
+// const db = firebase.firestore();
 
-let currentMovieId = null;
+let currentID = null;
+let currentType = 'movie';
 
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
-    fetchMovies('/trending/movie/week', 'trendingGrid');
-    fetchMovies('/movie/top_rated', 'recommendationGrid');
-    loadHero();
-});
+// INITIAL LOAD
+window.onload = () => {
+    fetchCategory('trending');
+    populateFilters();
+    checkWatchlist();
+};
 
-async function fetchMovies(endpoint, elementId) {
-    const res = await fetch(`${BASE_URL}${endpoint}?api_key=${API_KEY}`);
+async function fetchCategory(type) {
+    let url = `${BASE()}/trending/all/week?api_key=${API_KEY}`;
+    if(type === 'top_rated') url = `${BASE()}/movie/top_rated?api_key=${API_KEY}`;
+    if(type === 'upcoming') url = `${BASE()}/movie/upcoming?api_key=${API_KEY}`;
+    
+    const res = await fetch(url);
     const data = await res.json();
-    displayMovies(data.results, elementId);
+    renderGrid(data.results, 'movieGrid');
 }
 
-function displayMovies(movies, elementId) {
-    const grid = document.getElementById(elementId);
-    grid.innerHTML = movies.map(movie => `
-        <div class="movie-card" onclick="openPlayer(${movie.id})">
-            <img src="${IMG_URL + movie.poster_path}" alt="${movie.title}">
-            <div class="movie-info">
-                <h4>${movie.title || movie.name}</h4>
-                <span>${movie.release_date ? movie.release_date.split('-')[0] : ''}</span>
+function renderGrid(movies, target) {
+    const grid = document.getElementById(target);
+    grid.innerHTML = movies.map(m => `
+        <div class="movie-card" onclick="openDetails(${m.id}, '${m.media_type || 'movie'}')">
+            <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" alt="${m.title}">
+            <div class="progress-container"><div class="progress-fill" style="width:${getProgress(m.id)}%"></div></div>
+            <div class="card-overlay">
+                <h3>${m.title || m.name}</h3>
+                <span>${m.vote_average.toFixed(1)}</span>
             </div>
         </div>
     `).join('');
 }
 
-async function openPlayer(id) {
-    currentMovieId = id;
-    const res = await fetch(`${BASE_URL}/movie/${id}?api_key=${API_KEY}&append_to_response=credits,similar`);
-    const movie = await res.json();
-
-    document.getElementById('playerModal').style.display = 'block';
-    switchServer('vidsrc'); // Default server
+async function openDetails(id, type) {
+    currentID = id;
+    currentType = type;
+    document.getElementById('playerModal').style.display = 'flex';
     
-    // Details & Share logic
-    const shareUrl = window.location.href;
-    document.getElementById('whatsappShare').onclick = () => {
-        window.open(`https://api.whatsapp.com/send?text=Watching ${movie.title} on ZenShows! ${shareUrl}`, '_blank');
+    const res = await fetch(`${BASE()}/${type}/${id}?api_key=${API_KEY}&append_to_response=videos,credits,similar`);
+    const data = await res.json();
+    
+    document.getElementById('mTitle').innerText = data.title || data.name;
+    document.getElementById('mTmdb').innerHTML = `<i class="fas fa-star"></i> ${Math.round(data.vote_average * 10)}%`;
+    
+    showDetailTab('overview', data);
+    switchServer('vidsrc');
+    saveProgress(id, 10); // Example: Started watching
+}
+
+function switchServer(src) {
+    const container = document.getElementById('videoContainer');
+    const urls = {
+        vidsrc: `https://vidsrc.me/embed/${currentType}?tmdb=${currentID}`,
+        bidsrc: `https://vidsrc.cc/v2/embed/${currentType}/${currentID}`,
+        cinema: `https://multiembed.mov/directstream.php?video_id=${currentID}&tmdb=1`
     };
-
-    // Cast and Crew
-    document.getElementById('movieDetails').innerHTML = `
-        <h1>${movie.title}</h1>
-        <p>${movie.overview}</p>
-        <div class="cast">
-            <h3>Cast:</h3>
-            ${movie.credits.cast.slice(0, 5).map(c => `<span class="actor-link" onclick="fetchPerson(${c.id})">${c.name}</span>`).join(', ')}
-        </div>
-    `;
+    container.innerHTML = `<iframe src="${urls[src]}" allowfullscreen></iframe>`;
 }
 
-function switchServer(provider) {
-    const container = document.getElementById('playerContainer');
-    let url = '';
-    
-    if(provider === 'vidsrc') url = `https://vidsrc.me/embed/movie?tmdb=${currentMovieId}`;
-    if(provider === 'bidsrc') url = `https://vidsrc.cc/v2/embed/movie/${currentMovieId}`;
-    if(provider === 'cinema') url = `https://multiembed.mov/directstream.php?video_id=${currentMovieId}&tmdb=1`;
-
-    container.innerHTML = `<iframe src="${url}" allowfullscreen></iframe>`;
-}
-
-// AI Suggestion Logic (Content-based filtering sim)
-async function getAISuggestion() {
-    const query = document.getElementById('aiInput').value;
-    const res = await fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${query}`);
+// PERSON/FILMOGRAPHY LOGIC
+async function viewActor(personId) {
+    const res = await fetch(`${BASE()}/person/${personId}/combined_credits?api_key=${API_KEY}`);
     const data = await res.json();
-    displayMovies(data.results, 'aiResults');
+    renderGrid(data.cast.slice(0, 20), 'movieGrid');
+    closeModal();
 }
 
-// Filmography for Actors/Directors
-async function fetchPerson(personId) {
-    const res = await fetch(`${BASE_URL}/person/${personId}/movie_credits?api_key=${API_KEY}`);
-    const data = await res.json();
-    document.getElementById('playerModal').style.display = 'none';
-    document.getElementById('mainContent').innerHTML = `
-        <div class="container">
-            <h2>Filmography</h2>
-            <div class="movie-grid">${data.cast.map(m => `<div class="movie-card" onclick="openPlayer(${m.id})"><img src="${IMG_URL + m.poster_path}"><h4>${m.title}</h4></div>`).join('')}</div>
-        </div>
-    `;
+function toggleTheme() {
+    const root = document.documentElement;
+    const isDark = root.getAttribute('data-theme') === 'dark';
+    root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    document.getElementById('themeToggle').innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
 }
 
-function closePlayer() { document.getElementById('playerModal').style.display = 'none'; }
-function showAIBox() { document.getElementById('aiModal').style.display = 'block'; }
+function BASE() { return 'https://api.themoviedb.org/3'; }
+function getProgress(id) { return localStorage.getItem(`prog_${id}`) || 0; }
+function saveProgress(id, val) { localStorage.setItem(`prog_${id}`, val); }
+function closeModal() { document.getElementById('playerModal').style.display = 'none'; }
 

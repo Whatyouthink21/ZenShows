@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>ZenShows</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<div class="bg"></div>
+
+<header class="topbar">
+  <div class="logo">Zen<span>Shows</span></div>
+
+  <div class="center">
+    <input id="searchInput" placeholder="Search movies, actors, directors"/>
+    <button onclick="search()">Search</button>
+    <button class="ai" onclick="aiSuggest()">🤖 Pick</button>
+  </div>
+
+  <!-- FIREBASE AUTH BUTTON (TOP RIGHT) -->
+  <button id="authBtn" class="auth">Sign In</button>
+</header>
+
+<section class="hero">
+  <h1>Streaming but <span>criminally clean</span></h1>
+  <p>Movies • Shows • Actors • Directors</p>
+</section>
+
+<section>
+  <h2>🔥 Trending</h2>
+  <div class="grid" id="trending"></div>
+</section>
+
+<section>
+  <h2>🧠 Recommended for you</h2>
+  <div class="grid" id="recommended"></div>
+</section>
+
+<!-- DETAILS MODAL -->
+<div class="modal hidden" id="details">
+  <div class="box">
+    <button class="close" onclick="closeDetails()">✖</button>
+    <h2 id="title"></h2>
+    <p id="overview"></p>
+
+    <div class="sources">
+      <button onclick="play(0)">VidSrc</button>
+      <button onclick="play(1)">VidSrc.me</button>
+      <button onclick="play(2)">BidSrc</button>
+      <button onclick="play(3)">CinemaOS</button>
+      <button onclick="play(4)">EmbedAlt</button>
+    </div>
+
+    <button class="share" onclick="share()">📤 Share on WhatsApp</button>
+
+    <h3>🎭 Cast</h3>
+    <div class="cast" id="cast"></div>
+  </div>
+</div>
+
+<!-- PLAYER -->
+<div class="player hidden" id="player">
+  <iframe id="frame" allowfullscreen></iframe>
+  <button class="close" onclick="closePlayer()">✖</button>
+</div>
+
+<!-- FIREBASE SDKs (PASTE YOUR CONFIG IN script.js) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+<script src="script.js"></script>
+</body>
+</html>

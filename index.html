@@ -3,272 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZenShows | Premium Streaming</title>
+    <title>ZenShows | Ultimate Pro</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
     <style>
         :root {
-            --primary: #e50914; --bg: #050505; --card-bg: #121212;
-            --text: #ffffff; --text-dim: #a3a3a3; --glass: rgba(255, 255, 255, 0.05);
+            --primary: #ff0000; --bg: #080808; --card-bg: #151515;
+            --text: #ffffff; --glass: rgba(255, 255, 255, 0.08);
         }
-
-        body {
-            margin: 0; font-family: 'Inter', sans-serif; background: var(--bg);
-            color: var(--text); overflow-x: hidden; scroll-behavior: smooth;
-        }
-
-        /* Glassmorphism Navbar */
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+        
         .navbar {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 5%; background: rgba(5, 5, 5, 0.8);
-            backdrop-filter: blur(15px); position: fixed; width: 90%; z-index: 1000;
+            padding: 15px 5%; background: rgba(8, 8, 8, 0.9);
+            backdrop-filter: blur(20px); position: fixed; width: 90%; z-index: 1000;
         }
-
-        .logo { font-size: 1.8rem; font-weight: 800; color: var(--primary); letter-spacing: -1px; }
+        .logo { font-size: 1.8rem; font-weight: 800; color: var(--primary); }
         .logo span { color: white; }
 
-        .search-container { position: relative; width: 300px; }
-        .search-container input {
-            width: 100%; padding: 10px 15px; border-radius: 20px; border: none;
-            background: var(--glass); color: white; outline: none; border: 1px solid rgba(255,255,255,0.1);
-        }
+        .container { padding: 100px 5% 50px; }
+        .row-title { font-size: 1.5rem; margin: 30px 0 15px; font-weight: 700; border-left: 4px solid var(--primary); padding-left: 15px; }
 
-        /* Layout */
-        .hero {
-            height: 75vh; display: flex; align-items: flex-end; padding: 0 5% 50px;
-            background-size: cover; background-position: center;
-            mask-image: linear-gradient(to bottom, black 80%, transparent);
-        }
-
-        .container { padding: 0 5%; margin-top: -50px; }
-        .row-title { font-size: 1.4rem; margin: 30px 0 15px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
-        .row-title i { color: var(--primary); font-size: 1rem; }
-
-        /* Movie Cards */
         .movie-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
             gap: 20px;
         }
 
         .card {
-            background: var(--card-bg); border-radius: 12px; overflow: hidden;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer;
-            position: relative; border: 1px solid rgba(255,255,255,0.05);
+            background: var(--card-bg); border-radius: 10px; overflow: hidden;
+            transition: 0.3s ease; cursor: pointer; position: relative;
         }
-
-        .card:hover { transform: translateY(-10px) scale(1.03); border-color: var(--primary); }
+        .card:hover { transform: scale(1.05); box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
         .card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
-        .card-info { padding: 12px; background: linear-gradient(transparent, rgba(0,0,0,0.9)); position: absolute; bottom: 0; width: 100%; }
-        .card-title { font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); border: none; color: white; padding: 5px; border-radius: 50%; }
 
-        /* Modal Player */
-        .modal {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98);
-            z-index: 2000; overflow-y: auto;
-        }
-
-        .modal-content { width: 95%; max-width: 1100px; margin: 50px auto; }
-        .player-box { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 15px; overflow: hidden; border: 1px solid var(--glass); }
+        /* Modal & Player */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 2000; overflow-y: auto; }
+        .modal-content { width: 95%; max-width: 1200px; margin: 50px auto; }
+        .player-box { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; }
         iframe { width: 100%; height: 100%; border: none; }
 
-        .server-tabs { display: flex; gap: 10px; margin: 15px 0; }
-        .server-tabs button {
-            background: var(--glass); color: white; border: 1px solid rgba(255,255,255,0.1);
-            padding: 8px 20px; border-radius: 5px; cursor: pointer; font-weight: 600;
-        }
-        .server-tabs button.active { background: var(--primary); border-color: var(--primary); }
+        .controls { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; align-items: center; }
+        .btn { background: var(--glass); color: white; border: 1px solid rgba(255,255,255,0.1); padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .btn.active { background: var(--primary); }
+        .ep-input { background: #222; border: 1px solid #444; color: white; padding: 10px; border-radius: 8px; width: 60px; }
 
-        .details-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-top: 20px; }
-        .meta-tag { background: #333; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; margin-right: 8px; }
-        .cast-list { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; }
-        .cast-card { min-width: 100px; text-align: center; font-size: 0.8rem; }
-        .cast-card img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
-
-        .close-btn { position: absolute; top: 20px; right: 30px; font-size: 2rem; cursor: pointer; color: white; z-index: 2001; }
-
-        @media (max-width: 768px) {
-            .details-grid { grid-template-columns: 1fr; }
-            .search-container { display: none; }
-        }
+        .details { display: grid; grid-template-columns: 3fr 1fr; gap: 30px; margin-top: 30px; }
+        @media (max-width: 768px) { .details { grid-template-columns: 1fr; } .navbar { width: 100%; padding: 10px; } }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
         <div class="logo">ZEN<span>SHOWS</span></div>
-        <div class="search-container">
-            <input type="text" id="searchInput" onkeyup="searchContent(event)" placeholder="Search for movies, actors...">
-        </div>
-        <div>
-            <button onclick="shareLink()" style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer;"><i class="fab fa-whatsapp"></i></button>
+        <div class="nav-links">
+            <button class="btn" onclick="showWatchlist()"><i class="fas fa-bookmark"></i> Watchlist</button>
         </div>
     </nav>
 
-    <div id="hero" class="hero">
-        <div style="max-width: 600px;">
-            <h1 id="hero-title" style="font-size: 3rem; margin-bottom: 10px;"></h1>
-            <p id="hero-desc" style="color: var(--text-dim); margin-bottom: 20px;"></p>
-            <button id="hero-btn" class="server-tabs" style="background:var(--primary); padding:12px 30px; border:none; font-size:1rem;">Watch Now</button>
-        </div>
-    </div>
-
     <div class="container">
-        <div id="continue-section" style="display: none;">
-            <h2 class="row-title"><i class="fas fa-history"></i> Continue Watching</h2>
-            <div id="continue-grid" class="movie-grid"></div>
+        <div id="watchlist-section" style="display:none;">
+            <h2 class="row-title">My Watchlist</h2>
+            <div id="watchlist-grid" class="movie-grid"></div>
         </div>
 
-        <h2 class="row-title"><i class="fas fa-fire"></i> Trending Now</h2>
-        <div id="trending-grid" class="movie-grid"></div>
-
-        <h2 class="row-title"><i class="fas fa-robot"></i> AI Suggestions</h2>
-        <div id="ai-grid" class="movie-grid"></div>
+        <h2 class="row-title">Trending Content</h2>
+        <div id="main-grid" class="movie-grid"></div>
     </div>
 
     <div id="playerModal" class="modal">
-        <span class="close-btn" onclick="closeModal()">&times;</span>
         <div class="modal-content">
             <div class="player-box" id="player-box"></div>
             
-            <div class="server-tabs">
-                <button class="srv active" onclick="setServer('vidsrc', this)">Server 1</button>
-                <button class="srv" onclick="setServer('bidsrc', this)">Server 2</button>
-                <button class="srv" onclick="setServer('cinema', this)">Server 3</button>
+            <div class="controls">
+                <button class="btn srv active" onclick="setServer('vidsrc', this)">VidSrc</button>
+                <button class="btn srv" onclick="setServer('bidsrc', this)">BidSrc Pro</button>
+                <button class="btn srv" onclick="setServer('cinemaos', this)">CinemaOS</button>
+                
+                <div id="tv-controls" style="display:none;">
+                    S: <input type="number" id="season" class="ep-input" value="1">
+                    E: <input type="number" id="episode" class="ep-input" value="1">
+                    <button class="btn" onclick="updateTV()">Load</button>
+                </div>
+
+                <button class="btn" id="save-btn" onclick="addToFirebase()"><i class="fas fa-plus"></i> Watchlist</button>
+                <button class="btn" onclick="share()"><i class="fab fa-whatsapp"></i></button>
+                <button class="btn" style="background:#444" onclick="closeModal()">Close</button>
             </div>
 
-            <div class="details-grid">
+            <div class="details">
                 <div>
                     <h1 id="m-title"></h1>
-                    <div style="margin: 15px 0;">
-                        <span class="meta-tag" id="m-year"></span>
-                        <span class="meta-tag" id="m-rating"></span>
-                    </div>
-                    <p id="m-desc" style="line-height: 1.6; color: var(--text-dim);"></p>
-                    
-                    <h3>Top Billed Cast</h3>
-                    <div id="cast-list" class="cast-list"></div>
+                    <p id="m-desc" style="color:#ccc; line-height:1.6;"></p>
                 </div>
-                <div>
-                    <h3>More Like This</h3>
-                    <div id="similar-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"></div>
-                </div>
+                <div id="m-similar"></div>
             </div>
         </div>
     </div>
 
     <script>
-        const API_KEY = '60defb38119575da952b28d206871c1b';
-        const BASE = 'https://api.themoviedb.org/3';
-        const IMG = 'https://image.tmdb.org/t/p/w500';
-        let currentID = null;
-        let currentType = 'movie';
-
-        // Init
-        window.onload = () => {
-            fetchData('/trending/all/week', 'trending-grid');
-            fetchData('/movie/top_rated', 'ai-grid');
-            loadHero();
-            loadContinueWatching();
+        // --- FIREBASE CONFIGURATION ---
+        // Replace with your actual Firebase config from Firebase Console
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "zenshows.firebaseapp.com",
+            projectId: "zenshows",
+            storageBucket: "zenshows.appspot.com",
+            messagingSenderId: "12345",
+            appId: "1:12345:web:12345"
         };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-        async function fetchData(path, target) {
-            const res = await fetch(`${BASE}${path}?api_key=${API_KEY}`);
-            const data = await res.json();
-            renderGrid(data.results, target);
-        }
+        const TMDB_KEY = '60defb38119575da952b28d206871c1b';
+        let currentID, currentType, currentData;
 
-        async function loadHero() {
-            const res = await fetch(`${BASE}/trending/movie/day?api_key=${API_KEY}`);
+        // Load Initial Data
+        window.onload = () => fetchTrending();
+
+        async function fetchTrending() {
+            const res = await fetch(`https://api.themoviedb.org/3/trending/all/week?api_key=${TMDB_KEY}`);
             const data = await res.json();
-            const movie = data.results[0];
-            document.getElementById('hero').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5), var(--bg)), url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`;
-            document.getElementById('hero-title').innerText = movie.title;
-            document.getElementById('hero-desc').innerText = movie.overview.slice(0, 150) + '...';
-            document.getElementById('hero-btn').onclick = () => openPlayer(movie.id, 'movie');
+            renderGrid(data.results, 'main-grid');
         }
 
         function renderGrid(data, target) {
             const grid = document.getElementById(target);
-            grid.innerHTML = data.slice(0, 12).map(m => `
+            grid.innerHTML = data.map(m => `
                 <div class="card" onclick="openPlayer(${m.id}, '${m.media_type || 'movie'}')">
-                    <img src="${IMG + m.poster_path}" alt="">
-                    <div class="card-info">
-                        <div class="card-title">${m.title || m.name}</div>
-                    </div>
+                    <img src="https://image.tmdb.org/t/p/w500${m.poster_path}" alt="">
                 </div>
             `).join('');
         }
 
         async function openPlayer(id, type) {
             currentID = id; currentType = type;
-            const res = await fetch(`${BASE}/${type}/${id}?api_key=${API_KEY}&append_to_response=credits,similar`);
-            const m = await res.json();
+            const res = await fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${TMDB_KEY}`);
+            currentData = await res.json();
 
             document.getElementById('playerModal').style.display = 'block';
-            document.getElementById('m-title').innerText = m.title || m.name;
-            document.getElementById('m-desc').innerText = m.overview;
-            document.getElementById('m-year').innerText = (m.release_date || m.first_air_date).split('-')[0];
-            document.getElementById('m-rating').innerHTML = `<i class="fas fa-star" style="color:gold"></i> ${m.vote_average.toFixed(1)}`;
+            document.getElementById('m-title').innerText = currentData.title || currentData.name;
+            document.getElementById('m-desc').innerText = currentData.overview;
             
+            document.getElementById('tv-controls').style.display = type === 'tv' ? 'block' : 'none';
             setServer('vidsrc', document.querySelector('.srv'));
-            
-            // Cast
-            document.getElementById('cast-list').innerHTML = m.credits.cast.slice(0, 10).map(c => `
-                <div class="cast-card" onclick="viewPerson(${c.id})">
-                    <img src="${IMG + c.profile_path}" onerror="this.src='https://via.placeholder.com/70'">
-                    <p>${c.name}</p>
-                </div>
-            `).join('');
-
-            // Similar
-            document.getElementById('similar-grid').innerHTML = m.similar.results.slice(0, 4).map(s => `
-                <img src="${IMG + s.poster_path}" onclick="openPlayer(${s.id}, '${type}')" style="width:100%; border-radius:8px; cursor:pointer;">
-            `).join('');
-
-            saveContinueWatching(m);
         }
 
         function setServer(src, btn) {
             document.querySelectorAll('.srv').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            const box = document.getElementById('player-box');
+            
+            const s = document.getElementById('season').value;
+            const e = document.getElementById('episode').value;
             let url = '';
-            if(src === 'vidsrc') url = `https://vidsrc.me/embed/${currentType}?tmdb=${currentID}`;
-            if(src === 'bidsrc') url = `https://vidsrc.cc/v2/embed/${currentType}/${currentID}`;
-            if(src === 'cinema') url = `https://multiembed.mov/directstream.php?video_id=${currentID}&tmdb=1`;
-            box.innerHTML = `<iframe src="${url}" allowfullscreen></iframe>`;
-        }
 
-        function saveContinueWatching(m) {
-            let list = JSON.parse(localStorage.getItem('zen_history') || '[]');
-            list = list.filter(x => x.id !== m.id);
-            list.unshift({id: m.id, title: m.title || m.name, poster: m.poster_path, type: currentType});
-            localStorage.setItem('zen_history', JSON.stringify(list.slice(0, 6)));
-            loadContinueWatching();
-        }
-
-        function loadContinueWatching() {
-            const list = JSON.parse(localStorage.getItem('zen_history') || '[]');
-            if(list.length > 0) {
-                document.getElementById('continue-section').style.display = 'block';
-                document.getElementById('continue-grid').innerHTML = list.map(m => `
-                    <div class="card" onclick="openPlayer(${m.id}, '${m.type}')">
-                        <img src="${IMG + m.poster}">
-                        <div class="card-info"><div class="card-title">${m.title}</div></div>
-                    </div>
-                `).join('');
+            if (src === 'vidsrc') {
+                url = currentType === 'movie' ? `https://vidsrc.me/embed/movie?tmdb=${currentID}` : `https://vidsrc.me/embed/tv?tmdb=${currentID}&sea=${s}&epi=${e}`;
+            } else if (src === 'bidsrc') {
+                url = `https://bidsrc.pro/embed/${currentType}/${currentID}${currentType === 'tv' ? `/${s}/${e}` : ''}`;
+            } else if (src === 'cinemaos') {
+                url = currentType === 'movie' ? `https://cinemaos.tech/player/${currentID}` : `https://cinemaos.tech/player/${currentID}/${s}/${e}`;
             }
+
+            document.getElementById('player-box').innerHTML = `<iframe src="${url}" allowfullscreen></iframe>`;
         }
 
-        async function searchContent(e) {
-            const query = document.getElementById('searchInput').value;
-            if(query.length > 2) {
-                const res = await fetch(`${BASE}/search/multi?api_key=${API_KEY}&query=${query}`);
-                const data = await res.json();
-                renderGrid(data.results, 'trending-grid');
-                document.querySelector('.row-title').innerHTML = `<i class="fas fa-search"></i> Search Results for "${query}"`;
-            }
+        function updateTV() { setServer('vidsrc', document.querySelector('.srv.active')); }
+
+        // --- FIREBASE WATCHLIST LOGIC ---
+        async function addToFirebase() {
+            const movieObj = {
+                id: currentID,
+                type: currentType,
+                title: currentData.title || currentData.name,
+                poster: currentData.poster_path,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            await db.collection("watchlist").doc(currentID.toString()).set(movieObj);
+            alert("Added to Watchlist!");
+        }
+
+        async function showWatchlist() {
+            const section = document.getElementById('watchlist-section');
+            section.style.display = 'block';
+            const snapshot = await db.collection("watchlist").orderBy("timestamp", "desc").get();
+            const data = snapshot.docs.map(doc => doc.data());
+            
+            const grid = document.getElementById('watchlist-grid');
+            grid.innerHTML = data.map(m => `
+                <div class="card" onclick="openPlayer(${m.id}, '${m.type}')">
+                    <img src="https://image.tmdb.org/t/p/w500${m.poster}">
+                    <button class="card-btn" onclick="removeFromWatchlist(event, '${m.id}')">&times;</button>
+                </div>
+            `).join('');
+            window.scrollTo(0, 0);
+        }
+
+        async function removeFromWatchlist(e, id) {
+            e.stopPropagation();
+            await db.collection("watchlist").doc(id).delete();
+            showWatchlist();
         }
 
         function closeModal() {
@@ -276,9 +215,9 @@
             document.getElementById('player-box').innerHTML = '';
         }
 
-        function shareLink() {
-            const text = `Watching premium shows on ZenShows! Check it out: `;
-            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text + window.location.href)}`);
+        function share() {
+            const url = window.location.href;
+            window.open(`https://api.whatsapp.com/send?text=Watching ${currentData.title || currentData.name} on ZenShows! ${url}`);
         }
     </script>
 </body>

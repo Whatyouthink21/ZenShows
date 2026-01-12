@@ -1,110 +1,50 @@
 :root {
-    --primary: #e50914;
-    --bg: #0f0f0f;
-    --surface: #1f1f1f;
-    --text: #ffffff;
+    --bg: #0a0a0b; --surface: rgba(255,255,255,0.05);
+    --primary: #6366f1; --text: #f8fafc; --accent: #10b981;
 }
 
-body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--bg);
-    color: var(--text);
-    overflow-x: hidden;
+[data-theme="light"] {
+    --bg: #f1f5f9; --surface: rgba(0,0,0,0.05);
+    --text: #1e293b; --primary: #4f46e5;
 }
+
+body { background: var(--bg); color: var(--text); transition: 0.3s; margin: 0; font-family: 'Inter', sans-serif; }
 
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 4%;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-    position: fixed;
-    width: 100%;
-    z-index: 1000;
-}
-
-.logo { font-size: 1.8rem; font-weight: bold; color: var(--primary); }
-.logo span { color: white; }
-
-.search-container input {
-    padding: 0.6rem;
-    border-radius: 4px 0 0 4px;
-    border: none;
-    width: 300px;
-    background: #333;
-    color: white;
+    backdrop-filter: blur(15px); background: var(--surface);
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem 5%; position: fixed; width: 90%; z-index: 100;
 }
 
 .movie-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 20px;
-    padding: 20px 0;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 25px; padding: 2rem 0;
 }
 
 .movie-card {
-    position: relative;
-    transition: transform 0.3s;
-    cursor: pointer;
+    background: var(--surface); border-radius: 12px; overflow: hidden;
+    transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative;
 }
 
-.movie-card:hover { transform: scale(1.05); }
+.movie-card:hover { transform: translateY(-10px); box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3); }
 
-.movie-card img {
-    width: 100%;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+/* Progress Bar */
+.progress-container {
+    position: absolute; bottom: 0; left: 0; width: 100%;
+    height: 4px; background: rgba(255,255,255,0.2);
+}
+.progress-fill { height: 100%; background: var(--primary); }
+
+.modal-content.large {
+    width: 95%; max-width: 1200px; background: var(--bg);
+    border: 1px solid var(--surface); border-radius: 20px;
+    display: grid; grid-template-columns: 2fr 1fr; gap: 20px; padding: 20px;
 }
 
-.hero {
-    height: 70vh;
-    background-size: cover;
-    background-position: center;
-    display: flex;
-    align-items: flex-end;
-    padding: 4%;
-    position: relative;
+@media (max-width: 900px) {
+    .modal-content.large { grid-template-columns: 1fr; }
 }
 
-.hero::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; width: 100%; height: 50%;
-    background: linear-gradient(to top, var(--bg), transparent);
-}
+.tab-pane { padding: 20px 0; max-height: 400px; overflow-y: auto; }
+.actor-chip { display: inline-block; padding: 5px 12px; background: var(--surface); border-radius: 20px; margin: 5px; cursor: pointer; }
 
-/* Modal Styling */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 2000;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.95);
-    overflow-y: auto;
-}
-
-.modal-content {
-    margin: 2% auto;
-    width: 90%;
-    max-width: 1000px;
-}
-
-#playerContainer iframe {
-    width: 100%;
-    aspect-ratio: 16/9;
-    border: none;
-    background: black;
-}
-
-.server-selector { margin-bottom: 15px; }
-.server-selector button {
-    background: var(--surface);
-    color: white;
-    border: 1px solid #444;
-    padding: 8px 15px;
-    cursor: pointer;
-    margin-right: 5px;
-}
-
-.share-btn { background: #25D366 !important; border: none !important; }

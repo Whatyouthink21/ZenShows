@@ -8,62 +8,69 @@
 </head>
 <body>
 
-<div class="aura-bg"></div>
+<!-- BACKGROUND & NAV -->
+<div class="bg-gradient"></div>
 
-<header class="topbar">
+<header class="navbar">
   <div class="logo">Zen<span>Shows</span></div>
 
-  <div class="search-box">
-    <input id="searchInput" placeholder="Movies • TV • Actors">
-    <button onclick="search()">Search</button>
-  </div>
+  <nav class="nav-links">
+    <a onclick="showSection('movies')">Movies</a>
+    <a onclick="showSection('shows')">Shows</a>
+    <a onclick="showSection('watchlist')">Watchlist</a>
+  </nav>
 
-  <button id="authBtn" class="auth">Sign In</button>
+  <div class="search-auth">
+    <input id="searchInput" placeholder="Search anything...">
+    <button onclick="search()" class="btn-search">🔍</button>
+    <button id="authBtn" class="btn-auth">Sign In</button>
+  </div>
 </header>
 
-<section class="hero">
-  <h1>Feel the <span>Aura</span> of Cinema</h1>
-  <p>Movies & Series • Curated • Limitless</p>
+<section class="hero-spotlight">
+  <h1 id="heroTitle">ZenShows — Your Stream Hub</h1>
+  <p>Watch free Movies & TV shows instantly</p>
 </section>
 
-<section>
+<!-- SECTIONS -->
+<section class="carousel-section" id="movies">
   <h2>🔥 Trending Movies</h2>
-  <div class="grid" id="movies"></div>
+  <div class="carousel" id="movieRow"></div>
 </section>
 
-<section>
-  <h2>📺 Trending Shows</h2>
-  <div class="grid" id="shows"></div>
+<section class="carousel-section hidden" id="shows">
+  <h2>📺 Trending TV Shows</h2>
+  <div class="carousel" id="showRow"></div>
 </section>
 
-<section>
+<section class="carousel-section hidden" id="watchlist">
   <h2>⭐ Your Watchlist</h2>
-  <div class="grid" id="watchlist"></div>
+  <div class="carousel" id="watchlistRow"></div>
 </section>
 
-<!-- DETAILS -->
-<div class="modal hidden" id="details">
-  <div class="details-box">
+<!-- DETAILS MODAL -->
+<div class="modal hidden" id="detailsModal">
+  <div class="details-content">
     <button class="close" onclick="closeDetails()">✖</button>
-    <h2 id="title"></h2>
-    <p id="overview"></p>
+    <h2 id="detailTitle"></h2>
+    <p id="detailOverview"></p>
 
     <div class="controls">
       <select id="sourceSelect"></select>
-      <button onclick="play()">▶ Play</button>
+      <button onclick="play()">▶ Watch</button>
       <button onclick="toggleWatchlist()">⭐ Watchlist</button>
-      <button onclick="share()">📤 WhatsApp</button>
+      <button onclick="share()">📲 Share</button>
     </div>
 
     <h3>🎭 Cast</h3>
-    <div class="cast" id="cast"></div>
+    <div class="cast-row" id="castRow"></div>
   </div>
 </div>
 
 <!-- PLAYER -->
-<div class="player hidden" id="player">
-  <iframe id="frame" allowfullscreen></iframe>
-  <button class="close" onclick="closePlayer()">✖</button>
+<div class="player hidden" id="playerModal">
+  <iframe id="streamFrame" allowfullscreen></iframe>
+  <button class="close-player" onclick="closePlayer()">✖</button>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>

@@ -1,83 +1,286 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZenShows | Ultimate Streaming</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    <title>ZenShows | Premium Streaming</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #e50914; --bg: #050505; --card-bg: #121212;
+            --text: #ffffff; --text-dim: #a3a3a3; --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            margin: 0; font-family: 'Inter', sans-serif; background: var(--bg);
+            color: var(--text); overflow-x: hidden; scroll-behavior: smooth;
+        }
+
+        /* Glassmorphism Navbar */
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px 5%; background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(15px); position: fixed; width: 90%; z-index: 1000;
+        }
+
+        .logo { font-size: 1.8rem; font-weight: 800; color: var(--primary); letter-spacing: -1px; }
+        .logo span { color: white; }
+
+        .search-container { position: relative; width: 300px; }
+        .search-container input {
+            width: 100%; padding: 10px 15px; border-radius: 20px; border: none;
+            background: var(--glass); color: white; outline: none; border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Layout */
+        .hero {
+            height: 75vh; display: flex; align-items: flex-end; padding: 0 5% 50px;
+            background-size: cover; background-position: center;
+            mask-image: linear-gradient(to bottom, black 80%, transparent);
+        }
+
+        .container { padding: 0 5%; margin-top: -50px; }
+        .row-title { font-size: 1.4rem; margin: 30px 0 15px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .row-title i { color: var(--primary); font-size: 1rem; }
+
+        /* Movie Cards */
+        .movie-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg); border-radius: 12px; overflow: hidden;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer;
+            position: relative; border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .card:hover { transform: translateY(-10px) scale(1.03); border-color: var(--primary); }
+        .card img { width: 100%; aspect-ratio: 2/3; object-fit: cover; }
+        .card-info { padding: 12px; background: linear-gradient(transparent, rgba(0,0,0,0.9)); position: absolute; bottom: 0; width: 100%; }
+        .card-title { font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* Modal Player */
+        .modal {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98);
+            z-index: 2000; overflow-y: auto;
+        }
+
+        .modal-content { width: 95%; max-width: 1100px; margin: 50px auto; }
+        .player-box { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 15px; overflow: hidden; border: 1px solid var(--glass); }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        .server-tabs { display: flex; gap: 10px; margin: 15px 0; }
+        .server-tabs button {
+            background: var(--glass); color: white; border: 1px solid rgba(255,255,255,0.1);
+            padding: 8px 20px; border-radius: 5px; cursor: pointer; font-weight: 600;
+        }
+        .server-tabs button.active { background: var(--primary); border-color: var(--primary); }
+
+        .details-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-top: 20px; }
+        .meta-tag { background: #333; padding: 4px 10px; border-radius: 4px; font-size: 0.8rem; margin-right: 8px; }
+        .cast-list { display: flex; gap: 15px; overflow-x: auto; padding: 10px 0; }
+        .cast-card { min-width: 100px; text-align: center; font-size: 0.8rem; }
+        .cast-card img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
+
+        .close-btn { position: absolute; top: 20px; right: 30px; font-size: 2rem; cursor: pointer; color: white; z-index: 2001; }
+
+        @media (max-width: 768px) {
+            .details-grid { grid-template-columns: 1fr; }
+            .search-container { display: none; }
+        }
+    </style>
 </head>
 <body>
+
     <nav class="navbar">
-        <div class="logo">Zen<span>Shows</span></div>
-        <div class="nav-actions">
-            <div class="filter-group">
-                <select id="genreFilter" onchange="applyFilters()">
-                    <option value="">All Genres</option>
-                </select>
-                <select id="yearFilter" onchange="applyFilters()">
-                    <option value="">Year</option>
-                </select>
-            </div>
-            <input type="text" id="searchInput" placeholder="Search...">
-            <button onclick="toggleTheme()" id="themeToggle"><i class="fas fa-moon"></i></button>
+        <div class="logo">ZEN<span>SHOWS</span></div>
+        <div class="search-container">
+            <input type="text" id="searchInput" onkeyup="searchContent(event)" placeholder="Search for movies, actors...">
+        </div>
+        <div>
+            <button onclick="shareLink()" style="background:none; border:none; color:white; font-size:1.2rem; cursor:pointer;"><i class="fab fa-whatsapp"></i></button>
         </div>
     </nav>
 
-    <div id="continueWatching" class="container hidden">
-        <h2 class="section-title">Continue Watching</h2>
-        <div id="watchlistGrid" class="movie-grid horizontal"></div>
+    <div id="hero" class="hero">
+        <div style="max-width: 600px;">
+            <h1 id="hero-title" style="font-size: 3rem; margin-bottom: 10px;"></h1>
+            <p id="hero-desc" style="color: var(--text-dim); margin-bottom: 20px;"></p>
+            <button id="hero-btn" class="server-tabs" style="background:var(--primary); padding:12px 30px; border:none; font-size:1rem;">Watch Now</button>
+        </div>
     </div>
 
-    <main id="mainContent">
-        <section id="hero" class="hero"></section>
-        <div class="container">
-            <div class="category-tabs">
-                <button class="tab active" onclick="fetchCategory('trending')">Trending</button>
-                <button class="tab" onclick="fetchCategory('top_rated')">Top Rated</button>
-                <button class="tab" onclick="fetchCategory('upcoming')">Coming Soon</button>
-            </div>
-            <div id="movieGrid" class="movie-grid"></div>
+    <div class="container">
+        <div id="continue-section" style="display: none;">
+            <h2 class="row-title"><i class="fas fa-history"></i> Continue Watching</h2>
+            <div id="continue-grid" class="movie-grid"></div>
         </div>
-    </main>
+
+        <h2 class="row-title"><i class="fas fa-fire"></i> Trending Now</h2>
+        <div id="trending-grid" class="movie-grid"></div>
+
+        <h2 class="row-title"><i class="fas fa-robot"></i> AI Suggestions</h2>
+        <div id="ai-grid" class="movie-grid"></div>
+    </div>
 
     <div id="playerModal" class="modal">
-        <div class="modal-content large">
-            <div class="player-wrapper">
-                <div id="videoContainer"></div>
-                <div class="server-bar">
-                    <button onclick="switchServer('vidsrc')">Server 1</button>
-                    <button onclick="switchServer('bidsrc')">Server 2</button>
-                    <button onclick="switchServer('cinema')">Server 3</button>
-                    <div class="quality-tag">4K Auto</div>
-                </div>
-            </div>
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <div class="modal-content">
+            <div class="player-box" id="player-box"></div>
             
-            <div class="movie-info-detailed">
-                <div class="info-header">
-                    <h1 id="mTitle"></h1>
-                    <div class="ratings">
-                        <span id="mImdb"><i class="fab fa-imdb"></i> 0.0</span>
-                        <span id="mTmdb"><i class="fas fa-star"></i> 0%</span>
+            <div class="server-tabs">
+                <button class="srv active" onclick="setServer('vidsrc', this)">Server 1</button>
+                <button class="srv" onclick="setServer('bidsrc', this)">Server 2</button>
+                <button class="srv" onclick="setServer('cinema', this)">Server 3</button>
+            </div>
+
+            <div class="details-grid">
+                <div>
+                    <h1 id="m-title"></h1>
+                    <div style="margin: 15px 0;">
+                        <span class="meta-tag" id="m-year"></span>
+                        <span class="meta-tag" id="m-rating"></span>
                     </div>
+                    <p id="m-desc" style="line-height: 1.6; color: var(--text-dim);"></p>
+                    
+                    <h3>Top Billed Cast</h3>
+                    <div id="cast-list" class="cast-list"></div>
                 </div>
-                <div class="tabs-details">
-                    <button onclick="showDetailTab('overview')">Overview</button>
-                    <button onclick="showDetailTab('cast')">Cast & Crew</button>
-                    <button onclick="showDetailTab('trailers')">Trailers</button>
-                </div>
-                <div id="tabContent" class="tab-pane"></div>
-                <div class="share-options">
-                    <button onclick="share('whatsapp')"><i class="fab fa-whatsapp"></i></button>
-                    <button onclick="share('copy')"><i class="fas fa-link"></i></button>
+                <div>
+                    <h3>More Like This</h3>
+                    <div id="similar-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;"></div>
                 </div>
             </div>
-            <span class="close-btn" onclick="closeModal()">&times;</span>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        const API_KEY = '60defb38119575da952b28d206871c1b';
+        const BASE = 'https://api.themoviedb.org/3';
+        const IMG = 'https://image.tmdb.org/t/p/w500';
+        let currentID = null;
+        let currentType = 'movie';
+
+        // Init
+        window.onload = () => {
+            fetchData('/trending/all/week', 'trending-grid');
+            fetchData('/movie/top_rated', 'ai-grid');
+            loadHero();
+            loadContinueWatching();
+        };
+
+        async function fetchData(path, target) {
+            const res = await fetch(`${BASE}${path}?api_key=${API_KEY}`);
+            const data = await res.json();
+            renderGrid(data.results, target);
+        }
+
+        async function loadHero() {
+            const res = await fetch(`${BASE}/trending/movie/day?api_key=${API_KEY}`);
+            const data = await res.json();
+            const movie = data.results[0];
+            document.getElementById('hero').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5), var(--bg)), url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`;
+            document.getElementById('hero-title').innerText = movie.title;
+            document.getElementById('hero-desc').innerText = movie.overview.slice(0, 150) + '...';
+            document.getElementById('hero-btn').onclick = () => openPlayer(movie.id, 'movie');
+        }
+
+        function renderGrid(data, target) {
+            const grid = document.getElementById(target);
+            grid.innerHTML = data.slice(0, 12).map(m => `
+                <div class="card" onclick="openPlayer(${m.id}, '${m.media_type || 'movie'}')">
+                    <img src="${IMG + m.poster_path}" alt="">
+                    <div class="card-info">
+                        <div class="card-title">${m.title || m.name}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function openPlayer(id, type) {
+            currentID = id; currentType = type;
+            const res = await fetch(`${BASE}/${type}/${id}?api_key=${API_KEY}&append_to_response=credits,similar`);
+            const m = await res.json();
+
+            document.getElementById('playerModal').style.display = 'block';
+            document.getElementById('m-title').innerText = m.title || m.name;
+            document.getElementById('m-desc').innerText = m.overview;
+            document.getElementById('m-year').innerText = (m.release_date || m.first_air_date).split('-')[0];
+            document.getElementById('m-rating').innerHTML = `<i class="fas fa-star" style="color:gold"></i> ${m.vote_average.toFixed(1)}`;
+            
+            setServer('vidsrc', document.querySelector('.srv'));
+            
+            // Cast
+            document.getElementById('cast-list').innerHTML = m.credits.cast.slice(0, 10).map(c => `
+                <div class="cast-card" onclick="viewPerson(${c.id})">
+                    <img src="${IMG + c.profile_path}" onerror="this.src='https://via.placeholder.com/70'">
+                    <p>${c.name}</p>
+                </div>
+            `).join('');
+
+            // Similar
+            document.getElementById('similar-grid').innerHTML = m.similar.results.slice(0, 4).map(s => `
+                <img src="${IMG + s.poster_path}" onclick="openPlayer(${s.id}, '${type}')" style="width:100%; border-radius:8px; cursor:pointer;">
+            `).join('');
+
+            saveContinueWatching(m);
+        }
+
+        function setServer(src, btn) {
+            document.querySelectorAll('.srv').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const box = document.getElementById('player-box');
+            let url = '';
+            if(src === 'vidsrc') url = `https://vidsrc.me/embed/${currentType}?tmdb=${currentID}`;
+            if(src === 'bidsrc') url = `https://vidsrc.cc/v2/embed/${currentType}/${currentID}`;
+            if(src === 'cinema') url = `https://multiembed.mov/directstream.php?video_id=${currentID}&tmdb=1`;
+            box.innerHTML = `<iframe src="${url}" allowfullscreen></iframe>`;
+        }
+
+        function saveContinueWatching(m) {
+            let list = JSON.parse(localStorage.getItem('zen_history') || '[]');
+            list = list.filter(x => x.id !== m.id);
+            list.unshift({id: m.id, title: m.title || m.name, poster: m.poster_path, type: currentType});
+            localStorage.setItem('zen_history', JSON.stringify(list.slice(0, 6)));
+            loadContinueWatching();
+        }
+
+        function loadContinueWatching() {
+            const list = JSON.parse(localStorage.getItem('zen_history') || '[]');
+            if(list.length > 0) {
+                document.getElementById('continue-section').style.display = 'block';
+                document.getElementById('continue-grid').innerHTML = list.map(m => `
+                    <div class="card" onclick="openPlayer(${m.id}, '${m.type}')">
+                        <img src="${IMG + m.poster}">
+                        <div class="card-info"><div class="card-title">${m.title}</div></div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        async function searchContent(e) {
+            const query = document.getElementById('searchInput').value;
+            if(query.length > 2) {
+                const res = await fetch(`${BASE}/search/multi?api_key=${API_KEY}&query=${query}`);
+                const data = await res.json();
+                renderGrid(data.results, 'trending-grid');
+                document.querySelector('.row-title').innerHTML = `<i class="fas fa-search"></i> Search Results for "${query}"`;
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('playerModal').style.display = 'none';
+            document.getElementById('player-box').innerHTML = '';
+        }
+
+        function shareLink() {
+            const text = `Watching premium shows on ZenShows! Check it out: `;
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text + window.location.href)}`);
+        }
+    </script>
 </body>
 </html>
+

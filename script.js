@@ -1,117 +1,114 @@
-// ================= CONFIG =================
-const TMDB_KEY = "60defb38119575da952b28d206871c1b";
+// ================== CONFIG ==================
+const TMDB = "60defb38119575da952b28d206871c1b";
 
-// ======= FIREBASE (PASTE YOUR CONFIG HERE) =======
-const firebaseConfig = {
-  apiKey: "YOUR_FIREBASE_KEY",
-  authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  appId: "YOUR_APP_ID"
-};
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-
-// ================= STATE =================
-let currentMovie = null;
-
-// ================= AUTH =================
-const authBtn = document.getElementById("authBtn");
-auth.onAuthStateChanged(user=>{
-  authBtn.innerText = user ? user.displayName || "Logout" : "Sign In";
+// ================== FIREBASE ==================
+firebase.initializeApp({
+  apiKey:"YOUR_KEY",
+  authDomain:"YOUR_DOMAIN",
+  projectId:"YOUR_ID"
 });
-authBtn.onclick = () => {
-  if(auth.currentUser) auth.signOut();
-  else auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+const auth=firebase.auth();
+auth.onAuthStateChanged(u=>{
+  authBtn.innerText=u?"Logout":"Sign In";
+});
+authBtn.onclick=()=>{
+  auth.currentUser
+   ? auth.signOut()
+   : auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
 };
 
-// ================= FETCH =================
-const trendingDiv = document.getElementById("trending");
-const recDiv = document.getElementById("recommended");
+// ================== STATE ==================
+let current={id:null,type:null};
+const watchlist=JSON.parse(localStorage.getItem("watchlist")||"[]");
 
-fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=${TMDB_KEY}`)
-  .then(r=>r.json()).then(d=>render(d.results,trendingDiv));
+// ================== SOURCES ==================
+const sources=[
+ {name:"VidSrc",url:(t,id)=>`https://vidsrc.to/embed/${t}/${id}`},
+ {name:"VidSrc.me",url:(t,id)=>`https://vidsrc.me/embed/${t}?tmdb=${id}`},
+ {name:"BidSrc",url:(t,id)=>`https://bidsrc.com/embed/${t}/${id}`},
+ {name:"CinemaOS",url:(t,id)=>`https://cinemaos.xyz/embed/${t}/${id}`},
+ {name:"MultiEmbed",url:(t,id)=>`https://multiembed.mov/?tmdb=${id}`}
+];
 
-function render(list, el){
+// ================== FETCH ==================
+fetch(`https://api.themoviedb.org/3/trending/movie/week?api_key=${TMDB}`)
+.then(r=>r.json()).then(d=>render(d.results,"movie",movies));
+
+fetch(`https://api.themoviedb.org/3/trending/tv/week?api_key=${TMDB}`)
+.then(r=>r.json()).then(d=>render(d.results,"tv",shows));
+
+render(watchlist.map(w=>w.data),"movie",watchlistEl);
+
+// ================== RENDER ==================
+function render(list,type,el){
   el.innerHTML="";
-  list.forEach(m=>{
-    if(!m.poster_path) return;
+  list.forEach(i=>{
+    if(!i.poster_path) return;
     const c=document.createElement("div");
     c.className="card";
-    c.innerHTML=`<img src="https://image.tmdb.org/t/p/w500${m.poster_path}">`;
-    c.onclick=()=>openDetails(m.id);
+    c.innerHTML=`<img src="https://image.tmdb.org/t/p/w500${i.poster_path}">`;
+    c.onclick=()=>openDetails(i.id,type);
     el.appendChild(c);
   });
 }
 
-// ================= DETAILS =================
-function openDetails(id){
-  currentMovie=id;
-  localStorage.setItem("last",id);
+// ================== DETAILS ==================
+function openDetails(id,type){
+  current={id,type};
+  sourceSelect.innerHTML="";
+  sources.forEach((s,i)=>{
+    sourceSelect.innerHTML+=`<option value="${i}">${s.name}</option>`;
+  });
 
-  fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${TMDB_KEY}`)
-    .then(r=>r.json()).then(m=>{
-      title.innerText=m.title;
-      overview.innerText=m.overview;
-    });
+  fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${TMDB}`)
+   .then(r=>r.json()).then(d=>{
+     title.innerText=d.title||d.name;
+     overview.innerText=d.overview;
+   });
 
-  fetch(`https://api.themoviedb.org/3/movie/${id}/credits?api_key=${TMDB_KEY}`)
-    .then(r=>r.json()).then(d=>{
-      cast.innerHTML="";
-      d.cast.slice(0,12).forEach(a=>{
-        if(!a.profile_path) return;
-        cast.innerHTML+=
-          `<img src="https://image.tmdb.org/t/p/w185${a.profile_path}" title="${a.name}">`;
-      });
-    });
+  fetch(`https://api.themoviedb.org/3/${type}/${id}/credits?api_key=${TMDB}`)
+   .then(r=>r.json()).then(d=>{
+     cast.innerHTML="";
+     d.cast.slice(0,12).forEach(a=>{
+       if(a.profile_path)
+       cast.innerHTML+=`<img src="https://image.tmdb.org/t/p/w185${a.profile_path}">`;
+     });
+   });
 
-  document.getElementById("details").classList.remove("hidden");
+  details.classList.remove("hidden");
 }
-function closeDetails(){
-  document.getElementById("details").classList.add("hidden");
-}
+function closeDetails(){details.classList.add("hidden")}
 
-// ================= PLAYER (5 SOURCES) =================
-const sources=[
-  id=>`https://vidsrc.to/embed/movie/${id}`,
-  id=>`https://vidsrc.me/embed/movie?tmdb=${id}`,
-  id=>`https://bidsrc.com/embed/movie/${id}`,
-  id=>`https://cinemaos.xyz/embed/movie/${id}`,
-  id=>`https://multiembed.mov/?tmdb=${id}`
-];
-
-function play(i){
-  frame.src=sources[i](currentMovie);
+// ================== PLAYER ==================
+function play(){
+  const s=sources[sourceSelect.value];
+  frame.src=s.url(current.type,current.id);
   player.classList.remove("hidden");
 }
-function closePlayer(){
-  player.classList.add("hidden"); frame.src="";
+function closePlayer(){player.classList.add("hidden");frame.src=""}
+
+// ================== WATCHLIST ==================
+function toggleWatchlist(){
+  if(watchlist.find(w=>w.id===current.id)) return;
+  fetch(`https://api.themoviedb.org/3/${current.type}/${current.id}?api_key=${TMDB}`)
+   .then(r=>r.json()).then(d=>{
+     watchlist.push({id:current.id,data:d});
+     localStorage.setItem("watchlist",JSON.stringify(watchlist));
+     render(watchlist.map(w=>w.data),"movie",watchlistEl);
+   });
 }
 
-// ================= SEARCH =================
+// ================== SEARCH ==================
 function search(){
   const q=searchInput.value;
-  fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB_KEY}&query=${q}`)
-    .then(r=>r.json()).then(d=>render(d.results.filter(x=>x.media_type==="movie"),trendingDiv));
+  fetch(`https://api.themoviedb.org/3/search/multi?api_key=${TMDB}&query=${q}`)
+   .then(r=>r.json()).then(d=>{
+     render(d.results.filter(x=>x.media_type==="movie"),"movie",movies);
+     render(d.results.filter(x=>x.media_type==="tv"),"tv",shows);
+   });
 }
 
-// ================= AI PICKER =================
-function aiSuggest(){
-  fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_KEY}&sort_by=vote_average.desc&vote_count.gte=500`)
-    .then(r=>r.json()).then(d=>{
-      const m=d.results[Math.floor(Math.random()*d.results.length)];
-      openDetails(m.id);
-    });
-}
-
-// ================= SHARE =================
+// ================== SHARE ==================
 function share(){
-  const url=`https://wa.me/?text=Watch this on ZenShows: https://www.themoviedb.org/movie/${currentMovie}`;
-  window.open(url,"_blank");
-}
-
-// ================= PERSONALIZED RECS =================
-const last=localStorage.getItem("last");
-if(last){
-  fetch(`https://api.themoviedb.org/3/movie/${last}/recommendations?api_key=${TMDB_KEY}`)
-    .then(r=>r.json()).then(d=>render(d.results,recDiv));
+  window.open(`https://wa.me/?text=Watch on ZenShows 🔮 https://www.themoviedb.org/${current.type}/${current.id}`);
 }

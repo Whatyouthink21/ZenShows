@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
+body{background:#050505;color:#fff;overflow-x:hidden}
+
+.bg{
+  position:fixed;inset:0;
+  background:
+    radial-gradient(circle at 20% 20%,#ff00cc,transparent 40%),
+    radial-gradient(circle at 80% 30%,#00f0ff,transparent 40%);
+  filter:blur(120px);z-index:-1
+}
+
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 28px;background:rgba(255,255,255,.06);
+  backdrop-filter:blur(18px)
+}
+.logo{font-size:26px;font-weight:900}
+.logo span{color:#ff00cc}
+
+.center{display:flex;gap:10px}
+input{
+  padding:10px;border-radius:12px;border:none;
+  background:rgba(255,255,255,.12);color:#fff
+}
+button{
+  border:none;border-radius:12px;padding:10px 14px;
+  background:linear-gradient(45deg,#ff00cc,#00f0ff);
+  cursor:pointer;font-weight:700
+}
+button.ai{background:linear-gradient(45deg,#00f0ff,#8fff00)}
+button.auth{
+  background:rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,.2)
+}
+
+.hero{padding:90px 30px;text-align:center}
+.hero h1{font-size:52px}
+.hero span{
+  background:linear-gradient(90deg,#ff00cc,#00f0ff);
+  -webkit-background-clip:text;color:transparent
+}
+
+section{padding:30px}
+.grid{
+  display:grid;gap:18px;
+  grid-template-columns:repeat(auto-fill,minmax(170px,1fr))
+}
+.card{
+  border-radius:18px;overflow:hidden;cursor:pointer;
+  transition:.35s
+}
+.card:hover{transform:scale(1.08)}
+.card img{width:100%;height:100%;object-fit:cover}
+
+.modal,.player{
+  position:fixed;inset:0;background:rgba(0,0,0,.95);
+  display:flex;align-items:center;justify-content:center
+}
+.hidden{display:none}
+.box{
+  width:80%;max-height:90%;overflow:auto;
+  background:#0b0b0b;border-radius:22px;padding:24px
+}
+.close{
+  position:absolute;top:20px;right:26px;
+  background:red;color:#fff
+}
+.sources{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.share{background:#25D366}
+.cast{display:flex;gap:10px;overflow-x:auto}
+.cast img{height:120px;border-radius:12px}
+
+.player iframe{width:85%;height:85%;border-radius:20px}

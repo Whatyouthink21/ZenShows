@@ -1,80 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>ZenShows</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZenShows | Premium Streaming</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <nav class="navbar">
+        <div class="logo">Zen<span>Shows</span></div>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search movies, actors, directors...">
+            <button onclick="searchContent()"><i class="fas fa-search"></i></button>
+        </div>
+        <div class="nav-links">
+            <button onclick="showAIBox()" class="ai-btn"><i class="fas fa-robot"></i> AI Suggest</button>
+        </div>
+    </nav>
 
-<!-- BACKGROUND & NAV -->
-<div class="bg-gradient"></div>
+    <main id="mainContent">
+        <section id="hero" class="hero"></section>
 
-<header class="navbar">
-  <div class="logo">Zen<span>Shows</span></div>
+        <div class="container">
+            <h2 class="section-title">Trending Now</h2>
+            <div id="trendingGrid" class="movie-grid"></div>
 
-  <nav class="nav-links">
-    <a onclick="showSection('movies')">Movies</a>
-    <a onclick="showSection('shows')">Shows</a>
-    <a onclick="showSection('watchlist')">Watchlist</a>
-  </nav>
+            <h2 class="section-title">Recommended for You</h2>
+            <div id="recommendationGrid" class="movie-grid"></div>
+        </div>
+    </main>
 
-  <div class="search-auth">
-    <input id="searchInput" placeholder="Search anything...">
-    <button onclick="search()" class="btn-search">🔍</button>
-    <button id="authBtn" class="btn-auth">Sign In</button>
-  </div>
-</header>
-
-<section class="hero-spotlight">
-  <h1 id="heroTitle">ZenShows — Your Stream Hub</h1>
-  <p>Watch free Movies & TV shows instantly</p>
-</section>
-
-<!-- SECTIONS -->
-<section class="carousel-section" id="movies">
-  <h2>🔥 Trending Movies</h2>
-  <div class="carousel" id="movieRow"></div>
-</section>
-
-<section class="carousel-section hidden" id="shows">
-  <h2>📺 Trending TV Shows</h2>
-  <div class="carousel" id="showRow"></div>
-</section>
-
-<section class="carousel-section hidden" id="watchlist">
-  <h2>⭐ Your Watchlist</h2>
-  <div class="carousel" id="watchlistRow"></div>
-</section>
-
-<!-- DETAILS MODAL -->
-<div class="modal hidden" id="detailsModal">
-  <div class="details-content">
-    <button class="close" onclick="closeDetails()">✖</button>
-    <h2 id="detailTitle"></h2>
-    <p id="detailOverview"></p>
-
-    <div class="controls">
-      <select id="sourceSelect"></select>
-      <button onclick="play()">▶ Watch</button>
-      <button onclick="toggleWatchlist()">⭐ Watchlist</button>
-      <button onclick="share()">📲 Share</button>
+    <div id="playerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closePlayer()">&times;</span>
+            <div class="server-selector">
+                <button onclick="switchServer('vidsrc')">Server 1 (VidSrc)</button>
+                <button onclick="switchServer('bidsrc')">Server 2 (BidSrc)</button>
+                <button onclick="switchServer('cinema')">Server 3 (CinemaOS)</button>
+                <button id="whatsappShare" class="share-btn"><i class="fab fa-whatsapp"></i> Share</button>
+            </div>
+            <div id="playerContainer"></div>
+            <div id="movieDetails" class="details-pane"></div>
+        </div>
     </div>
 
-    <h3>🎭 Cast</h3>
-    <div class="cast-row" id="castRow"></div>
-  </div>
-</div>
+    <div id="aiModal" class="modal">
+        <div class="modal-content ai-box">
+            <h3>ZenAI Movie Suggester</h3>
+            <p>What are you in the mood for?</p>
+            <input type="text" id="aiInput" placeholder="e.g. Gritty space thriller with a twist">
+            <button onclick="getAISuggestion()">Get Suggestion</button>
+            <div id="aiResults" class="movie-grid"></div>
+        </div>
+    </div>
 
-<!-- PLAYER -->
-<div class="player hidden" id="playerModal">
-  <iframe id="streamFrame" allowfullscreen></iframe>
-  <button class="close-player" onclick="closePlayer()">✖</button>
-</div>
-
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-<script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
+

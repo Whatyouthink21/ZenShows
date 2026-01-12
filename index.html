@@ -1,61 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZenShows | Premium Streaming</title>
+    <title>ZenShows | Ultimate Streaming</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 </head>
 <body>
     <nav class="navbar">
         <div class="logo">Zen<span>Shows</span></div>
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search movies, actors, directors...">
-            <button onclick="searchContent()"><i class="fas fa-search"></i></button>
-        </div>
-        <div class="nav-links">
-            <button onclick="showAIBox()" class="ai-btn"><i class="fas fa-robot"></i> AI Suggest</button>
+        <div class="nav-actions">
+            <div class="filter-group">
+                <select id="genreFilter" onchange="applyFilters()">
+                    <option value="">All Genres</option>
+                </select>
+                <select id="yearFilter" onchange="applyFilters()">
+                    <option value="">Year</option>
+                </select>
+            </div>
+            <input type="text" id="searchInput" placeholder="Search...">
+            <button onclick="toggleTheme()" id="themeToggle"><i class="fas fa-moon"></i></button>
         </div>
     </nav>
 
+    <div id="continueWatching" class="container hidden">
+        <h2 class="section-title">Continue Watching</h2>
+        <div id="watchlistGrid" class="movie-grid horizontal"></div>
+    </div>
+
     <main id="mainContent">
         <section id="hero" class="hero"></section>
-
         <div class="container">
-            <h2 class="section-title">Trending Now</h2>
-            <div id="trendingGrid" class="movie-grid"></div>
-
-            <h2 class="section-title">Recommended for You</h2>
-            <div id="recommendationGrid" class="movie-grid"></div>
+            <div class="category-tabs">
+                <button class="tab active" onclick="fetchCategory('trending')">Trending</button>
+                <button class="tab" onclick="fetchCategory('top_rated')">Top Rated</button>
+                <button class="tab" onclick="fetchCategory('upcoming')">Coming Soon</button>
+            </div>
+            <div id="movieGrid" class="movie-grid"></div>
         </div>
     </main>
 
     <div id="playerModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closePlayer()">&times;</span>
-            <div class="server-selector">
-                <button onclick="switchServer('vidsrc')">Server 1 (VidSrc)</button>
-                <button onclick="switchServer('bidsrc')">Server 2 (BidSrc)</button>
-                <button onclick="switchServer('cinema')">Server 3 (CinemaOS)</button>
-                <button id="whatsappShare" class="share-btn"><i class="fab fa-whatsapp"></i> Share</button>
+        <div class="modal-content large">
+            <div class="player-wrapper">
+                <div id="videoContainer"></div>
+                <div class="server-bar">
+                    <button onclick="switchServer('vidsrc')">Server 1</button>
+                    <button onclick="switchServer('bidsrc')">Server 2</button>
+                    <button onclick="switchServer('cinema')">Server 3</button>
+                    <div class="quality-tag">4K Auto</div>
+                </div>
             </div>
-            <div id="playerContainer"></div>
-            <div id="movieDetails" class="details-pane"></div>
-        </div>
-    </div>
-
-    <div id="aiModal" class="modal">
-        <div class="modal-content ai-box">
-            <h3>ZenAI Movie Suggester</h3>
-            <p>What are you in the mood for?</p>
-            <input type="text" id="aiInput" placeholder="e.g. Gritty space thriller with a twist">
-            <button onclick="getAISuggestion()">Get Suggestion</button>
-            <div id="aiResults" class="movie-grid"></div>
+            
+            <div class="movie-info-detailed">
+                <div class="info-header">
+                    <h1 id="mTitle"></h1>
+                    <div class="ratings">
+                        <span id="mImdb"><i class="fab fa-imdb"></i> 0.0</span>
+                        <span id="mTmdb"><i class="fas fa-star"></i> 0%</span>
+                    </div>
+                </div>
+                <div class="tabs-details">
+                    <button onclick="showDetailTab('overview')">Overview</button>
+                    <button onclick="showDetailTab('cast')">Cast & Crew</button>
+                    <button onclick="showDetailTab('trailers')">Trailers</button>
+                </div>
+                <div id="tabContent" class="tab-pane"></div>
+                <div class="share-options">
+                    <button onclick="share('whatsapp')"><i class="fab fa-whatsapp"></i></button>
+                    <button onclick="share('copy')"><i class="fas fa-link"></i></button>
+                </div>
+            </div>
+            <span class="close-btn" onclick="closeModal()">&times;</span>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
 </html>
-

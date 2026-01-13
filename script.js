@@ -1,8 +1,3 @@
-// TMDB API Configuration
-const TMDB_API_KEY = 'a45420333457411e78d5ad35d6c51a2d';
-const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
-const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
-
 // Sample data for demonstration
 const sampleMovies = [
     {
@@ -146,42 +141,18 @@ let currentUser = null;
 let watchlist = JSON.parse(localStorage.getItem('zenShowsWatchlist')) || [];
 let history = JSON.parse(localStorage.getItem('zenShowsHistory')) || [];
 
-// Initialize the app
-function init() {
-    showLoading();
-    
-    // Load sample data
-    setTimeout(() => {
-        loadTrending();
-        loadMovies();
-        loadTVShows();
-        hideLoading();
-    }, 1000);
-    
-    // Check for saved user
-    const savedUser = localStorage.getItem('zenShowsUser');
-    if (savedUser) {
-        currentUser = JSON.parse(savedUser);
-        updateUserUI();
-    }
-    
-    setupEventListeners();
-}
-
 // Show loading overlay
 function showLoading() {
-    loadingOverlay.style.display = 'flex';
+    loadingOverlay.classList.add('show');
 }
 
-// Hide loading overlay
+// Hide loading overlay - FIXED
 function hideLoading() {
-    setTimeout(() => {
-        loadingOverlay.style.display = 'none';
-    }, 500);
+    loadingOverlay.classList.remove('show');
 }
 
 // Show toast notification
-function showToast(message, type = 'success') {
+function showToast(message) {
     toastMessage.textContent = message;
     toast.classList.add('show');
     
@@ -438,6 +409,7 @@ function setupEventListeners() {
         btn.addEventListener('click', function() {
             document.querySelectorAll('.source-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
+            showToast(`Switched to ${this.textContent.trim()} source`);
         });
     });
     
@@ -509,7 +481,29 @@ document.addEventListener('click', (e) => {
 });
 
 // Initialize the app when DOM is loaded
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', function() {
+    // Show loading initially
+    showLoading();
+    
+    // Load content quickly
+    setTimeout(() => {
+        loadTrending();
+        loadMovies();
+        loadTVShows();
+        
+        // Check for saved user
+        const savedUser = localStorage.getItem('zenShowsUser');
+        if (savedUser) {
+            currentUser = JSON.parse(savedUser);
+            updateUserUI();
+        }
+        
+        setupEventListeners();
+        
+        // Hide loading after 1 second
+        setTimeout(hideLoading, 1000);
+    }, 500);
+});
 
 // Smooth scrolling for anchor links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -536,47 +530,3 @@ window.addEventListener('scroll', () => {
         hero.style.transform = `translateY(${scrolled * 0.5}px)`;
     }
 });
-
-// Add lazy loading for images
-const lazyLoadImages = () => {
-    const images = document.querySelectorAll('img');
-    
-    const imageObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                imageObserver.unobserve(img);
-            }
-        });
-    });
-    
-    images.forEach(img => {
-        if (img.dataset.src) {
-            imageObserver.observe(img);
-        }
-    });
-};
-
-// Initialize lazy loading
-setTimeout(lazyLoadImages, 1000);
-
-// Add animation on scroll
-const animateOnScroll = () => {
-    const elements = document.querySelectorAll('.section');
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('animated');
-            }
-        });
-    }, {
-        threshold: 0.1
-    });
-    
-    elements.forEach(el => observer.observe(el));
-};
-
-// Initialize animation on scroll
-setTimeout(animateOnScroll, 500);

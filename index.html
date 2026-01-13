@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZenShows - Premium Movie Streaming</title>
+    <title>ZenShows - Premium Streaming</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <nav class="navbar">
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loader"></div>
+        <p>Loading ZenShows...</p>
+    </div>
+
+    <nav class="navbar" id="navbar">
         <div class="nav-container">
             <div class="nav-left">
                 <button class="hamburger" id="hamburgerBtn">
@@ -29,16 +33,24 @@
                 </div>
                 <div class="profile-dropdown">
                     <button class="profile-btn" id="profileBtn">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user" alt="Profile" id="profileImage">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=guest" alt="Profile" id="profileImage">
                         <span id="profileName">Guest</span>
                     </button>
                     <div class="profile-menu" id="profileMenu">
                         <div id="signedOutMenu">
                             <button class="menu-item" id="signInBtn">
-                                <i class="fas fa-sign-in-alt"></i> Sign In
+                                <i class="fab fa-google"></i> Sign In with Google
                             </button>
                         </div>
                         <div id="signedInMenu" style="display: none;">
+                            <div class="menu-item user-info">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=user" alt="User" id="menuProfileImage">
+                                <div>
+                                    <div id="menuProfileName">User</div>
+                                    <div id="menuProfileEmail" style="font-size: 0.85rem; color: var(--text-secondary);">email@example.com</div>
+                                </div>
+                            </div>
+                            <div style="height: 1px; background: var(--glass-border); margin: 0.5rem 0;"></div>
                             <button class="menu-item" id="settingsBtn">
                                 <i class="fas fa-cog"></i> Settings
                             </button>
@@ -52,7 +64,6 @@
         </div>
     </nav>
 
-    <!-- Hamburger Menu Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <h2>Menu</h2>
@@ -61,31 +72,31 @@
             </button>
         </div>
         <div class="sidebar-content">
-            <a href="#home" class="sidebar-item active">
+            <a href="#" class="sidebar-item active" data-section="home">
                 <i class="fas fa-home"></i> Home
             </a>
-            <a href="#trending" class="sidebar-item">
+            <a href="#" class="sidebar-item" data-section="trending">
                 <i class="fas fa-fire"></i> Trending Now
             </a>
-            <a href="#top-rated" class="sidebar-item">
+            <a href="#" class="sidebar-item" data-section="toprated">
                 <i class="fas fa-star"></i> Top Rated
             </a>
-            <a href="#recent" class="sidebar-item">
+            <a href="#" class="sidebar-item" data-section="recent">
                 <i class="fas fa-clock"></i> Recently Added
             </a>
-            <a href="#continue" class="sidebar-item">
+            <a href="#" class="sidebar-item" data-section="continue">
                 <i class="fas fa-play-circle"></i> Continue Watching
             </a>
-            <a href="#watchlist" class="sidebar-item">
+            <a href="#" class="sidebar-item" data-section="watchlist">
                 <i class="fas fa-bookmark"></i> My Watchlist
             </a>
-            <a href="#favorites" class="sidebar-item">
+            <a href="#" class="sidebar-item" data-section="favorites">
                 <i class="fas fa-heart"></i> Favorites
             </a>
-            <a href="#history" class="sidebar-item">
+            <a href="#" class="sidebar-item" data-section="history">
                 <i class="fas fa-history"></i> Watch History
             </a>
-            <a href="#calendar" class="sidebar-item">
+            <a href="#" class="sidebar-item" data-section="calendar">
                 <i class="fas fa-calendar"></i> Release Calendar
             </a>
             <div class="sidebar-divider"></div>
@@ -95,7 +106,7 @@
             <div class="sidebar-section-title">Filters</div>
             <div class="filter-section">
                 <label>Year Range</label>
-                <select id="yearFilter" class="filter-select">
+                <select id="yearFilter">
                     <option value="">All Years</option>
                     <option value="2024">2024</option>
                     <option value="2023">2023</option>
@@ -106,24 +117,23 @@
             </div>
             <div class="filter-section">
                 <label>Language</label>
-                <select id="languageFilter" class="filter-select">
+                <select id="languageFilter">
                     <option value="">All Languages</option>
                     <option value="en">English</option>
                     <option value="es">Spanish</option>
                     <option value="fr">French</option>
-                    <option value="de">German</option>
                     <option value="ja">Japanese</option>
                     <option value="ko">Korean</option>
                 </select>
             </div>
             <div class="filter-section">
                 <label>Content Rating</label>
-                <select id="ratingFilter" class="filter-select">
+                <select id="ratingFilter">
                     <option value="">All Ratings</option>
-                    <option value="G">G - General Audiences</option>
-                    <option value="PG">PG - Parental Guidance</option>
+                    <option value="G">G</option>
+                    <option value="PG">PG</option>
                     <option value="PG-13">PG-13</option>
-                    <option value="R">R - Restricted</option>
+                    <option value="R">R</option>
                 </select>
             </div>
             <button class="surprise-btn" id="surpriseBtn">
@@ -132,20 +142,18 @@
         </div>
     </div>
 
-    <!-- Overlay for sidebar -->
     <div class="overlay" id="overlay"></div>
 
-    <!-- Main Content -->
     <main class="main-content">
-        <!-- Hero Section -->
         <section class="hero-section" id="heroSection">
+            <div class="hero-backdrop" id="heroBackdrop"></div>
             <div class="hero-content">
-                <h1 class="hero-title"></h1>
-                <p class="hero-overview"></p>
+                <h1 class="hero-title" id="heroTitle">Loading...</h1>
+                <p class="hero-overview" id="heroOverview"></p>
                 <div class="hero-meta">
-                    <span class="hero-rating"><i class="fas fa-star"></i> <span id="heroRating"></span></span>
-                    <span class="hero-year" id="heroYear"></span>
-                    <span class="hero-runtime" id="heroRuntime"></span>
+                    <span class="hero-rating"><i class="fas fa-star"></i> <span id="heroRating">0.0</span></span>
+                    <span class="hero-year" id="heroYear">2024</span>
+                    <span class="hero-runtime" id="heroRuntime">0 min</span>
                 </div>
                 <div class="hero-buttons">
                     <button class="btn-primary" id="heroPlayBtn">
@@ -159,62 +167,51 @@
                     </button>
                 </div>
             </div>
-            <div class="hero-gradient"></div>
         </section>
 
-        <!-- Continue Watching Section -->
         <section class="content-section" id="continueWatchingSection" style="display: none;">
-            <h2 class="section-title">Continue Watching</h2>
+            <h2 class="section-title"><i class="fas fa-play-circle"></i> Continue Watching</h2>
             <div class="movie-carousel" id="continueWatchingCarousel"></div>
         </section>
 
-        <!-- Trending Section -->
-        <section class="content-section">
-            <h2 class="section-title">Trending Now</h2>
+        <section class="content-section" id="trendingSection">
+            <h2 class="section-title"><i class="fas fa-fire"></i> Trending Now</h2>
             <div class="movie-carousel" id="trendingCarousel"></div>
         </section>
 
-        <!-- Top Rated Section -->
-        <section class="content-section">
-            <h2 class="section-title">Top Rated</h2>
+        <section class="content-section" id="topRatedSection">
+            <h2 class="section-title"><i class="fas fa-star"></i> Top Rated</h2>
             <div class="movie-carousel" id="topRatedCarousel"></div>
         </section>
 
-        <!-- Recently Added Section -->
-        <section class="content-section">
-            <h2 class="section-title">Recently Added</h2>
+        <section class="content-section" id="recentSection">
+            <h2 class="section-title"><i class="fas fa-clock"></i> Recently Added</h2>
             <div class="movie-carousel" id="recentCarousel"></div>
         </section>
 
-        <!-- Genre Sections (Dynamic) -->
         <div id="genreSections"></div>
 
-        <!-- Watch History Section -->
         <section class="content-section" id="historySection" style="display: none;">
-            <h2 class="section-title">Watch History</h2>
+            <h2 class="section-title"><i class="fas fa-history"></i> Watch History</h2>
             <div class="movie-carousel" id="historyCarousel"></div>
         </section>
 
-        <!-- Watchlist Section -->
         <section class="content-section" id="watchlistSection" style="display: none;">
-            <h2 class="section-title">My Watchlist</h2>
+            <h2 class="section-title"><i class="fas fa-bookmark"></i> My Watchlist</h2>
             <div class="movie-carousel" id="watchlistCarousel"></div>
         </section>
 
-        <!-- Favorites Section -->
         <section class="content-section" id="favoritesSection" style="display: none;">
-            <h2 class="section-title">Favorites</h2>
+            <h2 class="section-title"><i class="fas fa-heart"></i> Favorites</h2>
             <div class="movie-carousel" id="favoritesCarousel"></div>
         </section>
 
-        <!-- Release Calendar Section -->
         <section class="content-section" id="calendarSection" style="display: none;">
-            <h2 class="section-title">Upcoming Releases</h2>
+            <h2 class="section-title"><i class="fas fa-calendar"></i> Upcoming Releases</h2>
             <div class="calendar-grid" id="calendarGrid"></div>
         </section>
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
@@ -223,16 +220,15 @@
             </div>
             <div class="footer-section">
                 <h4>Quick Links</h4>
-                <a href="#home">Home</a>
-                <a href="#trending">Trending</a>
-                <a href="#top-rated">Top Rated</a>
-                <a href="#watchlist">My List</a>
+                <a href="#">Home</a>
+                <a href="#">Trending</a>
+                <a href="#">Top Rated</a>
+                <a href="#">My List</a>
             </div>
             <div class="footer-section">
                 <h4>Legal</h4>
                 <a href="#">Terms of Service</a>
                 <a href="#">Privacy Policy</a>
-                <a href="#">Content Policy</a>
             </div>
             <div class="footer-section">
                 <h4>Follow Us</h4>
@@ -245,66 +241,16 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>Movie data provided by <a href="https://www.themoviedb.org/" target="_blank" class="tmdb-credit">
-                <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDB" class="tmdb-logo"> The Movie Database (TMDB)
+            <p>Movie data by <a href="https://www.themoviedb.org/" target="_blank" class="tmdb-credit">
+                <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDB" class="tmdb-logo"> TMDB
             </a></p>
             <p>&copy; 2024 ZenShows. All rights reserved.</p>
         </div>
     </footer>
-
-    <!-- Modals -->
-    <!-- Sign In Modal -->
-    <div class="modal" id="signInModal">
-        <div class="modal-content">
-            <button class="modal-close" id="closeSignIn">
-                <i class="fas fa-times"></i>
-            </button>
-            <h2>Sign In to ZenShows</h2>
-            <form id="signInForm">
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="signInEmail" required>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="signInPassword" required>
-                </div>
-                <button type="submit" class="btn-primary">Sign In</button>
-            </form>
-            <p class="modal-footer-text">Don't have an account? <a href="#" id="showSignUp">Sign Up</a></p>
-        </div>
-    </div>
-
-    <!-- Sign Up Modal -->
-    <div class="modal" id="signUpModal">
-        <div class="modal-content">
-            <button class="modal-close" id="closeSignUp">
-                <i class="fas fa-times"></i>
-            </button>
-            <h2>Create Account</h2>
-            <form id="signUpForm">
-                <div class="form-group">
-                    <label>Name</label>
-                    <input type="text" id="signUpName" required>
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="signUpEmail" required>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="signUpPassword" required>
-                </div>
-                <button type="submit" class="btn-primary">Sign Up</button>
-            </form>
-            <p class="modal-footer-text">Already have an account? <a href="#" id="showSignIn">Sign In</a></p>
-        </div>
-    </div>
-
     <!-- Settings Modal -->
     <div class="modal" id="settingsModal">
         <div class="modal-content modal-large">
-            <button class="modal-close" id="closeSettings">
+            <button class="modal-close" data-modal="settingsModal">
                 <i class="fas fa-times"></i>
             </button>
             <h2>Settings</h2>
@@ -321,13 +267,13 @@
                     </div>
                 </div>
                 <div class="settings-section">
-                    <h3>Playback Preferences</h3>
+                    <h3>Playback</h3>
                     <div class="settings-toggle">
-                        <label>Autoplay Next Episode</label>
+                        <label>Autoplay Next</label>
                         <input type="checkbox" id="autoplayToggle" checked>
                     </div>
                     <div class="settings-toggle">
-                        <label>Skip Intro Button</label>
+                        <label>Skip Intro</label>
                         <input type="checkbox" id="skipIntroToggle" checked>
                     </div>
                     <div class="form-group">
@@ -343,141 +289,97 @@
                 <div class="settings-section">
                     <h3>Parental Controls</h3>
                     <div class="settings-toggle">
-                        <label>Enable Parental Controls</label>
-                        <input type="checkbox" id="parentalControlToggle">
+                        <label>Enable Controls</label>
+                        <input type="checkbox" id="parentalToggle">
                     </div>
-                    <div class="form-group" id="parentalPinGroup" style="display: none;">
-                        <label>Parental Control PIN</label>
+                    <div class="form-group" id="pinGroup" style="display:none;">
+                        <label>PIN</label>
                         <input type="password" id="parentalPin" maxlength="4">
                     </div>
-                    <div class="form-group">
-                        <label>Maximum Content Rating</label>
-                        <select id="maxRating">
-                            <option value="R">R - Restricted</option>
-                            <option value="PG-13">PG-13</option>
-                            <option value="PG">PG - Parental Guidance</option>
-                            <option value="G">G - General Audiences</option>
-                        </select>
-                    </div>
                 </div>
-                <div class="settings-section">
-                    <h3>Notifications</h3>
-                    <div class="settings-toggle">
-                        <label>New Releases</label>
-                        <input type="checkbox" id="newReleasesToggle" checked>
-                    </div>
-                    <div class="settings-toggle">
-                        <label>Watchlist Updates</label>
-                        <input type="checkbox" id="watchlistToggle" checked>
-                    </div>
-                </div>
-                <button class="btn-primary" id="saveSettings">Save Settings</button>
+                <button class="btn-primary full-width" id="saveSettings">Save Settings</button>
             </div>
         </div>
     </div>
 
-    <!-- Movie Details Modal -->
+    <!-- Movie Modal -->
     <div class="modal" id="movieModal">
         <div class="modal-content modal-large">
-            <button class="modal-close" id="closeMovie">
+            <button class="modal-close" data-modal="movieModal">
                 <i class="fas fa-times"></i>
             </button>
             <div class="movie-details">
-                <div class="movie-backdrop"></div>
+                <div class="movie-backdrop" id="movieBackdrop"></div>
                 <div class="movie-info">
-                    <h2 class="movie-title"></h2>
+                    <h2 id="movieTitle"></h2>
                     <div class="movie-meta">
-                        <span class="movie-rating"><i class="fas fa-star"></i> <span class="rating-value"></span></span>
-                        <span class="movie-year"></span>
-                        <span class="movie-runtime"></span>
-                        <span class="movie-lang"></span>
+                        <span><i class="fas fa-star"></i> <span id="movieRating"></span></span>
+                        <span id="movieYear"></span>
+                        <span id="movieRuntime"></span>
                     </div>
-                    <p class="movie-overview"></p>
-                    <div class="movie-genres"></div>
+                    <p id="movieOverview"></p>
+                    <div id="movieGenres" class="movie-genres"></div>
                     <div class="movie-actions">
-                        <button class="btn-primary play-btn">
-                            <i class="fas fa-play"></i> Play Now
+                        <button class="btn-primary" id="modalPlayBtn">
+                            <i class="fas fa-play"></i> Play
                         </button>
-                        <button class="btn-secondary watchlist-btn">
-                            <i class="fas fa-plus"></i> Watchlist
+                        <button class="btn-secondary" id="modalWatchlistBtn">
+                            <i class="fas fa-plus"></i> List
                         </button>
-                        <button class="btn-secondary favorite-btn">
+                        <button class="btn-secondary" id="modalFavoriteBtn">
                             <i class="fas fa-heart"></i> Favorite
                         </button>
-                        <button class="btn-secondary rate-btn">
-                            <i class="fas fa-star"></i> Rate
-                        </button>
                     </div>
-                    <div class="movie-cast-crew">
-                        <h3>Cast</h3>
-                        <div class="cast-list"></div>
-                        <h3>Crew</h3>
-                        <div class="crew-list"></div>
-                    </div>
+                    <h3>Cast</h3>
+                    <div id="castList" class="cast-list"></div>
+                    <h3>Crew</h3>
+                    <div id="crewList" class="crew-list"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Video Player Modal -->
+    <!-- Player Modal -->
     <div class="modal" id="playerModal">
         <div class="modal-content modal-fullscreen">
-            <button class="modal-close" id="closePlayer">
+            <button class="modal-close" data-modal="playerModal">
                 <i class="fas fa-times"></i>
             </button>
             <div class="player-container">
-                <div class="player-wrapper">
-                    <iframe id="playerFrame" allowfullscreen></iframe>
-                    <div class="player-controls">
-                        <div class="source-selector">
-                            <label>Source:</label>
-                            <button class="source-btn active" data-source="1">Server 1</button>
-                            <button class="source-btn" data-source="2">Server 2</button>
-                            <button class="source-btn" data-source="3">Server 3</button>
-                            <button class="source-btn" data-source="4">Server 4</button>
-                            <button class="source-btn" data-source="5">Server 5</button>
-                            <button class="source-btn" data-source="6">Server 6</button>
-                        </div>
-                        <div class="quality-selector">
-                            <label>Quality:</label>
-                            <select id="qualitySelect">
-                                <option value="auto">Auto</option>
-                                <option value="1080p">1080p</option>
-                                <option value="720p">720p</option>
-                                <option value="480p">480p</option>
-                                <option value="360p">360p</option>
-                            </select>
-                        </div>
+                <iframe id="playerFrame" allowfullscreen></iframe>
+                <div class="player-controls">
+                    <div class="source-selector">
+                        <label>Source:</label>
+                        <button class="source-btn active" data-source="0">Server 1</button>
+                        <button class="source-btn" data-source="1">Server 2</button>
+                        <button class="source-btn" data-source="2">Server 3</button>
+                        <button class="source-btn" data-source="3">Server 4</button>
+                        <button class="source-btn" data-source="4">Server 5</button>
+                        <button class="source-btn" data-source="5">Server 6</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Person Details Modal -->
+    <!-- Person Modal -->
     <div class="modal" id="personModal">
         <div class="modal-content modal-large">
-            <button class="modal-close" id="closePerson">
+            <button class="modal-close" data-modal="personModal">
                 <i class="fas fa-times"></i>
             </button>
             <div class="person-details">
-                <img class="person-image" src="" alt="">
+                <img id="personImage" src="" alt="">
                 <div class="person-info">
-                    <h2 class="person-name"></h2>
-                    <p class="person-role"></p>
-                    <div class="person-bio"></div>
+                    <h2 id="personName"></h2>
+                    <p id="personRole"></p>
+                    <div id="personBio"></div>
                     <div class="person-stats">
-                        <div class="stat">
-                            <span class="stat-label">Birthday:</span>
-                            <span class="person-birthday"></span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-label">Place of Birth:</span>
-                            <span class="person-birthplace"></span>
-                        </div>
+                        <div><strong>Birthday:</strong> <span id="personBirthday"></span></div>
+                        <div><strong>Birthplace:</strong> <span id="personBirthplace"></span></div>
                     </div>
                     <h3>Known For</h3>
-                    <div class="person-movies"></div>
+                    <div id="personMovies" class="person-movies"></div>
                 </div>
             </div>
         </div>
@@ -486,11 +388,11 @@
     <!-- Rating Modal -->
     <div class="modal" id="ratingModal">
         <div class="modal-content modal-small">
-            <button class="modal-close" id="closeRating">
+            <button class="modal-close" data-modal="ratingModal">
                 <i class="fas fa-times"></i>
             </button>
-            <h2>Rate This Movie</h2>
-            <div class="rating-stars">
+            <h2>Rate Movie</h2>
+            <div class="rating-stars" id="ratingStars">
                 <i class="fas fa-star" data-rating="1"></i>
                 <i class="fas fa-star" data-rating="2"></i>
                 <i class="fas fa-star" data-rating="3"></i>
@@ -502,35 +404,33 @@
                 <i class="fas fa-star" data-rating="9"></i>
                 <i class="fas fa-star" data-rating="10"></i>
             </div>
-            <button class="btn-primary" id="submitRating">Submit Rating</button>
+            <button class="btn-primary full-width" id="submitRating">Submit</button>
         </div>
     </div>
 
-    <!-- Loading Skeleton -->
-    <div class="skeleton-loader" id="skeletonLoader">
-        <div class="skeleton-hero"></div>
-        <div class="skeleton-section">
-            <div class="skeleton-title"></div>
-            <div class="skeleton-cards">
-                <div class="skeleton-card"></div>
-                <div class="skeleton-card"></div>
-                <div class="skeleton-card"></div>
-                <div class="skeleton-card"></div>
-                <div class="skeleton-card"></div>
-            </div>
-        </div>
-    </div>
+    <div id="notificationContainer"></div>
 
-    <!-- Firebase SDK -->
     <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion, arrayRemove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-        import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js';
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+        import { getFirestore, doc, setDoc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+        import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js';
 
-        window.firebaseModules = { initializeApp, getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion, arrayRemove, getAnalytics };
+        window.firebaseModules = {
+            initializeApp,
+            getAuth,
+            GoogleAuthProvider,
+            signInWithPopup,
+            signOut,
+            onAuthStateChanged,
+            getFirestore,
+            doc,
+            setDoc,
+            getDoc,
+            updateDoc,
+            getAnalytics
+        };
     </script>
-
     <script src="script.js"></script>
 </body>
 </html>

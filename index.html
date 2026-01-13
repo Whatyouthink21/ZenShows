@@ -3,546 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZenShows - Premium Streaming</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>ZenShows | Premium Cinematic Streaming</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-900 text-white">
-    
-    <!-- Header -->
-    <header class="fixed top-0 left-0 right-0 z-50 header-blur border-b border-gray-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <!-- Logo & Menu -->
-                <div class="flex items-center gap-6">
-                    <button id="hamburger" class="lg:hidden text-white hover:text-purple-400 transition-colors">
-                        <i class="fas fa-bars text-2xl"></i>
-                    </button>
-                    <div class="flex items-center gap-2 cursor-pointer" onclick="loadHome()">
-                        <i class="fas fa-film text-purple-500 text-3xl"></i>
-                        <span class="text-2xl font-bold gradient-text">ZenShows</span>
-                    </div>
-                    
-                    <!-- Desktop Nav -->
-                    <nav class="hidden lg:flex gap-6">
-                        <button onclick="loadSection('home')" class="nav-link active" data-section="home">
-                            <i class="fas fa-home mr-2"></i>Home
-                        </button>
-                        <button onclick="loadSection('movies')" class="nav-link" data-section="movies">
-                            <i class="fas fa-film mr-2"></i>Movies
-                        </button>
-                        <button onclick="loadSection('series')" class="nav-link" data-section="series">
-                            <i class="fas fa-tv mr-2"></i>Series
-                        </button>
-                        <button onclick="loadSection('trending')" class="nav-link" data-section="trending">
-                            <i class="fas fa-fire mr-2"></i>Trending
-                        </button>
-                        <button onclick="loadSection('new')" class="nav-link" data-section="new">
-                            <i class="fas fa-sparkles mr-2"></i>New
-                        </button>
-                        <button onclick="loadSection('top')" class="nav-link" data-section="top">
-                            <i class="fas fa-trophy mr-2"></i>Top Rated
-                        </button>
-                    </nav>
-                </div>
+<body class="dark-theme">
 
-                <!-- Right Side -->
-                <div class="flex items-center gap-3">
-                    <!-- Search Icon -->
-                    <button id="searchToggle" class="p-2 hover:bg-gray-800 rounded-lg transition-all">
-                        <i class="fas fa-search text-lg"></i>
-                    </button>
-                    
-                    <!-- Theme Toggle -->
-                    <button id="themeToggle" class="p-2 hover:bg-gray-800 rounded-lg transition-all">
-                        <i class="fas fa-moon text-lg theme-icon"></i>
-                    </button>
-                    
-                    <!-- User Menu -->
-                    <div id="userSection">
-                        <button id="signInBtn" class="btn-gradient px-4 py-2 rounded-lg font-semibold flex items-center gap-2">
-                            <i class="fas fa-user"></i>
-                            <span class="hidden sm:inline">Sign In</span>
-                        </button>
-                        
-                        <div id="userMenu" class="hidden">
-                            <div class="flex items-center gap-3">
-                                <img id="userPhoto" src="" alt="User" class="w-10 h-10 rounded-full border-2 border-purple-500">
-                                <div class="relative">
-                                    <button id="userDropdown" class="flex items-center gap-2 hover:text-purple-400 transition-colors">
-                                        <span id="userName" class="hidden sm:inline"></span>
-                                        <i class="fas fa-chevron-down"></i>
-                                    </button>
-                                    <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-xl border border-gray-700 overflow-hidden">
-                                        <button onclick="loadSection('watchlist')" class="w-full px-4 py-3 hover:bg-gray-700 text-left flex items-center gap-3">
-                                            <i class="fas fa-heart text-red-400"></i>Watchlist
-                                        </button>
-                                        <button onclick="loadSection('history')" class="w-full px-4 py-3 hover:bg-gray-700 text-left flex items-center gap-3">
-                                            <i class="fas fa-history text-blue-400"></i>History
-                                        </button>
-                                        <hr class="border-gray-700">
-                                        <button id="signOutBtn" class="w-full px-4 py-3 hover:bg-gray-700 text-left flex items-center gap-3 text-red-400">
-                                            <i class="fas fa-sign-out-alt"></i>Sign Out
-                                        </button>
-                                    </div>
-                                </div>
+    <nav class="navbar glass-effect">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="hamburger" id="hamburger">
+                    <span></span><span></span><span></span>
+                </div>
+                <h1 class="logo">ZEN<span>SHOWS</span></h1>
+            </div>
+            
+            <div class="nav-center">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search movies, series, or cast...">
+                    <button id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    <div id="searchResults" class="search-results-dropdown hidden"></div>
+                </div>
+            </div>
+
+            <div class="nav-right">
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#" class="active">Home</a></li>
+                    <li><a href="#" id="watchlistLink">Watchlist</a></li>
+                    <li><a href="#" id="historyLink">History</a></li>
+                </ul>
+
+                <div class="auth-container">
+                    <button id="loginBtn" class="btn-primary">Sign In</button>
+                    <div id="userProfile" class="profile-wrapper hidden">
+                        <img src="" id="userAvatar" class="avatar" alt="User">
+                        <div class="profile-dropdown">
+                            <div class="user-info-header">
+                                <p id="userName">User Name</p>
                             </div>
+                            <hr>
+                            <a href="#" id="openSettings"><i class="fa-solid fa-gear"></i> Settings</a>
+                            <a href="#" id="logoutBtn" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </nav>
 
-        <!-- Search Bar (Collapsible) -->
-        <div id="searchBar" class="search-bar">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                <div class="relative">
-                    <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                    <input 
-                        type="text" 
-                        id="searchInput" 
-                        placeholder="Search movies and series..." 
-                        class="w-full pl-12 pr-4 py-3 bg-gray-800 border border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
-                    >
-                </div>
+    <header class="hero" id="heroSection">
+        <div class="hero-bg" id="heroBg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <span class="trending-tag">#1 Trending Today</span>
+            <h2 id="heroTitle">Discover Masterpieces</h2>
+            <p id="heroDesc">Loading the best content for your viewing pleasure...</p>
+            <div class="hero-btns">
+                <button class="btn-play" id="heroPlayBtn">
+                    <i class="fa-solid fa-play"></i> Watch Now
+                </button>
+                <button class="btn-info" id="heroInfoBtn">
+                    <i class="fa-solid fa-circle-info"></i> More Info
+                </button>
+                <button class="btn-watchlist" id="heroWatchlistBtn">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
             </div>
         </div>
     </header>
 
-    <!-- Mobile Menu Overlay -->
-    <div id="mobileMenu" class="mobile-menu">
-        <div class="p-6">
-            <div class="flex justify-between items-center mb-6">
-                <span class="text-2xl font-bold gradient-text">Menu</span>
-                <button id="closeMenu" class="text-white hover:text-purple-400">
-                    <i class="fas fa-times text-2xl"></i>
-                </button>
+    <main class="content-wrapper">
+        
+        <section class="row">
+            <div class="row-header">
+                <h3 class="row-title">Top 10 Trending</h3>
+                <button class="btn-view-all">View All</button>
             </div>
-            <nav class="flex flex-col gap-3">
-                <button onclick="loadSection('home'); closeMobileMenu()" class="mobile-nav-link">
-                    <i class="fas fa-home mr-3"></i>Home
-                </button>
-                <button onclick="loadSection('movies'); closeMobileMenu()" class="mobile-nav-link">
-                    <i class="fas fa-film mr-3"></i>Movies
-                </button>
-                <button onclick="loadSection('series'); closeMobileMenu()" class="mobile-nav-link">
-                    <i class="fas fa-tv mr-3"></i>Series
-                </button>
-                <button onclick="loadSection('trending'); closeMobileMenu()" class="mobile-nav-link">
-                    <i class="fas fa-fire mr-3"></i>Trending
-                </button>
-                <button onclick="loadSection('new'); closeMobileMenu()" class="mobile-nav-link">
-                    <i class="fas fa-sparkles mr-3"></i>New Releases
-                </button>
-                <button onclick="loadSection('top'); closeMobileMenu()" class="mobile-nav-link">
-                    <i class="fas fa-trophy mr-3"></i>Top Rated
-                </button>
-                <hr class="border-gray-700 my-2">
-                <button onclick="loadSection('watchlist'); closeMobileMenu()" class="mobile-nav-link" id="mobileWatchlist">
-                    <i class="fas fa-heart mr-3"></i>Watchlist
-                </button>
-                <button onclick="loadSection('history'); closeMobileMenu()" class="mobile-nav-link" id="mobileHistory">
-                    <i class="fas fa-history mr-3"></i>History
-                </button>
-            </nav>
+            <div class="movie-grid" id="trendingGrid">
+                </div>
+        </section>
+
+        <section class="row">
+            <h3 class="row-title">Recommended For You</h3>
+            <div class="movie-grid" id="recommendGrid"></div>
+        </section>
+
+        <div class="randomizer-float" id="randomBtn" title="Surprise Me!">
+            <i class="fa-solid fa-shuffle"></i>
+        </div>
+
+    </main>
+
+    <div id="videoModal" class="modal player-modal">
+        <div class="modal-content glass-effect">
+            <span class="close-modal" id="closePlayer">&times;</span>
+            <div class="player-controls-top">
+                <h3 id="playingTitle">Movie Title</h3>
+                <div class="source-picker">
+                    <i class="fa-solid fa-server"></i>
+                    <select id="sourceSelect">
+                        <option value="1">Server 1 (Primary)</option>
+                        <option value="2">Server 2 (HD)</option>
+                        <option value="3">Server 3 (Fast)</option>
+                        <option value="4">Server 4 (Backup)</option>
+                        <option value="5">Server 5 (Multi)</option>
+                        <option value="6">Server 6 (Global)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="video-container">
+                <iframe id="videoIframe" src="" frameborder="0" allowfullscreen></iframe>
+            </div>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <main class="pt-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        
-        <!-- Filters Section -->
-        <div id="filtersSection" class="mb-8 space-y-4">
-            <div class="flex flex-wrap gap-4">
-                <select id="genreFilter" class="filter-select">
-                    <option value="all">All Genres</option>
-                </select>
-                
-                <select id="yearFilter" class="filter-select">
-                    <option value="all">All Years</option>
-                </select>
-                
-                <select id="ratingFilter" class="filter-select">
-                    <option value="all">All Ratings</option>
-                    <option value="9">9+ Rating</option>
-                    <option value="8">8+ Rating</option>
-                    <option value="7">7+ Rating</option>
-                    <option value="6">6+ Rating</option>
-                </select>
+    <div id="detailsModal" class="modal details-modal">
+        <div class="details-content glass-effect">
+            <span class="close-modal" id="closeDetails">&times;</span>
+            <div id="detailsBody">
+                </div>
+        </div>
+    </div>
 
-                <select id="sortFilter" class="filter-select">
-                    <option value="popularity.desc">Most Popular</option>
-                    <option value="vote_average.desc">Highest Rated</option>
-                    <option value="release_date.desc">Newest First</option>
-                    <option value="release_date.asc">Oldest First</option>
+    <div id="settingsModal" class="modal settings-modal">
+        <div class="settings-box glass-effect">
+            <span class="close-modal" id="closeSettings">&times;</span>
+            <h2><i class="fa-solid fa-sliders"></i> Preferences</h2>
+            <div class="setting-item">
+                <label>Appearance</label>
+                <select id="themeSelect">
+                    <option value="dark">Cinematic Dark</option>
+                    <option value="amoled">Amoled Black</option>
+                    <option value="light">Light Mode</option>
                 </select>
             </div>
-        </div>
-
-        <!-- Content Container -->
-        <div id="contentContainer">
-            <!-- Hero Section -->
-            <section id="heroSection" class="mb-12">
-                <div class="hero-container">
-                    <div class="hero-slide active" id="heroSlide">
-                        <!-- Hero content will be loaded dynamically -->
-                    </div>
-                    <div class="hero-controls">
-                        <button class="hero-nav-btn" id="prevHero"><i class="fas fa-chevron-left"></i></button>
-                        <button class="hero-nav-btn" id="nextHero"><i class="fas fa-chevron-right"></i></button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Trending Section -->
-            <section class="mb-12">
-                <div class="section-header">
-                    <div class="flex items-center gap-3">
-                        <i class="fas fa-fire text-2xl text-orange-500"></i>
-                        <h2 class="text-2xl font-bold">Trending Now</h2>
-                    </div>
-                </div>
-                <div id="trendingContent" class="content-row">
-                    <!-- Content will be loaded here -->
-                </div>
-            </section>
-
-            <!-- New Releases Section -->
-            <section class="mb-12">
-                <div class="section-header">
-                    <div class="flex items-center gap-3">
-                        <i class="fas fa-sparkles text-2xl text-yellow-500"></i>
-                        <h2 class="text-2xl font-bold">New Releases</h2>
-                    </div>
-                </div>
-                <div id="newReleasesContent" class="content-row">
-                    <!-- Content will be loaded here -->
-                </div>
-            </section>
-
-            <!-- Top Rated Section -->
-            <section class="mb-12">
-                <div class="section-header">
-                    <div class="flex items-center gap-3">
-                        <i class="fas fa-trophy text-2xl text-purple-500"></i>
-                        <h2 class="text-2xl font-bold">Top Rated</h2>
-                    </div>
-                </div>
-                <div id="topRatedContent" class="content-row">
-                    <!-- Content will be loaded here -->
-                </div>
-            </section>
-
-            <!-- Movies Section -->
-            <section class="mb-12" id="moviesSection">
-                <div class="section-header">
-                    <div class="flex items-center gap-3">
-                        <i class="fas fa-film text-2xl text-blue-500"></i>
-                        <h2 class="text-2xl font-bold">Popular Movies</h2>
-                    </div>
-                </div>
-                <div id="moviesContent" class="content-grid">
-                    <!-- Content will be loaded here -->
-                </div>
-            </section>
-
-            <!-- Series Section -->
-            <section class="mb-12" id="seriesSection">
-                <div class="section-header">
-                    <div class="flex items-center gap-3">
-                        <i class="fas fa-tv text-2xl text-green-500"></i>
-                        <h2 class="text-2xl font-bold">Popular Series</h2>
-                    </div>
-                </div>
-                <div id="seriesContent" class="content-grid">
-                    <!-- Content will be loaded here -->
-                </div>
-            </section>
-        </div>
-
-        <!-- Info Popup (Hover) -->
-        <div id="infoPopup" class="info-popup">
-            <div class="info-popup-content">
-                <img id="popupImage" src="" alt="" class="popup-image">
-                <div class="popup-details">
-                    <h3 id="popupTitle" class="text-xl font-bold mb-2"></h3>
-                    <div class="flex items-center gap-4 mb-3 text-sm">
-                        <span id="popupRating" class="flex items-center gap-1">
-                            <i class="fas fa-star text-yellow-400"></i>
-                        </span>
-                        <span id="popupYear"></span>
-                        <span id="popupRuntime"></span>
-                    </div>
-                    <p id="popupOverview" class="text-sm text-gray-300 mb-3 line-clamp-3"></p>
-                    <div class="flex gap-2">
-                        <button class="popup-btn-play">
-                            <i class="fas fa-play mr-2"></i>Play
-                        </button>
-                        <button class="popup-btn-info">
-                            <i class="fas fa-info-circle mr-2"></i>More Info
-                        </button>
-                        <button class="popup-btn-watchlist">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </div>
-                </div>
+            <div class="setting-item">
+                <label>Default Server</label>
+                <select id="defaultServer">
+                    <option value="1">Server 1</option>
+                    <option value="2">Server 2</option>
+                </select>
             </div>
+            <button class="btn-primary" id="saveSettings">Apply Changes</button>
         </div>
-    </main>
+    </div>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 border-t border-gray-800 py-8 mt-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center">
-                <div class="flex items-center justify-center gap-2 mb-4">
-                    <i class="fas fa-film text-purple-500 text-3xl"></i>
-                    <span class="text-2xl font-bold gradient-text">ZenShows</span>
-                </div>
-                <p class="text-gray-400 mb-4">Your premium streaming destination</p>
-                <div class="flex justify-center gap-6 mb-4">
-                    <a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">About</a>
-                    <a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Contact</a>
-                    <a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Privacy</a>
-                    <a href="#" class="text-gray-400 hover:text-purple-400 transition-colors">Terms</a>
-                </div>
-                <p class="text-sm text-gray-500">&copy; 2025 ZenShows. All rights reserved.</p>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="tmdb-credit">
+                <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_square_2-d537610141174ef5d777613ba7b39137ac59e519d45e405f63f119c583e623bc.svg" alt="TMDB Logo">
+                <p>This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
+            </div>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">DMCA</a>
+                <a href="#">Contact</a>
             </div>
         </div>
     </footer>
 
-    <!-- Loading Spinner -->
-    <div id="loadingSpinner" class="loading-spinner">
-        <div class="spinner"></div>
-    </div>
-
-    <!-- Movie Details Modal -->
-    <div id="movieModal" class="modal">
-        <div class="modal-content">
-            <button class="modal-close" id="closeMovieModal">
-                <i class="fas fa-times"></i>
-            </button>
-            
-            <div class="modal-backdrop">
-                <img id="modalBackdrop" src="" alt="" class="modal-backdrop-img">
-                <div class="modal-backdrop-overlay"></div>
-            </div>
-
-            <div class="modal-body">
-                <div class="flex flex-col lg:flex-row gap-8">
-                    <!-- Poster -->
-                    <div class="flex-shrink-0">
-                        <img id="modalPoster" src="" alt="" class="modal-poster">
-                    </div>
-
-                    <!-- Details -->
-                    <div class="flex-1">
-                        <h1 id="modalTitle" class="text-4xl font-bold mb-4"></h1>
-                        
-                        <div class="flex flex-wrap items-center gap-4 mb-4 text-lg">
-                            <span id="modalRating" class="flex items-center gap-2">
-                                <i class="fas fa-star text-yellow-400"></i>
-                            </span>
-                            <span id="modalYear" class="text-gray-300"></span>
-                            <span id="modalRuntime" class="text-gray-300"></span>
-                            <span id="modalStatus" class="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-sm"></span>
-                        </div>
-
-                        <div class="flex flex-wrap gap-3 mb-6">
-                            <button id="modalPlayBtn" class="btn-play-large">
-                                <i class="fas fa-play mr-2"></i>
-                                Play Now
-                            </button>
-                            <button id="modalWatchlistBtn" class="btn-watchlist-large">
-                                <i class="fas fa-plus mr-2"></i>
-                                Add to Watchlist
-                            </button>
-                        </div>
-
-                        <div class="mb-6">
-                            <h3 class="text-xl font-semibold mb-2">Overview</h3>
-                            <p id="modalOverview" class="text-gray-300 leading-relaxed"></p>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                            <div>
-                                <h3 class="text-lg font-semibold mb-2">Genres</h3>
-                                <div id="modalGenres" class="flex flex-wrap gap-2"></div>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-semibold mb-2">Content Rating</h3>
-                                <p id="modalContentRating" class="text-gray-300"></p>
-                            </div>
-                        </div>
-
-                        <div class="mb-6">
-                            <h3 class="text-lg font-semibold mb-3">External Ratings</h3>
-                            <div class="flex flex-wrap gap-4">
-                                <div class="rating-badge">
-                                    <i class="fas fa-star text-yellow-400 mr-2"></i>
-                                    <span>TMDB: <span id="modalTMDBRating" class="font-bold"></span></span>
-                                </div>
-                                <div class="rating-badge">
-                                    <i class="fas fa-film text-red-400 mr-2"></i>
-                                    <span>IMDb: <span id="modalIMDBRating" class="font-bold"></span></span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Cast Section -->
-                        <div class="mb-6">
-                            <h3 class="text-lg font-semibold mb-3">Cast</h3>
-                            <div id="modalCast" class="cast-grid">
-                                <!-- Cast will be loaded here -->
-                            </div>
-                        </div>
-
-                        <!-- Similar Content -->
-                        <div>
-                            <h3 class="text-lg font-semibold mb-3">Similar Content</h3>
-                            <div id="modalSimilar" class="similar-grid">
-                                <!-- Similar content will be loaded here -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Video Player Modal -->
-    <div id="playerModal" class="modal player-modal">
-        <div class="player-modal-content">
-            <button class="modal-close player-close" id="closePlayerModal">
-                <i class="fas fa-times"></i>
-            </button>
-
-            <div class="player-container">
-                <div class="player-header">
-                    <h2 id="playerTitle" class="text-2xl font-bold"></h2>
-                    <div class="flex items-center gap-4">
-                        <span class="text-sm text-gray-400">Resume: <span id="resumeTime">00:00</span></span>
-                    </div>
-                </div>
-
-                <!-- Video Player -->
-                <div class="video-wrapper">
-                    <iframe 
-                        id="videoPlayer" 
-                        src="" 
-                        frameborder="0" 
-                        allowfullscreen 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    ></iframe>
-                    <div id="playerError" class="player-error hidden">
-                        <i class="fas fa-exclamation-triangle text-4xl mb-4"></i>
-                        <p class="text-xl mb-2">Unable to load video</p>
-                        <p class="text-gray-400 mb-4">Please try a different source</p>
-                    </div>
-                </div>
-
-                <!-- Source Selector -->
-                <div class="source-selector">
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="text-sm font-semibold text-gray-400">SELECT SOURCE</span>
-                        <span class="text-xs text-gray-500">Auto-fallback enabled</span>
-                    </div>
-                    <div class="source-buttons">
-                        <button class="source-btn active" data-source="0">
-                            <i class="fas fa-server mr-2"></i>Source 1
-                        </button>
-                        <button class="source-btn" data-source="1">
-                            <i class="fas fa-server mr-2"></i>Source 2
-                        </button>
-                        <button class="source-btn" data-source="2">
-                            <i class="fas fa-server mr-2"></i>Source 3
-                        </button>
-                        <button class="source-btn" data-source="3">
-                            <i class="fas fa-server mr-2"></i>Source 4
-                        </button>
-                        <button class="source-btn" data-source="4">
-                            <i class="fas fa-server mr-2"></i>Source 5
-                        </button>
-                        <button class="source-btn" data-source="5">
-                            <i class="fas fa-server mr-2"></i>Source 6
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Player Controls Info -->
-                <div class="player-info">
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                        <div class="info-item">
-                            <i class="fas fa-play-circle text-purple-400 mr-2"></i>
-                            <span>Space: Play/Pause</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-arrows-alt text-purple-400 mr-2"></i>
-                            <span>F: Fullscreen</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-volume-up text-purple-400 mr-2"></i>
-                            <span>M: Mute</span>
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-closed-captioning text-purple-400 mr-2"></i>
-                            <span>C: Subtitles</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Actor/Director Modal -->
-    <div id="personModal" class="modal">
-        <div class="modal-content">
-            <button class="modal-close" id="closePersonModal">
-                <i class="fas fa-times"></i>
-            </button>
-
-            <div class="modal-body">
-                <div class="flex flex-col md:flex-row gap-8">
-                    <div class="flex-shrink-0 text-center">
-                        <img id="personPhoto" src="" alt="" class="person-photo">
-                        <h2 id="personName" class="text-2xl font-bold mt-4"></h2>
-                        <p id="personRole" class="text-purple-400 mt-1"></p>
-                    </div>
-
-                    <div class="flex-1">
-                        <div class="mb-6">
-                            <h3 class="text-xl font-semibold mb-3">Biography</h3>
-                            <p id="personBio" class="text-gray-300 leading-relaxed"></p>
-                        </div>
-
-                        <div class="mb-6">
-                            <h3 class="text-xl font-semibold mb-2">Known For</h3>
-                            <p id="personKnownFor" class="text-gray-400"></p>
-                        </div>
-
-                        <div>
-                            <h3 class="text-xl font-semibold mb-3">Filmography</h3>
-                            <div id="personFilmography" class="similar-grid">
-                                <!-- Filmography will be loaded here -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="toast">
-        <i id="toastIcon" class="fas fa-check-circle mr-3"></i>
-        <span id="toastMessage"></span>
-    </div>
-
-    <!-- Firebase Scripts -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-    
-    <!-- Main Script -->
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>

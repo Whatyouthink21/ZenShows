@@ -1,159 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZenShows – Watch Movies & TV Shows</title>
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-  <!-- Icons -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
-  <!-- Main CSS -->
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZenShows - Free Movie Streaming</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore.js"></script> <!-- For history/watchlist if needed beyond storage -->
 </head>
 <body>
-
-  <!-- ================= NAVBAR ================= -->
-  <nav class="navbar">
-    <div class="nav-left">
-      <h1 class="logo">Zen<span>Shows</span></h1>
-    </div>
-
-    <div class="nav-center">
-      <div class="search-box">
-        <i class="fas fa-search"></i>
-        <input type="text" id="searchInput" placeholder="Search movies & TV shows..." />
-      </div>
-    </div>
-
-    <div class="nav-right">
-      <button id="watchlistBtn"><i class="fas fa-heart"></i></button>
-      <button id="profileBtn"><i class="fas fa-user"></i></button>
-    </div>
-  </nav>
-
-  <!-- ================= HERO SECTION ================= -->
-  <section class="hero" id="hero">
-    <div class="hero-overlay"></div>
-
-    <div class="hero-content">
-      <h2 id="heroTitle">Loading...</h2>
-
-      <div class="hero-meta">
-        <span id="heroRating">⭐ 0.0</span>
-        <span id="heroYear">2025</span>
-        <span id="heroGenres">Action, Drama</span>
-      </div>
-
-      <p id="heroOverview">
-        Fetching overview...
-      </p>
-
-      <div class="hero-buttons">
-        <button class="play-btn">
-          <i class="fas fa-play"></i> Play
-        </button>
-        <button class="add-btn">
-          <i class="fas fa-plus"></i> Watchlist
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================= TRENDING ================= -->
-  <section class="section">
-    <h3 class="section-title">🔥 Trending Now</h3>
-    <div class="row" id="trendingRow"></div>
-  </section>
-
-  <!-- ================= GENRE FILTER ================= -->
-  <section class="filter-section">
-    <select id="genreDropdown">
-      <option value="">Select Genre</option>
-    </select>
-  </section>
-
-  <!-- ================= COLLECTIONS ================= -->
-  <section class="section">
-    <h3 class="section-title">🎬 Collections</h3>
-    <div id="collections"></div>
-  </section>
-
-  <!-- ================= SEARCH RESULTS ================= -->
-  <section class="section hidden" id="searchSection">
-    <h3 class="section-title">🔍 Search Results</h3>
-    <div class="row" id="searchResults"></div>
-  </section>
-
-  <!-- ================= DETAILS MODAL ================= -->
-  <div class="modal hidden" id="detailsModal">
-    <div class="modal-content">
-
-      <span class="close-btn" id="closeModal">&times;</span>
-
-      <div class="modal-header">
-        <img id="detailPoster" />
-        <div class="modal-info">
-          <h2 id="detailTitle"></h2>
-          <p id="detailMeta"></p>
-          <p id="detailOverview"></p>
-
-          <div class="modal-actions">
-            <button id="playMain">▶ Play</button>
-            <button id="addWatchlist">❤️ Watchlist</button>
-          </div>
+    <header>
+        <div class="hamburger" onclick="toggleMenu()">☰</div>
+        <nav id="nav-menu" class="menu-hidden">
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#genres">Genres</a></li>
+                <li><a href="#trending">Trending</a></li>
+                <li><a href="#new">New Releases</a></li>
+                <li><a href="#settings">Settings</a></li>
+                <li id="auth-link"><a href="#" onclick="showLogin()">Login/Register</a></li>
+                <li id="logout-link" style="display:none;"><a href="#" onclick="logout()">Logout</a></li>
+            </ul>
+        </nav>
+        <div class="search-container">
+            <input type="text" id="search-input" placeholder="Search movies or TV shows..." oninput="searchContent()">
+            <div id="search-results" class="search-dropdown"></div>
         </div>
-      </div>
-
-      <!-- Cast -->
-      <h4>Cast</h4>
-      <div class="row small" id="castRow"></div>
-
-      <!-- Crew / Director -->
-      <h4>Crew</h4>
-      <div class="row small" id="crewRow"></div>
-
-      <!-- Seasons & Episodes -->
-      <div class="tv-controls hidden" id="tvControls">
-        <select id="seasonDropdown"></select>
-        <select id="episodeDropdown"></select>
-      </div>
-
-      <!-- Similar -->
-      <h4>Similar Titles</h4>
-      <div class="row" id="similarRow"></div>
-
-    </div>
-  </div>
-
-  <!-- ================= PLAYER ================= -->
-  <section class="player-section hidden" id="playerSection">
-    <div class="player">
-      <iframe id="videoPlayer" allowfullscreen></iframe>
-    </div>
-
-    <div class="sources">
-      <button data-source="1">Source 1</button>
-      <button data-source="2">Source 2</button>
-      <button data-source="3">Source 3</button>
-      <button data-source="4">Source 4</button>
-      <button data-source="5">Source 5</button>
-      <button data-source="6">Source 6</button>
-    </div>
-  </section>
-
-  <!-- ================= FOOTER ================= -->
-  <footer>
-    <p>
-      This product uses the TMDB API but is not endorsed or certified by TMDB.
-    </p>
-    <img src="https://www.themoviedb.org/assets/2/v4/logos/stacked-blue-1c5b0f2db45c5dbd94ed8c5a8a7f8a2d6e4c3c8e5b1c9d6e1e0c9c3a9b5b2.svg" alt="TMDB Logo">
-  </footer>
-
-  <!-- ================= SCRIPTS ================= -->
-  <script src="script.js"></script>
-</body>
-</html>
+    </header>
+    <main>
+        <section id="home">
+            <h1>Welcome to ZenShows</h1>
+            <div id="continue-watching" class="carousel"></div>
+            <div id="recommendations" class="carousel"></div>
+        </section>
+        <section id="genres">
+            <h2>Genres</h2>
+            <div class="genre-carousels">
+                <!-- Dynamically populate carousels for genres like Action, Comedy etc. -->
+            </div>
+        </section>
+        <section id="trending">
+            <h2>Trending</h2>
+            <div class="trending-carousel"></div>
+        </section>

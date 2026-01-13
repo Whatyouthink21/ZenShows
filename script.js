@@ -493,13 +493,7 @@ const loadContent = async () => {
     // Init Firebase wait
     await initFirebase();
 
-    // Remove Preloader
-    setTimeout(() => {
-        document.getElementById('preloader').style.opacity = '0';
-        setTimeout(() => document.getElementById('preloader').remove(), 500);
-    }, 1000);
-
-    // Render Sections
+    // Render Sections (No Preloader delay)
     renderHero();
     loadGenres();
     fetchUserData();

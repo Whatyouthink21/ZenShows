@@ -3,30 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZenShows | Premium Free Streaming</title>
-    <meta name="description" content="Watch movies and TV shows for free in high quality.">
+    <title>ZenShows | Premium Streaming</title>
+    <meta name="description" content="Watch movies and TV shows for free.">
     
     <!-- FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- ICONS (FontAwesome) -->
+    <!-- ICONS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- SWIPER CSS (For Sliders) -->
+    <!-- SWIPER CSS (Sliders) -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
     
-    <!-- MAIN CSS -->
+    <!-- STYLES -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <!-- PRELOADER -->
-    <div id="preloader">
-        <div class="loader-circle"></div>
-        <h2>ZenShows</h2>
-    </div>
 
     <!-- NAVBAR -->
     <nav class="navbar" id="navbar">
@@ -43,7 +37,7 @@
             <div class="nav-actions">
                 <!-- SEARCH UI -->
                 <div class="search-wrapper">
-                    <input type="text" id="search-input" placeholder="Search Movies & TV Shows...">
+                    <input type="text" id="search-input" placeholder="Search Movies & TV...">
                     <button class="search-btn"><i class="fas fa-search"></i></button>
                     <div id="search-results" class="search-dropdown"></div>
                 </div>
@@ -51,7 +45,7 @@
                 <!-- THEME TOGGLE -->
                 <button class="icon-btn" id="theme-toggle"><i class="fas fa-moon"></i></button>
 
-                <!-- MOBILE MENU TOGGLE -->
+                <!-- MOBILE MENU -->
                 <button class="icon-btn mobile-toggle"><i class="fas fa-bars"></i></button>
             </div>
         </div>
@@ -84,7 +78,6 @@
                     <option value="popularity.desc">Popularity</option>
                     <option value="vote_average.desc">Top Rated</option>
                     <option value="release_date.desc">Newest</option>
-                    <option value="primary_release_date.asc">Oldest</option>
                 </select>
                 <select id="type-filter">
                     <option value="all">All Types</option>
@@ -95,27 +88,23 @@
             <button class="btn-primary random-btn"><i class="fas fa-random"></i> Lucky Pick</button>
         </div>
 
-        <!-- WATCH HISTORY (Firebase) -->
+        <!-- WATCH HISTORY -->
         <section class="content-section" id="history-section" style="display: none;">
             <h2 class="section-title">Continue Watching</h2>
             <div class="slider-container">
                 <div class="swiper historySwiper">
-                    <div class="swiper-wrapper" id="history-wrapper">
-                        <!-- Populated by Firebase -->
-                    </div>
+                    <div class="swiper-wrapper" id="history-wrapper"></div>
                     <div class="swiper-scrollbar"></div>
                 </div>
             </div>
         </section>
 
-        <!-- MY WATCHLIST (Firebase) -->
+        <!-- MY WATCHLIST -->
         <section class="content-section" id="watchlist-section" style="display: none;">
             <h2 class="section-title">My Watchlist</h2>
             <div class="slider-container">
                 <div class="swiper watchlistSwiper">
-                    <div class="swiper-wrapper" id="watchlist-wrapper">
-                        <!-- Populated by Firebase -->
-                    </div>
+                    <div class="swiper-wrapper" id="watchlist-wrapper"></div>
                     <div class="swiper-scrollbar"></div>
                 </div>
             </div>
@@ -218,13 +207,12 @@
                     <div class="control-group">
                         <label>Server:</label>
                         <select id="server-select">
-                            <!-- Options: Vidsrc, Vidsrc.to, etc. -->
                             <option value="vidsrc">Server 1 (VidSrc)</option>
-                            <option value="vidsrcme">Server 2 (VidSrc.me)</option>
-                            <option value="vidsrcxyz">Server 3 (VidSrc.xyz)</option>
-                            <option value="autoembed">Server 4 (AutoEmbed)</option>
-                            <option value="2embed">Server 5 (2Embed)</option>
-                            <option value="superembed">Server 6 (SuperEmbed)</option>
+                            <option value="vidsrcTo">Server 2 (VidSrc.to)</option>
+                            <option value="vidsrcMe">Server 3 (VidSrc.me)</option>
+                            <option value="autoEmbed">Server 4 (AutoEmbed)</option>
+                            <option value="twoEmbed">Server 5 (2Embed)</option>
+                            <option value="superEmbed">Server 6 (SuperEmbed)</option>
                         </select>
                     </div>
 
@@ -255,7 +243,7 @@
         // Import Firebase
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js";
-        import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
         // Firebase Configuration
         const firebaseConfig = {
@@ -275,7 +263,7 @@
 
         // Expose to window for global script access
         window.db = db;
-        window.firebaseFuncs = { doc, setDoc, getDoc, updateDoc, arrayUnion, collection, getDocs, query, where };
+        window.firebaseFuncs = { doc, setDoc, getDoc, updateDoc, arrayUnion, collection, getDocs };
         
         // Load Main App Script
         const script = document.createElement('script');

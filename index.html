@@ -3,168 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZenShows | Premium Cinematic Streaming</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>ZenShows | Clean UI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="dark-theme">
+<body>
 
-    <nav class="navbar glass-effect">
-        <div class="nav-container">
-            <div class="nav-left">
-                <div class="hamburger" id="hamburger">
-                    <span></span><span></span><span></span>
-                </div>
-                <h1 class="logo">ZEN<span>SHOWS</span></h1>
+    <nav class="navbar">
+        <div class="logo">ZEN<span>SHOWS</span></div>
+        <div class="nav-right">
+            <div id="loginSection">
+                <button id="loginBtn" class="btn-auth">Sign In</button>
             </div>
-            
-            <div class="nav-center">
-                <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="Search movies, series, or cast...">
-                    <button id="searchBtn"><i class="fa-solid fa-magnifying-glass"></i></button>
-                    <div id="searchResults" class="search-results-dropdown hidden"></div>
-                </div>
-            </div>
-
-            <div class="nav-right">
-                <ul class="nav-links" id="navLinks">
-                    <li><a href="#" class="active">Home</a></li>
-                    <li><a href="#" id="watchlistLink">Watchlist</a></li>
-                    <li><a href="#" id="historyLink">History</a></li>
-                </ul>
-
-                <div class="auth-container">
-                    <button id="loginBtn" class="btn-primary">Sign In</button>
-                    <div id="userProfile" class="profile-wrapper hidden">
-                        <img src="" id="userAvatar" class="avatar" alt="User">
-                        <div class="profile-dropdown">
-                            <div class="user-info-header">
-                                <p id="userName">User Name</p>
-                            </div>
-                            <hr>
-                            <a href="#" id="openSettings"><i class="fa-solid fa-gear"></i> Settings</a>
-                            <a href="#" id="logoutBtn" class="logout-link"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a>
-                        </div>
-                    </div>
-                </div>
+            <div id="hamburger" class="hamburger">
+                <i class="fa-solid fa-bars"></i>
             </div>
         </div>
     </nav>
 
-    <header class="hero" id="heroSection">
-        <div class="hero-bg" id="heroBg"></div>
+    <div id="sideMenu" class="side-menu">
+        <div class="menu-header">
+            <img id="userImg" src="https://via.placeholder.com/60" class="user-pfp hidden">
+            <span id="userName" class="user-name hidden">Guest</span>
+            <i id="closeMenu" class="fa-solid fa-xmark"></i>
+        </div>
+        
+        <div class="menu-search">
+            <input type="text" id="searchInput" placeholder="Search movies...">
+            <div id="searchResults" class="search-dropdown hidden"></div>
+        </div>
+
+        <ul class="menu-links">
+            <li><a href="#" class="active"><i class="fa-solid fa-house"></i> Home</a></li>
+            <li><a href="#"><i class="fa-solid fa-bookmark"></i> Watchlist</a></li>
+            <li><a href="#" id="openSettings"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            <li class="logout-item hidden" id="logoutBtn"><a href="#"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a></li>
+        </ul>
+    </div>
+
+    <header class="hero" id="hero">
         <div class="hero-overlay"></div>
-        <div class="hero-content">
-            <span class="trending-tag">#1 Trending Today</span>
-            <h2 id="heroTitle">Discover Masterpieces</h2>
-            <p id="heroDesc">Loading the best content for your viewing pleasure...</p>
-            <div class="hero-btns">
-                <button class="btn-play" id="heroPlayBtn">
-                    <i class="fa-solid fa-play"></i> Watch Now
-                </button>
-                <button class="btn-info" id="heroInfoBtn">
-                    <i class="fa-solid fa-circle-info"></i> More Info
-                </button>
-                <button class="btn-watchlist" id="heroWatchlistBtn">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
-            </div>
+        <div class="hero-text">
+            <h1 id="heroTitle">Loading...</h1>
+            <p id="heroDesc"></p>
+            <button class="btn-main" id="heroPlay"><i class="fa-solid fa-play"></i> Play Now</button>
         </div>
     </header>
 
-    <main class="content-wrapper">
-        
-        <section class="row">
-            <div class="row-header">
-                <h3 class="row-title">Top 10 Trending</h3>
-                <button class="btn-view-all">View All</button>
+    <div class="content">
+        <h2 class="row-title">Trending Today</h2>
+        <div id="trendingRow" class="scroll-row">
             </div>
-            <div class="movie-grid" id="trendingGrid">
-                </div>
-        </section>
-
-        <section class="row">
-            <h3 class="row-title">Recommended For You</h3>
-            <div class="movie-grid" id="recommendGrid"></div>
-        </section>
-
-        <div class="randomizer-float" id="randomBtn" title="Surprise Me!">
-            <i class="fa-solid fa-shuffle"></i>
-        </div>
-
-    </main>
-
-    <div id="videoModal" class="modal player-modal">
-        <div class="modal-content glass-effect">
-            <span class="close-modal" id="closePlayer">&times;</span>
-            <div class="player-controls-top">
-                <h3 id="playingTitle">Movie Title</h3>
-                <div class="source-picker">
-                    <i class="fa-solid fa-server"></i>
-                    <select id="sourceSelect">
-                        <option value="1">Server 1 (Primary)</option>
-                        <option value="2">Server 2 (HD)</option>
-                        <option value="3">Server 3 (Fast)</option>
-                        <option value="4">Server 4 (Backup)</option>
-                        <option value="5">Server 5 (Multi)</option>
-                        <option value="6">Server 6 (Global)</option>
-                    </select>
-                </div>
-            </div>
-            <div class="video-container">
-                <iframe id="videoIframe" src="" frameborder="0" allowfullscreen></iframe>
-            </div>
-        </div>
     </div>
 
-    <div id="detailsModal" class="modal details-modal">
-        <div class="details-content glass-effect">
-            <span class="close-modal" id="closeDetails">&times;</span>
-            <div id="detailsBody">
-                </div>
-        </div>
-    </div>
-
-    <div id="settingsModal" class="modal settings-modal">
-        <div class="settings-box glass-effect">
-            <span class="close-modal" id="closeSettings">&times;</span>
-            <h2><i class="fa-solid fa-sliders"></i> Preferences</h2>
-            <div class="setting-item">
-                <label>Appearance</label>
-                <select id="themeSelect">
-                    <option value="dark">Cinematic Dark</option>
-                    <option value="amoled">Amoled Black</option>
-                    <option value="light">Light Mode</option>
+    <div id="playerModal" class="modal">
+        <div class="modal-box">
+            <div class="modal-nav">
+                <select id="sourceSelect">
+                    <option value="0">Server 1</option>
+                    <option value="1">Server 2</option>
+                    <option value="2">Server 3</option>
+                    <option value="3">Server 4</option>
+                    <option value="4">Server 5</option>
+                    <option value="5">Server 6</option>
                 </select>
+                <i class="fa-solid fa-xmark" id="closePlayer"></i>
             </div>
-            <div class="setting-item">
-                <label>Default Server</label>
-                <select id="defaultServer">
-                    <option value="1">Server 1</option>
-                    <option value="2">Server 2</option>
-                </select>
-            </div>
-            <button class="btn-primary" id="saveSettings">Apply Changes</button>
+            <iframe id="mainFrame" src="" allowfullscreen></iframe>
         </div>
     </div>
 
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="tmdb-credit">
-                <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_square_2-d537610141174ef5d777613ba7b39137ac59e519d45e405f63f119c583e623bc.svg" alt="TMDB Logo">
-                <p>This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
-            </div>
-            <div class="footer-links">
-                <a href="#">Privacy Policy</a>
-                <a href="#">DMCA</a>
-                <a href="#">Contact</a>
-            </div>
-        </div>
-    </footer>
-
-    <script type="module" src="script.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

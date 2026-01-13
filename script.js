@@ -1,16 +1,4 @@
-/***********************
-  🔑 CONFIG
-************************/
-const TMDB_KEY = "a45420333457411e78d5ad35d6c51a2d";
-const TMDB_BASE = "https://api.themoviedb.org/3";
-const IMG = "https://image.tmdb.org/t/p/original";
-
-/***********************
-  🔥 FIREBASE INIT
-************************/
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
+// Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyCRwom-ZDQy_4AWX-8TknWzii_GVxw33hk",
   authDomain: "zenshows-c4255.firebaseapp.com",
@@ -18,259 +6,222 @@ const firebaseConfig = {
   storageBucket: "zenshows-c4255.firebasestorage.app",
   messagingSenderId: "824547918366",
   appId: "1:824547918366:web:5b1ae5de7b083a2f77640f",
+  measurementId: "G-268SWMN17W"
 };
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const storage = firebase.storage();
+const db = firebase.firestore(); // For history if JSON in storage isn't enough
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const USER_ID = "guest_user"; // anonymous for now, chill
+const TMDB_API_KEY = 'a45420333457411e78d5ad35d6c51a2d';
+const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+const SOURCES = [
+    'https://example-vidscr.com/embed/', // Example source 1 (replace with real)
+    'https://embed1.example.com/', 
+    'https://embed2.example.com/', 
+    'https://embed3.example.com/', 
+    'https://embed4.example.com/', 
+    'https://embed5.example.com/'  // 6 sources for fallback
+];
+let currentSourceIndex = 0;
+let userId = null;
+let darkMode = false;
+let watchlist = [];
+let history = [];
 
-/***********************
-  🧠 STATE
-************************/
-let currentItem = null;
-let currentType = "movie";
-
-/***********************
-  🌐 HELPERS
-************************/
-async function fetchTMDB(url) {
-  const res = await fetch(url);
-  return res.json();
-}
-
-function createCard(item, type) {
-  const div = document.createElement("div");
-  div.className = "card";
-  div.innerHTML = `
-    <img src="${IMG + item.poster_path}" />
-  `;
-  div.onclick = () => openDetails(item.id, type);
-  return div;
-}
-
-/***********************
-  🎬 HERO
-************************/
-async function loadHero() {
-  const data = await fetchTMDB(`${TMDB_BASE}/trending/all/day?api_key=${TMDB_KEY}`);
-  const item = data.results[0];
-
-  document.getElementById("hero").style.backgroundImage =
-    `url(${IMG + item.backdrop_path})`;
-
-  document.getElementById("heroTitle").textContent =
-    item.title || item.name;
-
-  document.getElementById("heroRating").textContent =
-    "⭐ " + item.vote_average.toFixed(1);
-
-  document.getElementById("heroYear").textContent =
-    (item.release_date || item.first_air_date || "").slice(0, 4);
-
-  document.getElementById("heroOverview").textContent = item.overview;
-}
-
-/***********************
-  🔥 TRENDING
-************************/
-async function loadTrending() {
-  const row = document.getElementById("trendingRow");
-  row.innerHTML = "";
-
-  const data = await fetchTMDB(`${TMDB_BASE}/trending/all/week?api_key=${TMDB_KEY}`);
-
-  data.results.forEach(item => {
-    if (!item.poster_path) return;
-    row.appendChild(createCard(item, item.media_type));
-  });
-}
-
-/***********************
-  🔍 SEARCH
-************************/
-const searchInput = document.getElementById("searchInput");
-
-searchInput.addEventListener("input", async () => {
-  const q = searchInput.value.trim();
-  if (!q) return;
-
-  const section = document.getElementById("searchSection");
-  const row = document.getElementById("searchResults");
-
-  section.classList.remove("hidden");
-  row.innerHTML = "";
-
-  const data = await fetchTMDB(
-    `${TMDB_BASE}/search/multi?api_key=${TMDB_KEY}&query=${q}`
-  );
-
-  data.results.forEach(item => {
-    if (!item.poster_path || item.media_type === "person") return;
-    row.appendChild(createCard(item, item.media_type));
-  });
+// Auth Listeners
+auth.onAuthStateChanged(user => {
+    userId = user ? user.uid : null;
+    document.getElementById('auth-link').style.display = user ? 'none' : 'block';
+    document.getElementById('logout-link').style.display = user ? 'block' : 'none';
+    if (user) loadUserData();
 });
 
-/***********************
-  📖 DETAILS MODAL
-************************/
-async function openDetails(id, type) {
-  currentType = type;
-  currentItem = id;
+// Login/Register Functions
+function showLogin() { document.getElementById('login-modal').style.display = 'block'; }
+function register() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    auth.createUserWithEmailAndPassword(email, password).catch(err => console.error(err));
+}
+function login() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    auth.signInWithEmailAndPassword(email, password).catch(err => console.error(err));
+}
+function googleLogin() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider).catch(err => console.error(err));
+}
+function logout() { auth.signOut(); }
 
-  const modal = document.getElementById("detailsModal");
-  modal.classList.remove("hidden");
-
-  const data = await fetchTMDB(
-    `${TMDB_BASE}/${type}/${id}?api_key=${TMDB_KEY}`
-  );
-
-  document.getElementById("detailPoster").src =
-    IMG + data.poster_path;
-  document.getElementById("detailTitle").textContent =
-    data.title || data.name;
-  document.getElementById("detailOverview").textContent =
-    data.overview;
-  document.getElementById("detailMeta").textContent =
-    `⭐ ${data.vote_average.toFixed(1)} • ${(data.release_date || data.first_air_date || "").slice(0, 4)}`;
-
-  loadCredits(id, type);
-  loadSimilar(id, type);
-
-  if (type === "tv") {
-    loadTVControls(data);
-  } else {
-    document.getElementById("tvControls").classList.add("hidden");
-  }
-
-  saveHistory(id, type);
+// Load User Data from Firebase Storage/Firestore
+async function loadUserData() {
+    // Use Storage for JSON blobs
+    const watchlistRef = storage.ref(`users/${userId}/watchlist.json`);
+    watchlistRef.getDownloadURL().then(url => fetch(url).then(res => res.json()).then(data => watchlist = data)).catch(() => {});
+    const historyRef = storage.ref(`users/${userId}/history.json`);
+    historyRef.getDownloadURL().then(url => fetch(url).then(res => res.json()).then(data => history = data)).catch(() => {});
+    populateContinueWatching();
+    populateRecommendations();
 }
 
-document.getElementById("closeModal").onclick = () => {
-  document.getElementById("detailsModal").classList.add("hidden");
-};
+// Save to Storage
+async function saveWatchlist() {
+    const blob = new Blob([JSON.stringify(watchlist)], {type: 'application/json'});
+    storage.ref(`users/${userId}/watchlist.json`).put(blob);
+}
+async function saveHistory() {
+    const blob = new Blob([JSON.stringify(history)], {type: 'application/json'});
+    storage.ref(`users/${userId}/history.json`).put(blob);
+}
 
-/***********************
-  👥 CAST & CREW
-************************/
-async function loadCredits(id, type) {
-  const castRow = document.getElementById("castRow");
-  const crewRow = document.getElementById("crewRow");
+// Hamburger Menu
+function toggleMenu() {
+    const menu = document.getElementById('nav-menu');
+    menu.classList.toggle('menu-hidden');
+}
 
-  castRow.innerHTML = "";
-  crewRow.innerHTML = "";
+// Dark Mode
+function toggleDarkMode() {
+    darkMode = !darkMode;
+    document.body.classList.toggle('dark-mode');
+}
+// Search with Autocomplete
+async function searchContent() {
+    const query = document.getElementById('search-input').value;
+    if (query.length < 3) return;
+    const results = await fetchTMDB(`/search/multi&query=${query}`);
+    const dropdown = document.getElementById('search-results');
+    dropdown.innerHTML = '';
+    results.results.forEach(item => {
+        if (item.media_type === 'movie' || item.media_type === 'tv') {
+            const div = document.createElement('div');
+            div.textContent = item.title || item.name;
+            div.onclick = () => showContentDetail(item.id, item.media_type);
+            dropdown.appendChild(div);
+        }
+    });
+    dropdown.style.display = 'block';
+}
 
-  const data = await fetchTMDB(
-    `${TMDB_BASE}/${type}/${id}/credits?api_key=${TMDB_KEY}`
-  );
-
-  data.cast.slice(0, 10).forEach(c => {
-    if (!c.profile_path) return;
-    const div = document.createElement("div");
-    div.className = "card";
-    div.innerHTML = `<img src="${IMG + c.profile_path}" />`;
-    castRow.appendChild(div);
-  });
-
-  data.crew
-    .filter(c => c.job === "Director")
-    .forEach(d => {
-      const div = document.createElement("div");
-      div.className = "card";
-      div.innerHTML = `<img src="${IMG + d.profile_path}" />`;
-      crewRow.appendChild(div);
+// Populate Sections
+async function populateGenres() {
+    const genres = await fetchTMDB('/genre/movie/list');
+    const container = document.querySelector('.genre-carousels');
+    genres.genres.forEach(async genre => {
+        const h3 = document.createElement('h3');
+        h3.textContent = genre.name;
+        container.appendChild(h3);
+        const carousel = document.createElement('div');
+        carousel.classList.add('carousel');
+        const movies = await fetchTMDB(`/discover/movie&with_genres=${genre.id}`);
+        movies.results.forEach(movie => {
+            const img = document.createElement('img');
+            img.src = `https://image.tmdb.org/t/p/w200${movie.poster_path}`;
+            img.onclick = () => showContentDetail(movie.id, 'movie');
+            carousel.appendChild(img);
+        });
+        container.appendChild(carousel);
+    });
+}
+async function populateTrending() {
+    const trending = await fetchTMDB('/trending/all/week');
+    const carousel = document.querySelector('.trending-carousel');
+    trending.results.forEach(item => {
+        const img = document.createElement('img');
+        img.src = `https://image.tmdb.org/t/p/w200${item.poster_path}`;
+        img.onclick = () => showContentDetail(item.id, item.media_type);
+        carousel.appendChild(img);
+    });
+}
+async function populateNew() {
+    const newReleases = await fetchTMDB('/movie/now_playing');
+    const carousel = document.querySelector('.new-carousel');
+    newReleases.results.forEach(movie => {
+        const img = document.createElement('img');
+        img.src = `https://image.tmdb.org/t/p/w200${movie.poster_path}`;
+        img.onclick = () => showContentDetail(movie.id, 'movie');
+        carousel.appendChild(img);
     });
 }
 
-/***********************
-  🔁 SIMILAR
-************************/
-async function loadSimilar(id, type) {
-  const row = document.getElementById("similarRow");
-  row.innerHTML = "";
-
-  const data = await fetchTMDB(
-    `${TMDB_BASE}/${type}/${id}/similar?api_key=${TMDB_KEY}`
-  );
-
-  data.results.forEach(item => {
-    if (!item.poster_path) return;
-    row.appendChild(createCard(item, type));
-  });
-}
-
-/***********************
-  📺 TV CONTROLS
-************************/
-function loadTVControls(data) {
-  const controls = document.getElementById("tvControls");
-  const seasonDD = document.getElementById("seasonDropdown");
-  const episodeDD = document.getElementById("episodeDropdown");
-
-  controls.classList.remove("hidden");
-  seasonDD.innerHTML = "";
-  episodeDD.innerHTML = "";
-
-  data.seasons.forEach(s => {
-    const opt = document.createElement("option");
-    opt.value = s.season_number;
-    opt.textContent = `Season ${s.season_number}`;
-    seasonDD.appendChild(opt);
-  });
-
-  seasonDD.onchange = async () => {
-    episodeDD.innerHTML = "";
-    const season = seasonDD.value;
-
-    const sData = await fetchTMDB(
-      `${TMDB_BASE}/tv/${currentItem}/season/${season}?api_key=${TMDB_KEY}`
-    );
-
-    sData.episodes.forEach(e => {
-      const opt = document.createElement("option");
-      opt.value = e.episode_number;
-      opt.textContent = `Episode ${e.episode_number}`;
-      episodeDD.appendChild(opt);
+// Content Detail
+async function showContentDetail(id, type) {
+    const detail = await fetchTMDB(`/${type}/${id}`);
+    document.getElementById('detail-title').textContent = detail.title || detail.name;
+    document.getElementById('detail-overview').textContent = detail.overview;
+    document.getElementById('detail-poster').innerHTML = `<img src="https://image.tmdb.org/t/p/w500${detail.poster_path}">`;
+    // Cast/Actors
+    const credits = await fetchTMDB(`/${type}/${id}/credits`);
+    const castDiv = document.getElementById('detail-cast');
+    castDiv.innerHTML = '';
+    credits.cast.slice(0,5).forEach(actor => {
+        const span = document.createElement('span');
+        span.textContent = actor.name;
+        span.onclick = () => showActorDetail(actor.id);
+        castDiv.appendChild(span);
     });
-  };
+    // Player with multi-source
+    const video = document.getElementById('video-player');
+    video.src = SOURCES[currentSourceIndex] + id; // Mock embed, replace with real logic
+    document.getElementById('content-detail').style.display = 'block';
+    // Add to history
+    history.push({id, type, timestamp: Date.now()});
+    saveHistory();
 }
 
-/***********************
-  ❤️ WATCHLIST & HISTORY
-************************/
-async function saveHistory(id, type) {
-  const ref = doc(db, "history", USER_ID);
-  const snap = await getDoc(ref);
-
-  const history = snap.exists() ? snap.data().items : [];
-  history.unshift({ id, type, time: Date.now() });
-
-  await setDoc(ref, { items: history.slice(0, 50) });
+function switchSource() {
+    currentSourceIndex = (currentSourceIndex + 1) % SOURCES.length;
+    document.getElementById('video-player').src = SOURCES[currentSourceIndex] + 'current-id'; // Update
 }
 
-document.getElementById("addWatchlist").onclick = async () => {
-  const ref = doc(db, "watchlist", USER_ID);
-  const snap = await getDoc(ref);
+// Actor Detail
+async function showActorDetail(id) {
+    const actor = await fetchTMDB(`/person/${id}`);
+    document.getElementById('actor-name').textContent = actor.name;
+    document.getElementById('actor-bio').textContent = actor.biography;
+    const filmography = await fetchTMDB(`/person/${id}/movie_credits`);
+    const carousel = document.getElementById('actor-filmography');
+    carousel.innerHTML = '';
+    filmography.cast.forEach(movie => {
+        const img = document.createElement('img');
+        img.src = `https://image.tmdb.org/t/p/w200${movie.poster_path}`;
+        img.onclick = () => showContentDetail(movie.id, 'movie');
+        carousel.appendChild(img);
+    });
+    document.getElementById('actor-detail').style.display = 'block';
+}
 
-  const list = snap.exists() ? snap.data().items : [];
-  list.push({ id: currentItem, type: currentType });
+// Watchlist
+function addToWatchlist() {
+    const currentItem = {id: 'current-id', type: 'movie'}; // From detail
+    watchlist.push(currentItem);
+    saveWatchlist();
+}
 
-  await setDoc(ref, { items: list });
-  alert("Added to watchlist 😎");
-};
+// Continue Watching & Recs (simple history-based)
+function populateContinueWatching() {
+    const carousel = document.getElementById('continue-watching');
+    history.slice(-5).forEach(item => {
+        // Fetch and add img
+    });
+}
+function populateRecommendations() {
+    // Simple: based on last history genre
+    // Fetch similar
+}
 
-/***********************
-  ▶ PLAYER
-************************/
-document.querySelectorAll(".sources button").forEach(btn => {
-  btn.onclick = () => {
-    document.getElementById("playerSection").classList.remove("hidden");
-    document.getElementById("videoPlayer").src =
-      `https://example.com/player/${btn.dataset.source}?id=${currentItem}`;
-  };
-});
+// Social Shares
+function shareOnX() { window.open('https://twitter.com/intent/tweet?text=Watching on ZenShows'); }
+function shareOnFB() { window.open('https://www.facebook.com/sharer/sharer.php?u=' + location.href); }
 
-/***********************
-  🚀 INIT
-************************/
-loadHero();
-loadTrending();
+// Init
+populateGenres();
+populateTrending();
+populateNew();
+// TMDB Fetch Helper
+async function fetchTMDB(endpoint) {
+    const res = await fetch(`${TMDB_BASE_URL}${endpoint}?api_key=${TMDB_API_KEY}`);
+    return res.json();
+}

@@ -5,255 +5,160 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zen Shows | Free Streaming</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigation Bar -->
+    <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
                 <i class="fas fa-play-circle"></i>
-                <h1>ZEN SHOWS</h1>
+                <span>ZEN SHOWS</span>
             </div>
             
             <div class="nav-search">
-                <div class="search-container">
+                <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" placeholder="Search movies, TV shows...">
-                    <div class="search-results" id="searchResults"></div>
+                    <input type="text" placeholder="Search movies, TV shows..." id="searchInput">
                 </div>
             </div>
             
-            <div class="nav-links">
-                <a href="#" class="nav-link active"><i class="fas fa-home"></i> Home</a>
-                <a href="#" class="nav-link" id="moviesLink"><i class="fas fa-film"></i> Movies</a>
-                <a href="#" class="nav-link" id="tvLink"><i class="fas fa-tv"></i> TV Shows</a>
-                <a href="#" class="nav-link" id="trendingLink"><i class="fas fa-fire"></i> Trending</a>
-                <a href="#" class="nav-link" id="watchlistLink"><i class="fas fa-bookmark"></i> Watchlist</a>
-                <a href="#" class="nav-link" id="historyLink"><i class="fas fa-history"></i> History</a>
+            <div class="nav-menu">
+                <a href="#" class="active"><i class="fas fa-home"></i> Home</a>
+                <a href="#movies"><i class="fas fa-film"></i> Movies</a>
+                <a href="#tv"><i class="fas fa-tv"></i> TV Shows</a>
+                <a href="#trending"><i class="fas fa-fire"></i> Trending</a>
             </div>
             
-            <div class="nav-user">
+            <div class="nav-actions">
                 <button class="btn-login" id="loginBtn">
-                    <i class="fas fa-sign-in-alt"></i> Sign In
+                    <i class="fas fa-sign-in-alt"></i> Login
                 </button>
                 <div class="user-menu hidden" id="userMenu">
                     <div class="user-info">
-                        <div class="user-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="user-details">
+                        <div class="avatar"><i class="fas fa-user"></i></div>
+                        <div>
                             <h4 id="userName">Guest User</h4>
                             <p>Free Account</p>
                         </div>
                     </div>
-                    <div class="user-options">
-                        <a href="#"><i class="fas fa-user-cog"></i> Profile</a>
-                        <a href="#"><i class="fas fa-sliders-h"></i> Settings</a>
-                        <a href="#"><i class="fas fa-moon"></i> Dark Mode</a>
+                    <div class="menu-items">
+                        <a href="#"><i class="fas fa-bookmark"></i> Watchlist</a>
+                        <a href="#"><i class="fas fa-history"></i> History</a>
+                        <a href="#"><i class="fas fa-cog"></i> Settings</a>
                         <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
                     </div>
                 </div>
             </div>
             
-            <button class="nav-toggle" id="navToggle">
+            <button class="menu-toggle" id="menuToggle">
                 <i class="fas fa-bars"></i>
             </button>
         </div>
     </nav>
 
-    <!-- Mobile Sidebar -->
-    <div class="mobile-sidebar" id="mobileSidebar">
-        <div class="sidebar-header">
-            <h2><i class="fas fa-play-circle"></i> Zen Shows</h2>
-            <button class="close-sidebar" id="closeSidebar">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="sidebar-links">
-            <a href="#"><i class="fas fa-home"></i> Home</a>
-            <a href="#"><i class="fas fa-film"></i> Movies</a>
-            <a href="#"><i class="fas fa-tv"></i> TV Shows</a>
-            <a href="#"><i class="fas fa-fire"></i> Trending</a>
-            <a href="#"><i class="fas fa-bookmark"></i> Watchlist</a>
-            <a href="#"><i class="fas fa-history"></i> History</a>
-            <a href="#"><i class="fas fa-cog"></i> Settings</a>
-        </div>
-    </div>
-
     <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="hero-background">
-            <div class="hero-overlay"></div>
-            <div class="hero-content">
-                <h1 class="hero-title">Unlimited Entertainment</h1>
-                <p class="hero-subtitle">Stream thousands of movies & TV shows for free in stunning quality</p>
-                <div class="hero-buttons">
-                    <button class="btn-hero btn-primary" onclick="openVideoModal(sampleMovies[0])">
-                        <i class="fas fa-play"></i> Watch Now
-                    </button>
-                    <button class="btn-hero btn-secondary">
-                        <i class="fas fa-info-circle"></i> More Info
-                    </button>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Unlimited Movies & TV Shows</h1>
+            <p>Stream thousands of titles for free. No signup required.</p>
+            <div class="hero-buttons">
+                <button class="btn-primary" onclick="playSample()">
+                    <i class="fas fa-play"></i> Watch Now
+                </button>
+                <button class="btn-secondary">
+                    <i class="fas fa-info-circle"></i> Learn More
+                </button>
+            </div>
+            <div class="hero-features">
+                <div class="feature">
+                    <i class="fas fa-hd"></i>
+                    <span>HD Quality</span>
                 </div>
-                <div class="hero-features">
-                    <div class="feature">
-                        <i class="fas fa-hd"></i>
-                        <span>HD Quality</span>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-globe"></i>
-                        <span>Multiple Sources</span>
-                    </div>
-                    <div class="feature">
-                        <i class="fas fa-user-friends"></i>
-                        <span>No Signup Required</span>
-                    </div>
+                <div class="feature">
+                    <i class="fas fa-globe"></i>
+                    <span>6 Sources</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-user-friends"></i>
+                    <span>No Ads</span>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Trending Section -->
-    <section class="section trending-section">
-        <div class="section-header">
-            <h2><i class="fas fa-fire"></i> Trending Now</h2>
-            <div class="section-controls">
-                <button class="btn-control prev-trending"><i class="fas fa-chevron-left"></i></button>
-                <button class="btn-control next-trending"><i class="fas fa-chevron-right"></i></button>
-            </div>
-        </div>
-        <div class="trending-container" id="trendingContainer"></div>
+    <section class="section" id="trending">
+        <h2><i class="fas fa-fire"></i> Trending Now</h2>
+        <div class="trending-grid" id="trendingGrid"></div>
     </section>
 
     <!-- Movies Section -->
-    <section class="section movies-section">
-        <div class="section-header">
-            <h2><i class="fas fa-film"></i> Popular Movies</h2>
-            <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
-        </div>
+    <section class="section" id="movies">
+        <h2><i class="fas fa-film"></i> Popular Movies</h2>
         <div class="movies-grid" id="moviesGrid"></div>
     </section>
 
     <!-- TV Shows Section -->
-    <section class="section tv-section">
-        <div class="section-header">
-            <h2><i class="fas fa-tv"></i> TV Shows</h2>
-            <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
-        </div>
+    <section class="section" id="tv">
+        <h2><i class="fas fa-tv"></i> TV Shows</h2>
         <div class="tv-grid" id="tvGrid"></div>
     </section>
 
-    <!-- Sources Section -->
-    <section class="section sources-section">
-        <div class="section-header">
-            <h2><i class="fas fa-server"></i> Available Sources</h2>
-        </div>
-        <div class="sources-container">
+    <!-- Sources -->
+    <section class="section">
+        <h2><i class="fas fa-server"></i> Streaming Sources</h2>
+        <div class="sources-grid">
             <div class="source-card">
-                <div class="source-icon">
-                    <i class="fas fa-video"></i>
-                </div>
+                <i class="fas fa-video"></i>
                 <h3>VidSrc</h3>
-                <p>HD quality with multiple servers</p>
-                <div class="source-status active">Active</div>
+                <p>HD quality streams</p>
             </div>
             <div class="source-card">
-                <div class="source-icon">
-                    <i class="fas fa-film"></i>
-                </div>
+                <i class="fas fa-film"></i>
                 <h3>CinemaOS</h3>
-                <p>Latest movies collection</p>
-                <div class="source-status active">Active</div>
+                <p>Latest releases</p>
             </div>
             <div class="source-card">
-                <div class="source-icon">
-                    <i class="fas fa-play-circle"></i>
-                </div>
+                <i class="fas fa-play-circle"></i>
                 <h3>StreamWish</h3>
-                <p>Fast streaming servers</p>
-                <div class="source-status active">Active</div>
+                <p>Fast servers</p>
             </div>
             <div class="source-card">
-                <div class="source-icon">
-                    <i class="fas fa-cloud"></i>
-                </div>
+                <i class="fas fa-cloud"></i>
                 <h3>CloudStream</h3>
-                <p>Cloud-based streaming</p>
-                <div class="source-status active">Active</div>
-            </div>
-            <div class="source-card">
-                <div class="source-icon">
-                    <i class="fas fa-bolt"></i>
-                </div>
-                <h3>FastPlay</h3>
-                <p>Instant playback</p>
-                <div class="source-status active">Active</div>
-            </div>
-            <div class="source-card">
-                <div class="source-icon">
-                    <i class="fas fa-star"></i>
-                </div>
-                <h3>PrimeStream</h3>
-                <p>Premium content</p>
-                <div class="source-status active">Active</div>
+                <p>Cloud hosting</p>
             </div>
         </div>
     </section>
 
-    <!-- Video Player Modal -->
-    <div class="modal" id="videoModal">
+    <!-- Player Modal -->
+    <div class="modal" id="playerModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="modalTitle">Watch Now</h3>
-                <button class="close-modal" id="closeModal">
-                    <i class="fas fa-times"></i>
-                </button>
+                <h3 id="playerTitle">Now Playing</h3>
+                <button class="close-btn" onclick="closePlayer()">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="player-container">
+                <div class="video-container">
                     <div class="video-placeholder">
                         <i class="fas fa-play-circle"></i>
                         <p>Select a source to start streaming</p>
                     </div>
                 </div>
-                <div class="sources-list">
-                    <h4>Available Sources:</h4>
-                    <div class="source-options">
-                        <button class="source-btn active" data-source="vidsrc">
+                <div class="sources">
+                    <h4>Streaming Sources:</h4>
+                    <div class="source-buttons">
+                        <button class="source-btn active" onclick="selectSource('vidsrc')">
                             <i class="fas fa-video"></i> VidSrc
                         </button>
-                        <button class="source-btn" data-source="cinemaos">
+                        <button class="source-btn" onclick="selectSource('cinemaos')">
                             <i class="fas fa-film"></i> CinemaOS
                         </button>
-                        <button class="source-btn" data-source="streamwish">
+                        <button class="source-btn" onclick="selectSource('streamwish')">
                             <i class="fas fa-play-circle"></i> StreamWish
                         </button>
-                        <button class="source-btn" data-source="cloudstream">
-                            <i class="fas fa-cloud"></i> CloudStream
-                        </button>
-                    </div>
-                </div>
-                <div class="movie-info">
-                    <h4>Movie Information</h4>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <span class="info-label">Duration:</span>
-                            <span class="info-value">2h 15m</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Quality:</span>
-                            <span class="info-value">HD 1080p</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Genre:</span>
-                            <span class="info-value">Action, Adventure</span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Rating:</span>
-                            <span class="info-value">8.5/10</span>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -262,103 +167,50 @@
 
     <!-- Login Modal -->
     <div class="modal" id="loginModal">
-        <div class="modal-content login-content">
+        <div class="modal-content login-modal">
             <div class="modal-header">
-                <h3>Sign In to Zen Shows</h3>
-                <button class="close-modal" id="closeLoginModal">
-                    <i class="fas fa-times"></i>
-                </button>
+                <h3>Sign In</h3>
+                <button class="close-btn" onclick="closeLogin()">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="login-options">
-                    <button class="login-btn google-login" id="googleLoginBtn">
-                        <i class="fab fa-google"></i> Sign in with Google
-                    </button>
-                    <button class="login-btn guest-login" id="guestLoginBtn">
-                        <i class="fas fa-user"></i> Continue as Guest
-                    </button>
-                </div>
-                <div class="login-features">
-                    <h4><i class="fas fa-star"></i> Benefits of Signing In:</h4>
-                    <ul>
-                        <li><i class="fas fa-check"></i> Save to Watchlist</li>
-                        <li><i class="fas fa-check"></i> Track Watch History</li>
-                        <li><i class="fas fa-check"></i> Personalized Recommendations</li>
-                        <li><i class="fas fa-check"></i> Sync Across Devices</li>
-                    </ul>
-                </div>
+                <button class="google-btn" onclick="signInWithGoogle()">
+                    <i class="fab fa-google"></i> Sign in with Google
+                </button>
+                <button class="guest-btn" onclick="signInAsGuest()">
+                    <i class="fas fa-user"></i> Continue as Guest
+                </button>
+                <p class="login-note">Sign in to save your watchlist and history</p>
             </div>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer>
         <div class="footer-content">
             <div class="footer-section">
-                <div class="footer-logo">
-                    <i class="fas fa-play-circle"></i>
-                    <h3>ZEN SHOWS</h3>
-                </div>
-                <p class="footer-description">
-                    Your ultimate destination for free streaming of movies and TV shows.
-                    Quality entertainment, zero cost.
-                </p>
-                <div class="footer-social">
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-discord"></i></a>
-                    <a href="#"><i class="fab fa-github"></i></a>
-                    <a href="#"><i class="fab fa-telegram"></i></a>
-                </div>
+                <h3><i class="fas fa-play-circle"></i> ZEN SHOWS</h3>
+                <p>Free streaming platform with multiple sources.</p>
             </div>
-            
             <div class="footer-section">
                 <h4>Quick Links</h4>
-                <a href="#">Home</a>
-                <a href="#">Movies</a>
-                <a href="#">TV Shows</a>
-                <a href="#">Trending</a>
-                <a href="#">Watchlist</a>
+                <a href="#movies">Movies</a>
+                <a href="#tv">TV Shows</a>
+                <a href="#trending">Trending</a>
             </div>
-            
             <div class="footer-section">
                 <h4>Legal</h4>
-                <a href="#">Terms of Service</a>
-                <a href="#">Privacy Policy</a>
+                <a href="#">Terms</a>
+                <a href="#">Privacy</a>
                 <a href="#">DMCA</a>
-                <a href="#">Contact</a>
-                <a href="#">FAQ</a>
-            </div>
-            
-            <div class="footer-section">
-                <h4>Credits</h4>
-                <div class="credits">
-                    <p>Powered by TMDB API</p>
-                    <p>Movie data provided by The Movie Database</p>
-                    <p>© 2024 Zen Shows. All rights reserved.</p>
-                </div>
             </div>
         </div>
-        
         <div class="footer-bottom">
-            <p>© 2024 Zen Shows. This site does not host any videos. All content is sourced from third-party providers.</p>
+            <p>Powered by TMDB API | © 2024 Zen Shows</p>
         </div>
     </footer>
 
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-spinner">
-            <div class="spinner-circle"></div>
-            <p>Loading Zen Shows...</p>
-        </div>
-    </div>
-
-    <!-- Toast Notification -->
-    <div class="toast" id="toast">
-        <div class="toast-content">
-            <i class="fas fa-check-circle"></i>
-            <span id="toastMessage">Operation completed successfully!</span>
-        </div>
-    </div>
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
 
     <script src="script.js"></script>
 </body>

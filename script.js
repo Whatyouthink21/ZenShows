@@ -585,4 +585,324 @@ function addToContinueWatching(movieId, progress) {
     saveUserData('continueWatching', state.continueWatching);
 }
 
-// Continue in next comment...
+// UI Update Functions
+function updateUI() {
+    if (state.continueWatching.length > 0) {
+        document.getElementById('continueWatchingSection').style.display = 'block';
+        loadContinueWatching();
+    }
+    
+    if (state.watchlist.length > 0) {
+        document.getElementById('watchlistSection').style.display = 'block';
+        loadWatchlist();
+    }
+    
+    if (state.favorites.length > 0) {
+        document.getElementById('favoritesSection').style.display = 'block';
+        loadFavorites();
+    }
+    
+    if (state.watchHistory.length > 0) {
+        document.getElementById('historySection').style.display = 'block';
+        loadHistory();
+    }
+}
+
+async function loadContinueWatching() {
+    const movies = await Promise.all(
+        state.continueWatching.map(async item => {
+            const movie = await fetchTMDB(`/movie/${item.id}`);
+            return { ...movie, progress: item.progress };
+        })
+    );
+    renderCarousel('continueWatchingCarousel', movies);
+}
+
+async function loadWatchlist() {
+    const movies = await Promise.all(
+        state.watchlist.map(id => fetchTMDB(`/movie/${id}`))
+    );
+    renderCarousel('watchlistCarousel', movies);
+}
+
+async function loadFavorites() {
+    const movies = await Promise.all(
+        state.favorites.map(id => fetchTMDB(`/movie/${id}`))
+    );
+    renderCarousel('favoritesCarousel', movies);
+}
+
+async function loadHistory() {
+    const movies = await Promise.all(
+        state.watchHistory.slice(0, 20).map(id => fetchTMDB(`/movie/${id}`))
+    );
+    renderCarousel('historyCarousel', movies);
+}
+
+function updateModalButtons(modal, movieId) {
+    const watchlistBtn = modal.querySelector('.watchlist-btn');
+    const favoriteBtn = modal.querySelector('.favorite-btn');
+    
+    updateWatchlistButton(watchlistBtn, movieId);
+    updateFavoriteButton(favoriteBtn, movieId);
+    
+    watchlistBtn.onclick = () => toggleWatchlist(movieId);
+    favoriteBtn.onclick = () => toggleFavorite(movieId);
+    
+    const rateBtn = modal.querySelector('.rate-btn');
+    rateBtn.onclick = () => showRatingModal(movieId);
+}
+
+function updateWatchlistButton(btn, movieId) {
+    const isInWatchlist = state.watchlist.includes(movieId);
+    btn.innerHTML = `<i class="fas ${isInWatchlist ? 'fa-check' : 'fa-plus'}"></i> ${isInWatchlist ? 'In List' : 'Watchlist'}`;
+    if (isInWatchlist) btn.classList.add('active');
+    else btn.classList.remove('active');
+}
+
+function updateFavoriteButton(btn, movieId) {
+    const isFavorite = state.favorites.includes(movieId);
+    btn.innerHTML = `<i class="fas fa-heart"></i> ${isFavorite ? 'Favorited' : 'Favorite'}`;
+    if (isFavorite) btn.classList.add('active');
+    else btn.classList.remove('active');
+}
+
+function showRatingModal(movieId) {
+    const modal = document.getElementById('ratingModal');
+    const stars = modal.querySelectorAll('.rating-stars i');
+    const currentRating = state.userRatings[movieId] || 0;
+    
+    stars.forEach((star, idx) => {
+        star.classList.toggle('active', idx < currentRating);
+        star.onclick = () => {
+            stars.forEach((s, i) => s.classList.toggle('active', i <= idx));
+        };
+    });
+    
+    document.getElementById('submitRating').onclick = () => {
+        const rating = Array.from(stars).filter(s => s.classList.contains('active')).length;
+        state.userRatings[movieId] = rating;
+        saveUserData('ratings', state.userRatings);
+        closeModal('ratingModal');
+        showNotification(`Rated ${rating}/10`, 'success');
+    };
+    
+    openModal('ratingModal');
+}
+
+// Helper Functions
+function clearCarousels() {
+    ['trendingCarousel', 'topRatedCarousel', 'recentCarousel'].forEach(id => {
+        document.getElementById(id).innerHTML = '';
+    });
+}
+
+function openModal(modalId) {
+    document.getElementById(modalId).classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal(modalId) {
+    document.getElementById(modalId).classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function showNotification(message, type = 'success') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
+}
+
+function loadTheme() {
+    const savedTheme = localStorage.getItem('zenshows_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+}
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('zenshows_theme', newTheme);
+    updateThemeIcon(newTheme);
+}
+
+function updateThemeIcon(theme) {
+    const icon = themeToggle.querySelector('i');
+    icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+}
+
+// Event Listeners
+function setupEventListeners() {
+    // Navigation
+    hamburgerBtn.addEventListener('click', () => {
+        sidebar.classList.add('active');
+        overlay.classList.add('active');
+    });
+    
+    closeSidebar.addEventListener('click', () => {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+    });
+    
+    overlay.addEventListener('click', () => {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        profileMenu.classList.remove('active');
+    });
+    
+    themeToggle.addEventListener('click', toggleTheme);
+    
+    // Search
+    let searchTimeout;
+    searchInput.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => searchMovies(e.target.value), 500);
+    });
+    
+    // Profile Menu
+    profileBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        profileMenu.classList.toggle('active');
+    });
+    
+    signInBtn.addEventListener('click', () => openModal('signInModal'));
+    signOutBtn.addEventListener('click', signOutUser);
+    settingsBtn.addEventListener('click', () => {
+        openModal('settingsModal');
+        loadSettings();
+    });
+    
+    // Sign In/Up Forms
+    document.getElementById('signInForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('signInEmail').value;
+        const password = document.getElementById('signInPassword').value;
+        signIn(email, password);
+    });
+    
+    document.getElementById('signUpForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('signUpName').value;
+        const email = document.getElementById('signUpEmail').value;
+        const password = document.getElementById('signUpPassword').value;
+        signUp(name, email, password);
+    });
+    
+    document.getElementById('showSignUp').addEventListener('click', (e) => {
+        e.preventDefault();
+        closeModal('signInModal');
+        openModal('signUpModal');
+    });
+    
+    document.getElementById('showSignIn').addEventListener('click', (e) => {
+        e.preventDefault();
+        closeModal('signUpModal');
+        openModal('signInModal');
+    });
+    
+    // Modal Close Buttons
+    document.querySelectorAll('.modal-close').forEach(btn => {
+        btn.addEventListener('click', () => {
+            btn.closest('.modal').classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    });
+    
+    // Settings
+    document.getElementById('saveSettings').addEventListener('click', saveSettings);
+    document.getElementById('parentalControlToggle').addEventListener('change', (e) => {
+        document.getElementById('parentalPinGroup').style.display = e.target.checked ? 'block' : 'none';
+    });
+    
+    // Filters
+    document.getElementById('yearFilter').addEventListener('change', applyFilters);
+    document.getElementById('languageFilter').addEventListener('change', applyFilters);
+    document.getElementById('ratingFilter').addEventListener('change', applyFilters);
+    
+    // Surprise Me Button
+    document.getElementById('surpriseBtn').addEventListener('click', async () => {
+        const data = await fetchTMDB('/movie/popular');
+        const randomMovie = data.results[Math.floor(Math.random() * data.results.length)];
+        showMovieDetails(randomMovie.id);
+    });
+    
+    // Navbar Scroll Effect
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            document.querySelector('.navbar').classList.add('scrolled');
+        } else {
+            document.querySelector('.navbar').classList.remove('scrolled');
+        }
+    });
+    
+    // Sidebar Navigation
+    document.querySelectorAll('.sidebar-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+            if (!item.classList.contains('genre-item')) {
+                document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+        });
+    });
+}
+
+function loadSettings() {
+    document.getElementById('settingsName').value = currentUser?.displayName || '';
+    document.getElementById('settingsEmail').value = currentUser?.email || '';
+    document.getElementById('autoplayToggle').checked = state.settings.autoplay;
+    document.getElementById('skipIntroToggle').checked = state.settings.skipIntro;
+    document.getElementById('defaultQuality').value = state.settings.defaultQuality;
+    document.getElementById('parentalControlToggle').checked = state.settings.parentalControl;
+    document.getElementById('parentalPin').value = state.settings.parentalPin;
+    document.getElementById('maxRating').value = state.settings.maxRating;
+    document.getElementById('newReleasesToggle').checked = state.settings.notifications.newReleases;
+    document.getElementById('watchlistToggle').checked = state.settings.notifications.watchlist;
+}
+
+async function saveSettings() {
+    if (currentUser) {
+        const name = document.getElementById('settingsName').value;
+        if (name !== currentUser.displayName) {
+            const { updateProfile } = window.firebaseModules;
+            await updateProfile(currentUser, { displayName: name });
+        }
+    }
+    
+    state.settings = {
+        autoplay: document.getElementById('autoplayToggle').checked,
+        skipIntro: document.getElementById('skipIntroToggle').checked,
+        defaultQuality: document.getElementById('defaultQuality').value,
+        parentalControl: document.getElementById('parentalControlToggle').checked,
+        parentalPin: document.getElementById('parentalPin').value,
+        maxRating: document.getElementById('maxRating').value,
+        notifications: {
+            newReleases: document.getElementById('newReleasesToggle').checked,
+            watchlist: document.getElementById('watchlistToggle').checked
+        }
+    };
+    
+    saveUserData('settings', state.settings);
+    closeModal('settingsModal');
+    showNotification('Settings saved successfully', 'success');
+}
+
+async function applyFilters() {
+    const year = document.getElementById('yearFilter').value;
+    const language = document.getElementById('languageFilter').value;
+    const rating = document.getElementById('ratingFilter').value;
+    
+    let query = '/discover/movie?';
+    if (year) query += `&primary_release_year=${year}`;
+    if (language) query += `&with_original_language=${language}`;
+    if (rating) query += `&certification_country=US&certification=${rating}`;
+    
+    const data = await fetchTMDB(query);
+    clearCarousels();
+    renderCarousel('trendingCarousel', data.results);
+    document.querySelector('#trendingCarousel').parentElement.querySelector('.section-title').textContent = 'Filtered Results';
+}

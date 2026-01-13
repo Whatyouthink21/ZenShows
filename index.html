@@ -45,3 +45,48 @@
             <h2>Trending</h2>
             <div class="trending-carousel"></div>
         </section>
+        <section id="new">
+            <h2>New Releases & Upcoming</h2>
+            <div class="new-carousel"></div>
+        </section>
+        <section id="content-detail" style="display:none;">
+            <div id="detail-poster"></div>
+            <h2 id="detail-title"></h2>
+            <p id="detail-overview"></p>
+            <div id="detail-cast"></div>
+            <button onclick="addToWatchlist()">Add to Watchlist</button>
+            <div id="player-container">
+                <video id="video-player" controls></video>
+                <button onclick="switchSource()">Switch Source</button>
+            </div>
+            <div id="share-buttons">
+                <button onclick="shareOnX()">Share on X</button>
+                <button onclick="shareOnFB()">Share on FB</button>
+            </div>
+        </section>
+        <section id="actor-detail" style="display:none;">
+            <h2 id="actor-name"></h2>
+            <div id="actor-bio"></div>
+            <div id="actor-filmography" class="carousel"></div>
+        </section>
+        <section id="settings" style="display:none;">
+            <h2>Settings</h2>
+            <button onclick="toggleDarkMode()">Toggle Dark Mode</button>
+            <!-- Add more settings like profile edit if expanded -->
+        </section>
+        <div id="login-modal" style="display:none;">
+            <form id="auth-form">
+                <input type="email" id="email" placeholder="Email">
+                <input type="password" id="password" placeholder="Password">
+                <button type="button" onclick="register()">Register</button>
+                <button type="button" onclick="login()">Login</button>
+                <button type="button" onclick="googleLogin()">Login with Google</button>
+            </form>
+        </div>
+    </main>
+    <footer>
+        <p>Powered by TMDB - All movie data credits to The Movie Database (TMDB)</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

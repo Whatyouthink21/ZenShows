@@ -916,7 +916,7 @@ body {
     font-size: 0.9rem;
 }
 
-/* Loading Overlay */
+/* Loading Overlay - FIXED */
 .loading-overlay {
     position: fixed;
     top: 0;
@@ -929,6 +929,14 @@ body {
     justify-content: center;
     z-index: 3000;
     backdrop-filter: blur(10px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.loading-overlay.show {
+    opacity: 1;
+    visibility: visible;
 }
 
 .spinner-circle {

@@ -3,215 +3,284 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zen Shows | Free Streaming</title>
+    <title>ZenShows | Premium Free Streaming</title>
+    <meta name="description" content="Watch movies and TV shows for free in high quality.">
+    
+    <!-- FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- ICONS (FontAwesome) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- SWIPER CSS (For Sliders) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    
+    <!-- MAIN CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <i class="fas fa-play-circle"></i>
-                <span>ZEN SHOWS</span>
-            </div>
+
+    <!-- PRELOADER -->
+    <div id="preloader">
+        <div class="loader-circle"></div>
+        <h2>ZenShows</h2>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <a href="#" class="logo"><i class="fas fa-play"></i> ZenShows</a>
             
-            <div class="nav-search">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search movies, TV shows..." id="searchInput">
-                </div>
+            <div class="nav-links desktop-menu">
+                <a href="#" class="active">Home</a>
+                <a href="#movies-section">Movies</a>
+                <a href="#tv-section">TV Shows</a>
+                <a href="#my-list">My List</a>
             </div>
-            
-            <div class="nav-menu">
-                <a href="#" class="active"><i class="fas fa-home"></i> Home</a>
-                <a href="#movies"><i class="fas fa-film"></i> Movies</a>
-                <a href="#tv"><i class="fas fa-tv"></i> TV Shows</a>
-                <a href="#trending"><i class="fas fa-fire"></i> Trending</a>
-            </div>
-            
+
             <div class="nav-actions">
-                <button class="btn-login" id="loginBtn">
-                    <i class="fas fa-sign-in-alt"></i> Login
-                </button>
-                <div class="user-menu hidden" id="userMenu">
-                    <div class="user-info">
-                        <div class="avatar"><i class="fas fa-user"></i></div>
-                        <div>
-                            <h4 id="userName">Guest User</h4>
-                            <p>Free Account</p>
-                        </div>
-                    </div>
-                    <div class="menu-items">
-                        <a href="#"><i class="fas fa-bookmark"></i> Watchlist</a>
-                        <a href="#"><i class="fas fa-history"></i> History</a>
-                        <a href="#"><i class="fas fa-cog"></i> Settings</a>
-                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
-                    </div>
+                <!-- SEARCH UI -->
+                <div class="search-wrapper">
+                    <input type="text" id="search-input" placeholder="Search Movies & TV Shows...">
+                    <button class="search-btn"><i class="fas fa-search"></i></button>
+                    <div id="search-results" class="search-dropdown"></div>
                 </div>
+
+                <!-- THEME TOGGLE -->
+                <button class="icon-btn" id="theme-toggle"><i class="fas fa-moon"></i></button>
+
+                <!-- MOBILE MENU TOGGLE -->
+                <button class="icon-btn mobile-toggle"><i class="fas fa-bars"></i></button>
             </div>
-            
-            <button class="menu-toggle" id="menuToggle">
-                <i class="fas fa-bars"></i>
-            </button>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Unlimited Movies & TV Shows</h1>
-            <p>Stream thousands of titles for free. No signup required.</p>
-            <div class="hero-buttons">
-                <button class="btn-primary" onclick="playSample()">
-                    <i class="fas fa-play"></i> Watch Now
-                </button>
-                <button class="btn-secondary">
-                    <i class="fas fa-info-circle"></i> Learn More
-                </button>
+    <!-- HERO SECTION -->
+    <header class="hero-section" id="hero">
+        <div class="hero-slider swiper mySwiper">
+            <div class="swiper-wrapper" id="hero-wrapper">
+                <!-- Dynamic Hero Content -->
             </div>
-            <div class="hero-features">
-                <div class="feature">
-                    <i class="fas fa-hd"></i>
-                    <span>HD Quality</span>
-                </div>
-                <div class="feature">
-                    <i class="fas fa-globe"></i>
-                    <span>6 Sources</span>
-                </div>
-                <div class="feature">
-                    <i class="fas fa-user-friends"></i>
-                    <span>No Ads</span>
-                </div>
-            </div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
         </div>
-    </section>
+        <div class="hero-overlay"></div>
+    </header>
 
-    <!-- Trending Section -->
-    <section class="section" id="trending">
-        <h2><i class="fas fa-fire"></i> Trending Now</h2>
-        <div class="trending-grid" id="trendingGrid"></div>
-    </section>
-
-    <!-- Movies Section -->
-    <section class="section" id="movies">
-        <h2><i class="fas fa-film"></i> Popular Movies</h2>
-        <div class="movies-grid" id="moviesGrid"></div>
-    </section>
-
-    <!-- TV Shows Section -->
-    <section class="section" id="tv">
-        <h2><i class="fas fa-tv"></i> TV Shows</h2>
-        <div class="tv-grid" id="tvGrid"></div>
-    </section>
-
-    <!-- Sources -->
-    <section class="section">
-        <h2><i class="fas fa-server"></i> Streaming Sources</h2>
-        <div class="sources-grid">
-            <div class="source-card">
-                <i class="fas fa-video"></i>
-                <h3>VidSrc</h3>
-                <p>HD quality streams</p>
+    <!-- MAIN CONTENT -->
+    <main class="container main-content">
+        
+        <!-- CONTROLS BAR -->
+        <div class="content-controls">
+            <div class="filters">
+                <select id="genre-filter">
+                    <option value="">All Genres</option>
+                    <!-- Populated by JS -->
+                </select>
+                <select id="sort-filter">
+                    <option value="popularity.desc">Popularity</option>
+                    <option value="vote_average.desc">Top Rated</option>
+                    <option value="release_date.desc">Newest</option>
+                    <option value="primary_release_date.asc">Oldest</option>
+                </select>
+                <select id="type-filter">
+                    <option value="all">All Types</option>
+                    <option value="movie">Movies</option>
+                    <option value="tv">TV Shows</option>
+                </select>
             </div>
-            <div class="source-card">
-                <i class="fas fa-film"></i>
-                <h3>CinemaOS</h3>
-                <p>Latest releases</p>
-            </div>
-            <div class="source-card">
-                <i class="fas fa-play-circle"></i>
-                <h3>StreamWish</h3>
-                <p>Fast servers</p>
-            </div>
-            <div class="source-card">
-                <i class="fas fa-cloud"></i>
-                <h3>CloudStream</h3>
-                <p>Cloud hosting</p>
-            </div>
+            <button class="btn-primary random-btn"><i class="fas fa-random"></i> Lucky Pick</button>
         </div>
-    </section>
 
-    <!-- Player Modal -->
-    <div class="modal" id="playerModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="playerTitle">Now Playing</h3>
-                <button class="close-btn" onclick="closePlayer()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="video-container">
-                    <div class="video-placeholder">
-                        <i class="fas fa-play-circle"></i>
-                        <p>Select a source to start streaming</p>
+        <!-- WATCH HISTORY (Firebase) -->
+        <section class="content-section" id="history-section" style="display: none;">
+            <h2 class="section-title">Continue Watching</h2>
+            <div class="slider-container">
+                <div class="swiper historySwiper">
+                    <div class="swiper-wrapper" id="history-wrapper">
+                        <!-- Populated by Firebase -->
                     </div>
+                    <div class="swiper-scrollbar"></div>
                 </div>
-                <div class="sources">
-                    <h4>Streaming Sources:</h4>
-                    <div class="source-buttons">
-                        <button class="source-btn active" onclick="selectSource('vidsrc')">
-                            <i class="fas fa-video"></i> VidSrc
-                        </button>
-                        <button class="source-btn" onclick="selectSource('cinemaos')">
-                            <i class="fas fa-film"></i> CinemaOS
-                        </button>
-                        <button class="source-btn" onclick="selectSource('streamwish')">
-                            <i class="fas fa-play-circle"></i> StreamWish
-                        </button>
+            </div>
+        </section>
+
+        <!-- MY WATCHLIST (Firebase) -->
+        <section class="content-section" id="watchlist-section" style="display: none;">
+            <h2 class="section-title">My Watchlist</h2>
+            <div class="slider-container">
+                <div class="swiper watchlistSwiper">
+                    <div class="swiper-wrapper" id="watchlist-wrapper">
+                        <!-- Populated by Firebase -->
                     </div>
+                    <div class="swiper-scrollbar"></div>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- Login Modal -->
-    <div class="modal" id="loginModal">
-        <div class="modal-content login-modal">
-            <div class="modal-header">
-                <h3>Sign In</h3>
-                <button class="close-btn" onclick="closeLogin()">&times;</button>
+        <!-- TRENDING -->
+        <section class="content-section" id="trending">
+            <h2 class="section-title">Trending Now</h2>
+            <div class="slider-container">
+                <div class="swiper trendingSwiper">
+                    <div class="swiper-wrapper" id="trending-wrapper"></div>
+                    <div class="swiper-scrollbar"></div>
+                </div>
             </div>
-            <div class="modal-body">
-                <button class="google-btn" onclick="signInWithGoogle()">
-                    <i class="fab fa-google"></i> Sign in with Google
-                </button>
-                <button class="guest-btn" onclick="signInAsGuest()">
-                    <i class="fas fa-user"></i> Continue as Guest
-                </button>
-                <p class="login-note">Sign in to save your watchlist and history</p>
-            </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- Footer -->
+        <!-- MOVIES -->
+        <section class="content-section" id="movies-section">
+            <h2 class="section-title">Popular Movies</h2>
+            <div class="slider-container">
+                <div class="swiper moviesSwiper">
+                    <div class="swiper-wrapper" id="movies-wrapper"></div>
+                    <div class="swiper-scrollbar"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TV SHOWS -->
+        <section class="content-section" id="tv-section">
+            <h2 class="section-title">Popular TV Shows</h2>
+            <div class="slider-container">
+                <div class="swiper tvSwiper">
+                    <div class="swiper-wrapper" id="tv-wrapper"></div>
+                    <div class="swiper-scrollbar"></div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
     <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3><i class="fas fa-play-circle"></i> ZEN SHOWS</h3>
-                <p>Free streaming platform with multiple sources.</p>
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <h3>ZenShows</h3>
+                <p>The best free streaming site.</p>
             </div>
-            <div class="footer-section">
-                <h4>Quick Links</h4>
-                <a href="#movies">Movies</a>
-                <a href="#tv">TV Shows</a>
-                <a href="#trending">Trending</a>
+            <div class="footer-credits">
+                <p>This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
+                <p>TMDB: a45420333457411e78d5ad35d6c51a2d</p>
+                <p>Firebase Config: zenshows-c4255</p>
             </div>
-            <div class="footer-section">
-                <h4>Legal</h4>
-                <a href="#">Terms</a>
-                <a href="#">Privacy</a>
-                <a href="#">DMCA</a>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-discord"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
             </div>
-        </div>
-        <div class="footer-bottom">
-            <p>Powered by TMDB API | © 2024 Zen Shows</p>
         </div>
     </footer>
 
-    <!-- Toast -->
-    <div class="toast" id="toast"></div>
+    <!-- ================= MODALS ================= -->
 
-    <script src="script.js"></script>
+    <!-- 1. DETAILS / INFO MODAL -->
+    <div class="modal-overlay" id="details-modal">
+        <div class="modal-container info-modal">
+            <button class="close-modal">&times;</button>
+            <div id="modal-content">
+                <!-- Dynamic Content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. PERSON/CAST MODAL -->
+    <div class="modal-overlay" id="person-modal">
+        <div class="modal-container person-modal">
+            <button class="close-modal">&times;</button>
+            <div id="person-content">
+                <!-- Dynamic Cast/Crew Info -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. PLAYER MODAL -->
+    <div class="modal-overlay" id="player-modal">
+        <div class="modal-container player-modal">
+            <button class="close-player"><i class="fas fa-times"></i></button>
+            
+            <div class="player-wrapper">
+                <iframe id="video-frame" src="" allowfullscreen scrolling="no" frameborder="0"></iframe>
+            </div>
+
+            <!-- PLAYER CONTROLS -->
+            <div class="player-controls">
+                <div class="player-info">
+                    <h3 id="playing-title">Movie Title</h3>
+                </div>
+                
+                <div class="player-options">
+                    <!-- SERVER SELECTOR -->
+                    <div class="control-group">
+                        <label>Server:</label>
+                        <select id="server-select">
+                            <!-- Options: Vidsrc, Vidsrc.to, etc. -->
+                            <option value="vidsrc">Server 1 (VidSrc)</option>
+                            <option value="vidsrcme">Server 2 (VidSrc.me)</option>
+                            <option value="vidsrcxyz">Server 3 (VidSrc.xyz)</option>
+                            <option value="autoembed">Server 4 (AutoEmbed)</option>
+                            <option value="2embed">Server 5 (2Embed)</option>
+                            <option value="superembed">Server 6 (SuperEmbed)</option>
+                        </select>
+                    </div>
+
+                    <!-- TV SHOW CONTROLS (Season/Episode) -->
+                    <div class="control-group" id="tv-controls" style="display: none;">
+                        <select id="season-select"></select>
+                        <select id="episode-select"></select>
+                    </div>
+
+                    <!-- ACTIONS -->
+                    <div class="control-actions">
+                        <button class="icon-btn" id="btn-cinema" title="Cinema Mode"><i class="fas fa-film"></i></button>
+                        <button class="icon-btn" id="btn-watchlist" title="Add to Watchlist"><i class="far fa-heart"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast"></div>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    
+    <!-- FIREBASE & APP LOGIC -->
+    <script type="module">
+        // Import Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, arrayUnion, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCRwom-ZDQy_4AWX-8TknWzii_GVxw33hk",
+            authDomain: "zenshows-c4255.firebaseapp.com",
+            projectId: "zenshows-c4255",
+            storageBucket: "zenshows-c4255.firebasestorage.app",
+            messagingSenderId: "824547918366",
+            appId: "1:824547918366:web:5b1ae5de7b083a2f77640f",
+            measurementId: "G-268SWMN17W"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
+
+        // Expose to window for global script access
+        window.db = db;
+        window.firebaseFuncs = { doc, setDoc, getDoc, updateDoc, arrayUnion, collection, getDocs, query, where };
+        
+        // Load Main App Script
+        const script = document.createElement('script');
+        script.src = 'script.js';
+        document.body.appendChild(script);
+    </script>
 </body>
 </html>

@@ -1,282 +1,49 @@
-/* --- Root Variables & Theme Management --- */
-:root {
-    --primary: #e50914; /* Cinematic Red */
-    --accent: #00d4ff;
-    --bg-dark: #0f1014;
-    --bg-card: rgba(255, 255, 255, 0.05);
-    --glass: rgba(15, 16, 20, 0.85);
-    --text-main: #ffffff;
-    --text-dim: #b3b3b3;
-    --transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-}
+:root { --primary: #ff0000; --bg: #0a0a0a; --gray: #1a1a1a; }
+body { margin: 0; font-family: 'Poppins', sans-serif; background: var(--bg); color: #fff; overflow-x: hidden; }
 
-/* AMOLED Theme */
-body.amoled-theme {
-    --bg-dark: #000000;
-    --bg-card: rgba(255, 255, 255, 0.03);
-}
-
-/* --- Base Styles --- */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: var(--bg-dark);
-    color: var(--text-main);
-    overflow-x: hidden;
-    line-height: 1.6;
-}
-
-/* --- Layout Components --- */
-.container {
-    padding: 0 4%;
-}
-
-.glass-effect {
-    background: var(--glass);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-/* --- Navbar & Mobile Hamburger --- */
+/* Navbar */
 .navbar {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 1000;
-    height: 70px;
-    display: flex;
-    align-items: center;
-    transition: var(--transition);
+    height: 70px; width: 100%; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5%; position: fixed; top: 0; background: rgba(0,0,0,0.8); z-index: 100;
 }
+.logo { font-size: 22px; font-weight: 700; }
+.logo span { color: var(--primary); }
+.hamburger { font-size: 24px; cursor: pointer; }
 
-.nav-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: 0 4%;
+/* Side Menu */
+.side-menu {
+    position: fixed; top: 0; right: -300px; width: 300px; height: 100%;
+    background: #000; z-index: 1000; transition: 0.4s ease; padding: 20px;
+    border-left: 1px solid #222;
 }
+.side-menu.active { right: 0; }
+.menu-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; }
+.user-pfp { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--primary); }
 
-.logo {
-    font-size: 1.5rem;
-    font-weight: 800;
-    letter-spacing: 1px;
+.menu-search input {
+    width: 100%; padding: 12px; border-radius: 8px; border: none; background: var(--gray); color: #fff;
 }
+.menu-links { list-style: none; padding: 0; margin-top: 30px; }
+.menu-links li { padding: 15px 0; border-bottom: 1px solid #222; }
+.menu-links a { color: #fff; text-decoration: none; display: flex; gap: 15px; align-items: center; }
 
-.logo span {
-    color: var(--primary);
+/* Horizontal Scroll (No Grid) */
+.scroll-row {
+    display: flex; gap: 15px; overflow-x: auto; padding-bottom: 20px; scrollbar-width: none;
 }
+.movie-item { min-width: 160px; cursor: pointer; transition: 0.3s; }
+.movie-item:hover { transform: scale(1.05); }
+.movie-item img { width: 100%; border-radius: 10px; }
 
-.nav-links {
-    display: flex;
-    list-style: none;
-    gap: 25px;
-}
+/* Hero */
+.hero { height: 75vh; position: relative; display: flex; align-items: center; padding: 5%; background-size: cover; background-position: center; }
+.hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, var(--bg), transparent); }
+.hero-text { position: relative; z-index: 10; max-width: 500px; }
+.hero-text h1 { font-size: 3rem; line-height: 1.1; margin-bottom: 10px; }
 
-.nav-links a {
-    text-decoration: none;
-    color: var(--text-dim);
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: var(--transition);
-}
+/* Player */
+.modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; padding: 10px; align-items: center; justify-content: center; }
+.modal-box { width: 100%; max-width: 1100px; }
+#mainFrame { width: 100%; aspect-ratio: 16/9; border: none; border-radius: 10px; }
 
-.nav-links a:hover, .nav-links a.active {
-    color: #fff;
-}
-
-.hamburger {
-    display: none;
-    cursor: pointer;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.hamburger span {
-    width: 25px;
-    height: 3px;
-    background: #fff;
-    border-radius: 2px;
-}
-
-/* --- Hero Section (Feature 10 & 15) --- */
-.hero {
-    height: 85vh;
-    position: relative;
-    display: flex;
-    align-items: center;
-    padding: 0 4%;
-    overflow: hidden;
-    background-size: cover;
-    background-position: center;
-}
-
-.hero-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(77deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 85%);
-}
-
-.hero-content {
-    position: relative;
-    z-index: 10;
-    max-width: 600px;
-    animation: fadeInUp 1s ease;
-}
-
-.hero-content h2 {
-    font-size: 3.5rem;
-    margin-bottom: 15px;
-    line-height: 1.1;
-}
-
-.hero-btns {
-    display: flex;
-    gap: 15px;
-    margin-top: 25px;
-}
-
-/* --- Buttons --- */
-.btn-primary, .btn-play {
-    padding: 12px 30px;
-    border-radius: 5px;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-    background: var(--primary);
-    color: white;
-    transition: var(--transition);
-}
-
-.btn-info {
-    padding: 12px 30px;
-    border-radius: 5px;
-    border: none;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    backdrop-filter: blur(5px);
-    cursor: pointer;
-}
-
-.btn-play:hover { transform: scale(1.05); background: #ff0f1b; }
-
-/* --- Movie Grid & Cards (Feature 12 & 16) --- */
-.row { margin: 40px 0; padding: 0 4%; }
-.row-title { font-size: 1.4rem; margin-bottom: 20px; font-weight: 600; }
-
-.movie-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 20px;
-}
-
-.movie-card {
-    position: relative;
-    border-radius: 10px;
-    overflow: hidden;
-    transition: var(--transition);
-    cursor: pointer;
-    background: var(--bg-card);
-}
-
-.movie-card img {
-    width: 100%;
-    height: 270px;
-    object-fit: cover;
-    transition: var(--transition);
-}
-
-.movie-card:hover {
-    transform: translateY(-10px) scale(1.03);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-}
-
-.movie-card:hover img { filter: brightness(0.5); }
-
-/* --- Search UI (Feature 4) --- */
-.search-box {
-    position: relative;
-    width: 350px;
-}
-
-.search-box input {
-    width: 100%;
-    padding: 10px 40px 10px 15px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.2);
-    background: rgba(0,0,0,0.3);
-    color: white;
-}
-
-/* --- Profile Dropdown (Feature 17) --- */
-.profile-wrapper {
-    position: relative;
-    cursor: pointer;
-}
-
-.avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 2px solid var(--primary);
-}
-
-.profile-dropdown {
-    position: absolute;
-    right: 0;
-    top: 50px;
-    width: 200px;
-    background: #1a1a1a;
-    border-radius: 10px;
-    padding: 15px;
-    display: none;
-    flex-direction: column;
-    gap: 10px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-}
-
-.profile-wrapper:hover .profile-dropdown { display: flex; }
-
-/* --- Modals (Video Player & Settings) --- */
-.modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.95);
-    display: none;
-    z-index: 2000;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(10px);
-}
-
-.video-container {
-    width: 90%;
-    max-width: 1100px;
-    aspect-ratio: 16/9;
-    background: #000;
-}
-
-#videoIframe { width: 100%; height: 100%; }
-
-/* --- Animations --- */
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* --- Responsive Design --- */
-@media (max-width: 768px) {
-    .nav-links, .search-box { display: none; }
-    .hamburger { display: flex; }
-    .hero-content h2 { font-size: 2.2rem; }
-    .movie-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
-}
+.hidden { display: none; }

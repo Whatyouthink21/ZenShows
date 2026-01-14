@@ -3,33 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zen Shows</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>CINEFLIX | Ultra Premium Streaming</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <header>
-        <h1>Zen Shows</h1>
-        <input type="text" id="search" placeholder="Search for shows...">
-        <button id="searchBtn">Search</button>
-    </header>
-    <main>
-        <section id="featured">
-            <h2>Featured Shows</h2>
-            <div class="show-container"></div>
-        </section>
-        <section id="popular">
-            <h2>Popular Shows</h2>
-            <div class="show-container"></div>
-        </section>
-        <section id="top-rated">
-            <h2>Top Rated Shows</h2>
-            <div class="show-container"></div>
-        </section>
+<body class="bg-black text-white selection:bg-cyan-500 selection:text-white">
+
+    <nav id="navbar" class="fixed top-0 w-full z-50 px-8 py-4 flex justify-between items-center transition-all duration-500 backdrop-blur-0">
+        <div class="flex items-center space-x-10">
+            <h1 class="text-3xl font-black tracking-tighter text-cyan-500 uppercase italic">Cineflix</h1>
+            <ul class="hidden md:flex space-x-6 text-sm font-medium text-gray-300">
+                <li class="hover:text-white cursor-pointer transition">Home</li>
+                <li class="hover:text-white cursor-pointer transition">Movies</li>
+                <li class="hover:text-white cursor-pointer transition">Series</li>
+                <li class="hover:text-white cursor-pointer transition">New & Popular</li>
+            </ul>
+        </div>
+        <div class="flex items-center space-x-6">
+            <div class="relative group">
+                <input type="text" id="searchInput" placeholder="Search titles..." class="bg-gray-900/50 border border-gray-700 rounded-full px-4 py-1 text-sm outline-none focus:ring-2 focus:ring-cyan-500 transition-all w-48 focus:w-64">
+                <i class="fas fa-search absolute right-3 top-2 text-gray-500"></i>
+            </div>
+            <i class="fas fa-bell cursor-pointer hover:text-cyan-400"></i>
+            <div class="w-8 h-8 rounded bg-gradient-to-tr from-cyan-500 to-blue-600 cursor-pointer"></div>
+        </div>
+    </nav>
+
+    <section id="hero" class="relative h-screen w-full flex items-center px-12 overflow-hidden">
+        <div id="hero-bg" class="absolute inset-0 z-0 bg-cover bg-center transition-all duration-1000 scale-105"></div>
+        <div class="absolute inset-0 z-10 bg-gradient-to-r from-black via-black/60 to-transparent"></div>
+        
+        <div class="relative z-20 max-w-2xl space-y-6 animate-slide-in">
+            <span class="bg-cyan-600/20 text-cyan-400 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-widest border border-cyan-500/30">Feature of the day</span>
+            <h2 id="hero-title" class="text-7xl font-bold leading-none italic">---</h2>
+            <p id="hero-desc" class="text-gray-300 text-lg line-clamp-3 leading-relaxed">---</p>
+            <div class="flex items-center space-x-4">
+                <button onclick="openPlayer()" class="bg-white text-black px-8 py-3 rounded-full font-bold flex items-center space-x-2 hover:bg-cyan-500 hover:text-white transition-all transform hover:scale-105 shadow-xl shadow-cyan-500/20">
+                    <i class="fas fa-play"></i> <span>Play Now</span>
+                </button>
+                <button class="bg-gray-500/20 backdrop-blur-md border border-gray-500/30 text-white px-8 py-3 rounded-full font-bold hover:bg-gray-500/40 transition-all">
+                    <i class="fas fa-plus mr-2"></i> Watchlist
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <main class="relative z-30 -mt-32 space-y-12 pb-20">
+        <div class="movie-row px-12">
+            <h3 class="text-xl font-semibold mb-4 flex items-center"><span class="w-1 h-6 bg-cyan-500 mr-3"></span> Trending Now</h3>
+            <div id="trending-container" class="flex space-x-4 overflow-x-auto no-scrollbar scroll-smooth p-2">
+                </div>
+        </div>
+
+        <div class="movie-row px-12">
+            <h3 class="text-xl font-semibold mb-4 flex items-center"><span class="w-1 h-6 bg-cyan-500 mr-3"></span> Top Rated</h3>
+            <div id="toprated-container" class="flex space-x-4 overflow-x-auto no-scrollbar scroll-smooth p-2">
+                </div>
+        </div>
     </main>
-    <footer>
-        <p>&copy; 2023 Zen Shows. All rights reserved.</p>
+
+    <div id="player-modal" class="fixed inset-0 z-[100] bg-black hidden flex-col items-center justify-center p-4 md:p-10 animate-fade-in">
+        <div class="absolute top-6 right-6 flex space-x-4 z-[110]">
+            <select id="source-selector" onchange="changeSource()" class="bg-gray-900 text-white border border-gray-700 rounded px-4 py-2 outline-none">
+                <option value="vidsrc">Source 1 (VidSrc)</option>
+                <option value="cinemaos">Source 2 (CinemaOS)</option>
+                <option value="vidsrc_icu">Source 3 (VidSrc.icu)</option>
+            </select>
+            <button onclick="closePlayer()" class="text-3xl text-gray-400 hover:text-white">&times;</button>
+        </div>
+        <div class="w-full h-full max-w-6xl aspect-video bg-gray-900 rounded-2xl overflow-hidden shadow-2xl shadow-cyan-500/10">
+            <iframe id="main-player" src="" class="w-full h-full" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <footer class="p-12 border-t border-gray-900 text-center text-gray-600 text-sm">
+        <div class="flex justify-center space-x-8 mb-6 text-gray-400">
+            <a href="#" class="hover:text-cyan-500 transition">Privacy</a>
+            <a href="#" class="hover:text-cyan-500 transition">Terms</a>
+            <a href="#" class="hover:text-cyan-500 transition">DMCA</a>
+            <a href="#" class="hover:text-cyan-500 transition">Contact</a>
+        </div>
+        <p>&copy; 2026 CINEFLIX - The Future of Free Cinema</p>
     </footer>
+
     <script src="script.js"></script>
 </body>
 </html>

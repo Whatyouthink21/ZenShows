@@ -1,1390 +1,241 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZenShows - Premium Streaming</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
-    <style>
-        :root {
-            --primary: #6c63ff;
-            --primary-dark: #554fd8;
-            --secondary: #ff6584;
-            --dark: #121212;
-            --dark-light: #1e1e1e;
-            --dark-lighter: #2a2a2a;
-            --text: #ffffff;
-            --text-secondary: #b0b0b0;
-            --text-muted: #888888;
-            --success: #4caf50;
-            --warning: #ff9800;
-            --danger: #f44336;
-            --radius: 8px;
-            --transition: all 0.3s ease;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
-            background-color: var(--dark);
-            color: var(--text);
-            overflow-x: hidden;
-        }
-
-        /* Header */
-        header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            background: linear-gradient(to bottom, rgba(18, 18, 18, 0.95), rgba(18, 18, 18, 0.8));
-            backdrop-filter: blur(10px);
-            padding: 15px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: var(--transition);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--text);
-            text-decoration: none;
-        }
-
-        .logo i {
-            color: var(--primary);
-        }
-
-        .logo span {
-            color: var(--primary);
-        }
-
-        nav ul {
-            display: flex;
-            list-style: none;
-            gap: 25px;
-        }
-
-        nav ul li a {
-            color: var(--text);
-            text-decoration: none;
-            font-weight: 500;
-            padding: 8px 0;
-            position: relative;
-            transition: var(--transition);
-        }
-
-        nav ul li a:hover {
-            color: var(--primary);
-        }
-
-        nav ul li a.active {
-            color: var(--primary);
-        }
-
-        nav ul li a.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background-color: var(--primary);
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .search-container {
-            position: relative;
-        }
-
-        .search-input {
-            background-color: var(--dark-lighter);
-            border: none;
-            padding: 10px 15px 10px 40px;
-            border-radius: var(--radius);
-            color: var(--text);
-            width: 250px;
-            transition: var(--transition);
-        }
-
-        .search-input:focus {
-            outline: none;
-            width: 300px;
-            box-shadow: 0 0 0 2px var(--primary);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-        }
-
-        .user-menu {
-            position: absolute;
-            top: 50px;
-            right: 0;
-            background-color: var(--dark-light);
-            border-radius: var(--radius);
-            width: 200px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: var(--transition);
-            z-index: 100;
-        }
-
-        .user-profile:hover .user-menu {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .user-menu ul {
-            list-style: none;
-        }
-
-        .user-menu ul li {
-            padding: 0;
-        }
-
-        .user-menu ul li a {
-            display: block;
-            padding: 12px 20px;
-            color: var(--text);
-            text-decoration: none;
-            transition: var(--transition);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .user-menu ul li a:hover {
-            background-color: var(--dark-lighter);
-            color: var(--primary);
-        }
-
-        /* Main Content */
-        .main-content {
-            margin-top: 90px;
-            padding: 0 5%;
-        }
-
-        /* Hero Section */
-        .hero {
-            height: 70vh;
-            border-radius: var(--radius);
-            overflow: hidden;
-            position: relative;
-            margin-bottom: 40px;
-        }
-
-        .hero-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            z-index: -1;
-            transition: var(--transition);
-        }
-
-        .hero-content {
-            position: absolute;
-            bottom: 80px;
-            left: 50px;
-            max-width: 600px;
-            z-index: 2;
-        }
-
-        .hero-tag {
-            display: inline-block;
-            background-color: var(--primary);
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            margin-bottom: 20px;
-        }
-
-        .hero-title {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            line-height: 1.1;
-        }
-
-        .hero-description {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            margin-bottom: 25px;
-            line-height: 1.5;
-        }
-
-        .hero-actions {
-            display: flex;
-            gap: 15px;
-        }
-
-        .btn {
-            padding: 12px 25px;
-            border-radius: var(--radius);
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.3);
-        }
-
-        .btn-secondary {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white;
-            backdrop-filter: blur(10px);
-        }
-
-        .btn-secondary:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        /* Content Sections */
-        .section {
-            margin-bottom: 50px;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .section-title {
-            font-size: 1.8rem;
-            font-weight: 600;
-        }
-
-        .section-link {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition);
-        }
-
-        .section-link:hover {
-            color: var(--secondary);
-        }
-
-        /* Content Grid */
-        .content-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .content-card {
-            background-color: var(--dark-light);
-            border-radius: var(--radius);
-            overflow: hidden;
-            transition: var(--transition);
-            cursor: pointer;
-            position: relative;
-        }
-
-        .content-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-        }
-
-        .card-image {
-            width: 100%;
-            height: 280px;
-            object-fit: cover;
-            transition: var(--transition);
-        }
-
-        .content-card:hover .card-image {
-            transform: scale(1.05);
-        }
-
-        .card-content {
-            padding: 15px;
-        }
-
-        .card-title {
-            font-weight: 600;
-            margin-bottom: 5px;
-            font-size: 1rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .card-meta {
-            display: flex;
-            justify-content: space-between;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .card-rating {
-            color: var(--warning);
-        }
-
-        .card-actions {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            opacity: 0;
-            transform: translateX(10px);
-            transition: var(--transition);
-        }
-
-        .content-card:hover .card-actions {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .action-btn {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background-color: rgba(0, 0, 0, 0.7);
-            border: none;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .action-btn:hover {
-            background-color: var(--primary);
-            transform: scale(1.1);
-        }
-
-        /* Sources Modal */
-        .sources-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            z-index: 2000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition);
-        }
-
-        .sources-modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .sources-content {
-            width: 90%;
-            max-width: 800px;
-            background-color: var(--dark-light);
-            border-radius: var(--radius);
-            overflow: hidden;
-            position: relative;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .sources-header {
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: var(--dark-lighter);
-            position: sticky;
-            top: 0;
-            z-index: 1;
-        }
-
-        .sources-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .close-sources {
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .close-sources:hover {
-            color: var(--danger);
-        }
-
-        .sources-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 15px;
-            padding: 20px;
-        }
-
-        .source-card {
-            background-color: var(--dark-lighter);
-            border-radius: var(--radius);
-            padding: 20px;
-            transition: var(--transition);
-            cursor: pointer;
-            border: 2px solid transparent;
-        }
-
-        .source-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary);
-            box-shadow: 0 10px 20px rgba(108, 99, 255, 0.2);
-        }
-
-        .source-card.premium {
-            border-color: var(--warning);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .source-card.premium::before {
-            content: 'AD-FREE';
-            position: absolute;
-            top: 10px;
-            right: -30px;
-            background-color: var(--warning);
-            color: black;
-            padding: 3px 35px;
-            transform: rotate(45deg);
-            font-size: 0.7rem;
-            font-weight: bold;
-        }
-
-        .source-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .source-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 8px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
-
-        .source-name {
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .source-quality {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .quality-tag {
-            background-color: var(--dark);
-            color: var(--text);
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-        }
-
-        .quality-tag.hd {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .quality-tag.uhd {
-            background-color: var(--secondary);
-            color: white;
-        }
-
-        .source-info {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 15px;
-            line-height: 1.4;
-        }
-
-        .source-play-btn {
-            width: 100%;
-            padding: 10px;
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            border-radius: var(--radius);
-            cursor: pointer;
-            transition: var(--transition);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .source-play-btn:hover {
-            background-color: var(--primary-dark);
-        }
-
-        /* Player Modal */
-        .player-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            z-index: 3000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: var(--transition);
-        }
-
-        .player-modal.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .player-content {
-            width: 95%;
-            max-width: 1200px;
-            background-color: var(--dark-light);
-            border-radius: var(--radius);
-            overflow: hidden;
-            position: relative;
-        }
-
-        .player-header {
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: var(--dark-lighter);
-        }
-
-        .player-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
-
-        .close-player {
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .close-player:hover {
-            color: var(--danger);
-        }
-
-        .player-container {
-            position: relative;
-            padding-top: 56.25%;
-        }
-
-        .player-iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-
-        /* Footer */
-        footer {
-            background-color: var(--dark-light);
-            padding: 50px 5% 20px;
-            margin-top: 50px;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-
-        .footer-logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .footer-logo i {
-            color: var(--primary);
-        }
-
-        .footer-logo span {
-            color: var(--primary);
-        }
-
-        .footer-description {
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .footer-title {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            font-weight: 600;
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 10px;
-        }
-
-        .footer-links li a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .footer-links li a:hover {
-            color: var(--primary);
-            padding-left: 5px;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 15px;
-        }
-
-        .social-link {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: var(--dark-lighter);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text);
-            text-decoration: none;
-            transition: var(--transition);
-        }
-
-        .social-link:hover {
-            background-color: var(--primary);
-            transform: translateY(-5px);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        /* Loading */
-        .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 200px;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(108, 99, 255, 0.2);
-            border-radius: 50%;
-            border-top-color: var(--primary);
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero-content {
-                left: 20px;
-                bottom: 40px;
-                max-width: 90%;
-            }
-            
-            .hero-title {
-                font-size: 2.2rem;
-            }
-            
-            .content-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            }
-            
-            .sources-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .search-input {
-                width: 150px;
-            }
-            
-            .search-input:focus {
-                width: 180px;
-            }
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--dark-light);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary);
-            border-radius: 4px;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Zen Shows</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg:#0b0b12;
+  --card:#14141f;
+  --accent:#7c7cff;
+  --text:#eaeaff;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
+body{background:var(--bg);color:var(--text);overflow-x:hidden}
+header{position:fixed;top:0;width:100%;z-index:100;background:rgba(0,0,0,.6);backdrop-filter:blur(10px);padding:15px 30px;display:flex;align-items:center;justify-content:space-between}
+header h1{font-weight:800;color:var(--accent)}
+header input{padding:8px 12px;border-radius:8px;border:none;background:#1c1c2b;color:white}
+
+section{padding:80px 30px}
+.row{display:flex;gap:15px;overflow-x:auto;padding-bottom:10px}
+.card{min-width:180px;background:var(--card);border-radius:14px;overflow:hidden;cursor:pointer;transition:.3s}
+.card:hover{transform:scale(1.08);box-shadow:0 10px 40px rgba(124,124,255,.3)}
+.card img{width:100%;height:270px;object-fit:cover}
+.card div{padding:8px;font-size:14px}
+
+#hero{height:80vh;display:flex;align-items:end;background-size:cover;background-position:center}
+#heroContent{background:linear-gradient(to top,black,transparent);padding:40px;width:100%}
+#heroContent h2{font-size:40px}
+
+button{background:var(--accent);border:none;padding:10px 16px;border-radius:10px;font-weight:600;cursor:pointer}
+button.alt{background:#222}
+
+.modal,.player{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.8);
+  display:none;align-items:center;justify-content:center;
+  z-index:1000
+}
+.modalContent{
+  background:#12121a;
+  width:90%;max-width:900px;
+  border-radius:16px;
+  padding:20px;
+  animation:pop .3s ease
+}
+@keyframes pop{from{transform:scale(.9)}to{transform:scale(1)}}
+
+.player iframe{width:90%;height:80%}
+select{padding:10px;background:#111;color:white;border:none;margin-bottom:10px}
+
+aside{
+  position:fixed;right:0;top:0;height:100%;
+  background:#0e0e18;width:260px;
+  padding:20px;display:none;z-index:1200
+}
+aside h3{margin-bottom:10px}
+aside button{width:100%;margin-bottom:10px}
+</style>
 </head>
+
 <body>
-    <!-- Header -->
-    <header>
-        <a href="#" class="logo">
-            <i class="fas fa-play-circle"></i>
-            Zen<span>Shows</span>
-        </a>
-        
-        <nav>
-            <ul>
-                <li><a href="#" class="active">Home</a></li>
-                <li><a href="#movies">Movies</a></li>
-                <li><a href="#tv">TV Shows</a></li>
-                <li><a href="#trending">Trending</a></li>
-                <li><a href="#my-list">My List</a></li>
-            </ul>
-        </nav>
-        
-        <div class="header-right">
-            <div class="search-container">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" class="search-input" placeholder="Search movies, shows..." id="searchInput">
-            </div>
-            
-            <div class="user-profile">
-                <div class="user-avatar">ZS</div>
-                <div class="user-menu">
-                    <ul>
-                        <li><a href="#"><i class="fas fa-user"></i> Profile</a></li>
-                        <li><a href="#"><i class="fas fa-cog"></i> Settings</a></li>
-                        <li><a href="#"><i class="fas fa-moon"></i> Dark Mode</a></li>
-                        <li><a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </header>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="hero-background" id="heroBackground"></div>
-            <div class="hero-content">
-                <span class="hero-tag" id="heroTag">Trending Now</span>
-                <h1 class="hero-title" id="heroTitle">Loading...</h1>
-                <p class="hero-description" id="heroDescription">Loading description...</p>
-                <div class="hero-actions">
-                    <button class="btn btn-primary" id="playHero">
-                        <i class="fas fa-play"></i> Play Now
-                    </button>
-                    <button class="btn btn-secondary" id="infoHero">
-                        <i class="fas fa-info-circle"></i> More Info
-                    </button>
-                </div>
-            </div>
-        </section>
+<header>
+  <h1>Zen Shows</h1>
+  <input id="search" placeholder="Search movies, shows...">
+  <button onclick="toggleSettings()">⚙️</button>
+</header>
 
-        <!-- Content Sections -->
-        <section class="section">
-            <div class="section-header">
-                <h2 class="section-title">Trending Now</h2>
-                <a href="#" class="section-link">View All</a>
-            </div>
-            <div class="content-grid" id="trendingContent">
-                <div class="loading"><div class="spinner"></div></div>
-            </div>
-        </section>
+<section id="hero"></section>
 
-        <section class="section">
-            <div class="section-header">
-                <h2 class="section-title">Popular Movies</h2>
-                <a href="#" class="section-link">View All</a>
-            </div>
-            <div class="content-grid" id="moviesContent">
-                <div class="loading"><div class="spinner"></div></div>
-            </div>
-        </section>
+<section>
+  <h2>🔥 Trending</h2>
+  <div class="row" id="trending"></div>
+</section>
 
-        <section class="section">
-            <div class="section-header">
-                <h2 class="section-title">Top TV Shows</h2>
-                <a href="#" class="section-link">View All</a>
-            </div>
-            <div class="content-grid" id="tvContent">
-                <div class="loading"><div class="spinner"></div></div>
-            </div>
-        </section>
+<section>
+  <h2>🎬 Movies</h2>
+  <div class="row" id="movies"></div>
+</section>
 
-        <section class="section">
-            <div class="section-header">
-                <h2 class="section-title">Upcoming Movies</h2>
-                <a href="#" class="section-link">View All</a>
-            </div>
-            <div class="content-grid" id="upcomingContent">
-                <div class="loading"><div class="spinner"></div></div>
-            </div>
-        </section>
-    </div>
+<section>
+  <h2>📺 TV Shows</h2>
+  <div class="row" id="tv"></div>
+</section>
 
-    <!-- Sources Modal -->
-    <div class="sources-modal" id="sourcesModal">
-        <div class="sources-content">
-            <div class="sources-header">
-                <h3 class="sources-title" id="sourcesTitle">Select Streaming Source</h3>
-                <button class="close-sources" id="closeSources">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="sources-grid" id="sourcesGrid">
-                <!-- Sources will be dynamically added here -->
-            </div>
-        </div>
-    </div>
+<section>
+  <h2>⭐ My List</h2>
+  <div class="row" id="mylist"></div>
+</section>
 
-    <!-- Player Modal -->
-    <div class="player-modal" id="playerModal">
-        <div class="player-content">
-            <div class="player-header">
-                <h3 class="player-title" id="playerTitle">Now Playing</h3>
-                <button class="close-player" id="closePlayer">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="player-container">
-                <iframe class="player-iframe" id="playerIframe" allowfullscreen></iframe>
-            </div>
-        </div>
-    </div>
+<section>
+  <h2>🕒 History</h2>
+  <div class="row" id="history"></div>
+</section>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-content">
-            <div class="footer-col">
-                <div class="footer-logo">
-                    <i class="fas fa-play-circle"></i>
-                    Zen<span>Shows</span>
-                </div>
-                <p class="footer-description">
-                    Premium streaming platform with 10+ sources including ad-free options. Watch thousands of movies and TV shows in HD quality.
-                </p>
-                <div class="social-links">
-                    <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-            
-            <div class="footer-col">
-                <h3 class="footer-title">Streaming Sources</h3>
-                <ul class="footer-links">
-                    <li><a href="#">CinemaOS</a></li>
-                    <li><a href="#">FlixHQ</a></li>
-                    <li><a href="#">MovieBox</a></li>
-                    <li><a href="#">StreamHub</a></li>
-                    <li><a href="#">ViewWave</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-col">
-                <h3 class="footer-title">Legal</h3>
-                <ul class="footer-links">
-                    <li><a href="#">Terms of Service</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">DMCA</a></li>
-                    <li><a href="#">Copyright</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-col">
-                <h3 class="footer-title">Support</h3>
-                <ul class="footer-links">
-                    <li><a href="#">Help Center</a></li>
-                    <li><a href="#">Contact Us</a></li>
-                    <li><a href="#">FAQ</a></li>
-                    <li><a href="#">Status</a></li>
-                </ul>
-            </div>
-        </div>
-        
-        <div class="footer-bottom">
-            <p>&copy; 2023 ZenShows. All rights reserved. This site uses the TMDB API but is not endorsed by TMDB.</p>
-        </div>
-    </footer>
+<!-- DETAILS -->
+<div class="modal" id="details">
+  <div class="modalContent">
+    <h2 id="dTitle"></h2>
+    <p id="dOverview"></p><br>
+    <button onclick="openPlayer()">▶ Play</button>
+    <button class="alt" onclick="addList()">➕ My List</button>
+    <button class="alt" onclick="closeDetails()">❌</button>
+  </div>
+</div>
 
-    <script>
-        // TMDB Configuration
-        const TMDB_API_KEY = 'a45420333457411e78d5ad35d6c51a2d';
-        const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
-        const TMDB_IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
-        const TMDB_IMAGE_ORIGINAL = 'https://image.tmdb.org/t/p/original';
+<!-- PLAYER -->
+<div class="player" id="player">
+  <div style="width:100%">
+    <select id="sourceSelect"></select>
+    <iframe id="iframe" allowfullscreen></iframe><br>
+    <button onclick="closePlayer()">Close</button>
+  </div>
+</div>
 
-        // Current selected content
-        let currentContent = null;
+<!-- SETTINGS -->
+<aside id="settings">
+  <h3>Settings</h3>
+  <button onclick="clearList()">Clear My List</button>
+  <button onclick="clearHistory()">Clear History</button>
+  <button onclick="toggleTheme()">Toggle Theme</button>
+  <button onclick="toggleSettings()">Close</button>
+</aside>
 
-        // Streaming Sources Database
-        const STREAMING_SOURCES = [
-            {
-                id: 1,
-                name: 'CinemaOS',
-                icon: '🎬',
-                quality: ['HD', '4K'],
-                isPremium: true,
-                description: 'Ad-free streaming with 4K support',
-                embedUrl: 'https://vidsrc.cc/embed/movie/{tmdb_id}',
-                type: 'embed'
-            },
-            {
-                id: 2,
-                name: 'FlixHQ',
-                icon: '📺',
-                quality: ['HD', '1080p'],
-                isPremium: false,
-                description: 'Large library with multiple servers',
-                embedUrl: 'https://flixhq.to/embed/movie/{tmdb_id}',
-                type: 'embed'
-            },
-            {
-                id: 3,
-                name: 'MovieBox',
-                icon: '🍿',
-                quality: ['HD', '720p'],
-                isPremium: true,
-                description: 'Ad-free experience with subtitles',
-                embedUrl: 'https://moviebox.cyou/embed/movie/{tmdb_id}',
-                type: 'embed'
-            },
-            {
-                id: 4,
-                name: 'StreamHub',
-                icon: '⚡',
-                quality: ['HD', '1080p'],
-                isPremium: false,
-                description: 'Fast loading with multiple mirrors',
-                embedUrl: 'https://streamhub.to/embed/movie/{tmdb_id}',
-                type: 'embed'
-            },
-            {
-                id: 5,
-                name: 'ViewWave',
-                icon: '🌊',
-                quality: ['4K', 'HDR'],
-                isPremium: true,
-                description: 'Premium ad-free 4K streaming',
-                embedUrl: 'https://viewwave.xyz/embed/movie/{tmdb_id}',
-                type: 'embed'
-            },
-            {
-                id: 6,
-                name: 'CineHub',
-                icon: '🎥',
-                quality: ['HD', '1080p'],
-                isPremium: false,
-                description: 'Popular source with good quality',
-                embedUrl: 'https://cinehub.ws/embed/movie/{tmdb_id}',
-                type: 'embed'
-            },
-            {
-                id: 7,
-                name: 'PrimeStream',
-                icon: '👑',
-                quality: ['HD', '4K'],
-                isPremium: false,
-                description: 'High quality streaming',
-                embedUrl: 'https://primestream.to/embed/movie/{tmdb_id}',
-                type: 'embed'
-            },
-            {
-                id: 8,
-                name: 'Filmzie',
-                icon: '📽️',
-                quality: ['HD', '720p'],
-                isPremium: false,
-                description: 'Good for older movies',
-                embedUrl: 'https://filmzie.com/embed/movie/{tmdb_id}',
-                type: 'embed'
-            },
-            {
-                id: 9,
-                name: 'MediaFire',
-                icon: '🔥',
-                quality: ['HD', '1080p'],
-                isPremium: false,
-                description: 'Direct download option available',
-                embedUrl: 'https://mediafire.cc/embed/movie/{tmdb_id}',
-                type: 'embed'
-            },
-            {
-                id: 10,
-                name: 'UltraFlix',
-                icon: '✨',
-                quality: ['4K', 'Dolby'],
-                isPremium: true,
-                description: 'Ultra HD with Dolby Audio',
-                embedUrl: 'https://ultraflix.cc/embed/movie/{tmdb_id}',
-                type: 'embed'
-            },
-            {
-                id: 11,
-                name: 'WatchBox',
-                icon: '⌚',
-                quality: ['HD', '720p'],
-                isPremium: false,
-                description: 'Mobile optimized streaming',
-                embedUrl: 'https://watchbox.me/embed/movie/{tmdb_id}',
-                type: 'embed'
-            },
-            {
-                id: 12,
-                name: 'StreamLord',
-                icon: '👑',
-                quality: ['HD', '1080p'],
-                isPremium: false,
-                description: 'Large collection with fast servers',
-                embedUrl: 'https://streamlord.com/embed/movie/{tmdb_id}',
-                type: 'embed'
-            }
-        ];
+<script>
+const API="https://api.themoviedb.org/3";
+const KEY="a45420333457411e78d5ad35d6c51a2d";
+const IMG="https://image.tmdb.org/t/p/w500";
 
-        // Fetch TMDB Data
-        async function fetchTMDBData(endpoint) {
-            try {
-                const response = await fetch(`${TMDB_BASE_URL}${endpoint}?api_key=${TMDB_API_KEY}&language=en-US`);
-                return await response.json();
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                return null;
-            }
-        }
+let currentItem=null;
 
-        // Load Hero Content
-        async function loadHeroContent() {
-            const data = await fetchTMDBData('/trending/movie/day');
-            if (data && data.results && data.results.length > 0) {
-                const movie = data.results[0];
-                document.getElementById('heroTitle').textContent = movie.title;
-                document.getElementById('heroDescription').textContent = movie.overview.substring(0, 200) + '...';
-                document.getElementById('heroBackground').style.backgroundImage = 
-                    `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.5)), url('${TMDB_IMAGE_ORIGINAL}${movie.backdrop_path}')`;
-                
-                // Store current content
-                currentContent = {
-                    id: movie.id,
-                    title: movie.title,
-                    type: 'movie',
-                    overview: movie.overview
-                };
-            }
-        }
+/* SOURCE SWITCHER – YOU DROP LINKS HERE */
+const SOURCES=[
+ {name:"Source 1",movie:id=>"",tv:(id,s,e)=>""},
+ {name:"Source 2",movie:id=>"",tv:(id,s,e)=>""},
+ {name:"Source 3",movie:id=>"",tv:(id,s,e)=>""},
+ {name:"Source 4",movie:id=>"",tv:(id,s,e)=>""},
+ {name:"Source 5",movie:id=>"",tv:(id,s,e)=>""},
+ {name:"Source 6",movie:id=>"",tv:(id,s,e)=>""},
+ {name:"Source 7",movie:id=>"",tv:(id,s,e)=>""},
+ {name:"Source 8",movie:id=>"",tv:(id,s,e)=>""},
+ {name:"Source 9",movie:id=>"",tv:(id,s,e)=>""},
+ {name:"Source 10",movie:id=>"",tv:(id,s,e)=>""}
+];
 
-        // Load Content Grid
-        async function loadContentGrid(endpoint, elementId, titleKey = 'title', isTV = false) {
-            const data = await fetchTMDBData(endpoint);
-            const container = document.getElementById(elementId);
-            
-            if (!data || !data.results) {
-                container.innerHTML = '<p>Error loading content</p>';
-                return;
-            }
+const sSel=document.getElementById("sourceSelect");
+SOURCES.forEach((s,i)=>sSel.innerHTML+=`<option value="${i}">${s.name}</option>`);
 
-            let html = '';
-            data.results.slice(0, 12).forEach(item => {
-                const title = isTV ? item.name : item.title;
-                const imageUrl = item.poster_path ? `${TMDB_IMAGE_URL}${item.poster_path}` : 
-                    'https://images.unsplash.com/photo-1535016120720-40c646be5580?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80';
-                
-                html += `
-                    <div class="content-card" data-id="${item.id}" data-type="${isTV ? 'tv' : 'movie'}" data-title="${title}">
-                        <img src="${imageUrl}" alt="${title}" class="card-image">
-                        <div class="card-content">
-                            <h3 class="card-title">${title}</h3>
-                            <div class="card-meta">
-                                <span>${isTV ? 'TV' : 'Movie'}</span>
-                                <span class="card-rating">★ ${item.vote_average?.toFixed(1) || 'N/A'}</span>
-                            </div>
-                        </div>
-                        <div class="card-actions">
-                            <button class="action-btn play-btn" data-id="${item.id}" data-type="${isTV ? 'tv' : 'movie'}">
-                                <i class="fas fa-play"></i>
-                            </button>
-                            <button class="action-btn add-btn">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            });
+async function fetchRow(url,el){
+ const r=await fetch(url).then(r=>r.json());
+ el.innerHTML="";
+ r.results.forEach(m=>{
+  if(!m.poster_path)return;
+  const c=document.createElement("div");
+  c.className="card";
+  c.innerHTML=`<img loading="lazy" src="${IMG+m.poster_path}"><div>${m.title||m.name}</div>`;
+  c.onclick=()=>openDetails(m);
+  el.appendChild(c);
+ });
+}
 
-            container.innerHTML = html;
-            
-            // Add event listeners to new cards
-            document.querySelectorAll('.play-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const id = btn.dataset.id;
-                    const type = btn.dataset.type;
-                    const card = btn.closest('.content-card');
-                    const title = card.dataset.title;
-                    showSourcesModal(id, type, title);
-                });
-            });
+function openDetails(m){
+ currentItem=m;
+ document.getElementById("dTitle").innerText=m.title||m.name;
+ document.getElementById("dOverview").innerText=m.overview;
+ document.getElementById("details").style.display="flex";
+}
 
-            document.querySelectorAll('.content-card').forEach(card => {
-                card.addEventListener('click', (e) => {
-                    if (!e.target.closest('.card-actions')) {
-                        const id = card.dataset.id;
-                        const type = card.dataset.type;
-                        const title = card.dataset.title;
-                        showSourcesModal(id, type, title);
-                    }
-                });
-            });
-        }
+function closeDetails(){details.style.display="none"}
 
-        // Show Sources Modal
-        function showSourcesModal(id, type, title) {
-            currentContent = { id, type, title };
-            document.getElementById('sourcesTitle').textContent = `Stream "${title}"`;
-            
-            const sourcesGrid = document.getElementById('sourcesGrid');
-            let html = '';
-            
-            STREAMING_SOURCES.forEach(source => {
-                html += `
-                    <div class="source-card ${source.isPremium ? 'premium' : ''}" data-source="${source.id}">
-                        <div class="source-header">
-                            <div class="source-icon">${source.icon}</div>
-                            <div class="source-name">${source.name}</div>
-                        </div>
-                        <div class="source-quality">
-                            ${source.quality.map(q => 
-                                `<span class="quality-tag ${q === '4K' || q === 'UHD' ? 'uhd' : q === 'HD' ? 'hd' : ''}">${q}</span>`
-                            ).join('')}
-                        </div>
-                        <p class="source-info">${source.description}</p>
-                        <button class="source-play-btn" data-url="${source.embedUrl.replace('{tmdb_id}', id).replace('movie', type)}">
-                            <i class="fas fa-play"></i> Play Now
-                        </button>
-                    </div>
-                `;
-            });
-            
-            sourcesGrid.innerHTML = html;
-            
-            // Add event listeners to source buttons
-            document.querySelectorAll('.source-play-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const url = btn.dataset.url;
-                    playContent(url, title);
-                });
-            });
-            
-            document.getElementById('sourcesModal').classList.add('active');
-        }
+function openPlayer(){
+ player.style.display="flex";
+ loadSource();
+ saveHistory();
+}
+function closePlayer(){player.style.display="none"}
 
-        // Play Content
-        function playContent(url, title) {
-            document.getElementById('playerTitle').textContent = title;
-            document.getElementById('playerIframe').src = url;
-            document.getElementById('sourcesModal').classList.remove('active');
-            document.getElementById('playerModal').classList.add('active');
-            
-            // Add history to local storage
-            const history = JSON.parse(localStorage.getItem('watchHistory') || '[]');
-            history.unshift({
-                id: currentContent.id,
-                title: title,
-                type: currentContent.type,
-                timestamp: new Date().toISOString()
-            });
-            
-            // Keep only last 20 items
-            if (history.length > 20) history.length = 20;
-            localStorage.setItem('watchHistory', JSON.stringify(history));
-        }
+function loadSource(){
+ const s=SOURCES[sSel.value];
+ iframe.src=(currentItem.title?s.movie(currentItem.id):s.tv(currentItem.id,1,1));
+ localStorage.lastSource=sSel.value;
+}
 
-        // Initialize
-        async function init() {
-            // Load all content
-            await loadHeroContent();
-            await loadContentGrid('/trending/movie/day', 'trendingContent');
-            await loadContentGrid('/movie/popular', 'moviesContent');
-            await loadContentGrid('/tv/popular', 'tvContent', 'name', true);
-            await loadContentGrid('/movie/upcoming', 'upcomingContent');
+sSel.onchange=loadSource;
+sSel.value=localStorage.lastSource||0;
 
-            // Hero button events
-            document.getElementById('playHero').addEventListener('click', () => {
-                if (currentContent) {
-                    showSourcesModal(currentContent.id, currentContent.type, currentContent.title);
-                }
-            });
+function addList(){
+ let l=JSON.parse(localStorage.mylist||"[]");
+ if(!l.find(x=>x.id===currentItem.id))l.push(currentItem);
+ localStorage.mylist=JSON.stringify(l);
+ renderMyList();
+}
 
-            document.getElementById('infoHero').addEventListener('click', () => {
-                if (currentContent) {
-                    alert(currentContent.overview || 'No description available');
-                }
-            });
+function saveHistory(){
+ let h=JSON.parse(localStorage.history||"[]");
+ h.unshift(currentItem);
+ localStorage.history=JSON.stringify(h.slice(0,20));
+ renderHistory();
+}
 
-            // Search functionality
-            document.getElementById('searchInput').addEventListener('input', debounce(async (e) => {
-                const query = e.target.value.trim();
-                if (query.length < 2) return;
-                
-                const data = await fetchTMDBData(`/search/multi?query=${encodeURIComponent(query)}`);
-                if (data && data.results) {
-                    // You can implement search results display here
-                    console.log('Search results:', data.results);
-                }
-            }, 500));
+function renderMyList(){
+ mylist.innerHTML="";
+ JSON.parse(localStorage.mylist||"[]").forEach(m=>{
+  const c=document.createElement("div");
+  c.className="card";
+  c.innerHTML=`<img src="${IMG+m.poster_path}"><div>${m.title||m.name}</div>`;
+  c.onclick=()=>openDetails(m);
+  mylist.appendChild(c);
+ });
+}
+function renderHistory(){
+ history.innerHTML="";
+ JSON.parse(localStorage.history||"[]").forEach(m=>{
+  const c=document.createElement("div");
+  c.className="card";
+  c.innerHTML=`<img src="${IMG+m.poster_path}"><div>${m.title||m.name}</div>`;
+  history.appendChild(c);
+ });
+}
 
-            // Modal close events
-            document.getElementById('closeSources').addEventListener('click', () => {
-                document.getElementById('sourcesModal').classList.remove('active');
-            });
+function toggleSettings(){settings.style.display=settings.style.display=="block"?"none":"block"}
+function clearList(){localStorage.mylist="[]";renderMyList()}
+function clearHistory(){localStorage.history="[]";renderHistory()}
+function toggleTheme(){document.body.classList.toggle("light")}
 
-            document.getElementById('closePlayer').addEventListener('click', () => {
-                document.getElementById('playerModal').classList.remove('active');
-                document.getElementById('playerIframe').src = '';
-            });
+(async()=>{
+ const t=await fetch(`${API}/trending/all/week?api_key=${KEY}`).then(r=>r.json());
+ hero.style.backgroundImage=`url(${IMG+t.results[0].backdrop_path})`;
+ hero.innerHTML=`<div id="heroContent"><h2>${t.results[0].title||t.results[0].name}</h2></div>`;
+ fetchRow(`${API}/trending/all/week?api_key=${KEY}`,trending);
+ fetchRow(`${API}/movie/popular?api_key=${KEY}`,movies);
+ fetchRow(`${API}/tv/popular?api_key=${KEY}`,tv);
+ renderMyList();renderHistory();
+})();
+</script>
 
-            // Close modals on outside click
-            document.getElementById('sourcesModal').addEventListener('click', (e) => {
-                if (e.target === document.getElementById('sourcesModal')) {
-                    document.getElementById('sourcesModal').classList.remove('active');
-                }
-            });
-
-            document.getElementById('playerModal').addEventListener('click', (e) => {
-                if (e.target === document.getElementById('playerModal')) {
-                    document.getElementById('playerModal').classList.remove('active');
-                    document.getElementById('playerIframe').src = '';
-                }
-            });
-
-            // Esc key to close modals
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape') {
-                    document.getElementById('sourcesModal').classList.remove('active');
-                    document.getElementById('playerModal').classList.remove('active');
-                    document.getElementById('playerIframe').src = '';
-                }
-            });
-        }
-
-        // Debounce function for search
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        // Start the application
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
 </body>
 </html>

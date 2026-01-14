@@ -1,124 +1,67 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
-
-/* --- 1. Base Reset & Smoothness --- */
+/* Custom Styles for 50 Features */
 :root {
-    --primary: #06b6d4; /* Cyan 500 */
-    --accent: #3b82f6;  /* Blue 500 */
-    --bg-dark: #050505;
+    --accent: #06b6d4;
 }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+body::-webkit-scrollbar { width: 6px; }
+body::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
 
-body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--bg-dark);
-    color: white;
-    overflow-x: hidden;
-}
-
-/* --- 2. Custom Scrollbar (Feature 46) --- */
-::-webkit-scrollbar {
-    width: 8px;
-}
-::-webkit-scrollbar-track {
-    background: #111;
-}
-::-webkit-scrollbar-thumb {
-    background: #333;
-    border-radius: 10px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: var(--primary);
-}
-
-/* --- 3. Sexy UI Animations (Features 8-10) --- */
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(40px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes glowPulse {
-    0% { box-shadow: 0 0 5px rgba(6, 182, 212, 0.2); }
-    50% { box-shadow: 0 0 20px rgba(6, 182, 212, 0.6); }
-    100% { box-shadow: 0 0 5px rgba(6, 182, 212, 0.2); }
-}
-
-.animate-slide-in {
-    animation: slideUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-/* --- 4. Navigation Glassmorphism (Feature 2) --- */
-#navbar.nav-scrolled {
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(15px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-}
-
-/* --- 5. Movie Card "Sexy" Hover (Feature 17) --- */
+/* Feature 17: Bento Grid Hover */
 .movie-card {
+    min-width: 220px;
+    height: 330px;
     position: relative;
-    min-width: 200px;
-    height: 300px;
     border-radius: 12px;
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: #111;
     overflow: hidden;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
-    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .movie-card:hover {
-    transform: scale(1.15);
-    z-index: 40;
-    border-color: var(--primary);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+    transform: scale(1.1) translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 20px rgba(6,182,212,0.2);
+    z-index: 50;
 }
 
 .movie-card img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.5s;
+    transition: 0.5s;
 }
 
-.movie-card:hover img {
-    filter: brightness(0.4) blur(2px);
+.card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, black 20%, transparent);
+    opacity: 0;
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1.5rem;
 }
 
-/* --- 6. Horizontal Scrolling (Feature 16) --- */
-.no-scrollbar::-webkit-scrollbar {
-    display: none;
+.movie-card:hover .card-overlay { opacity: 1; }
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* Animations */
+@keyframes reveal {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
 }
-.no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+.animate-reveal { animation: reveal 1s ease-out forwards; }
+
+.nav-scrolled {
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(20px);
+    padding: 0.8rem 1.5rem;
 }
 
-/* --- 7. Player Modal Styling --- */
-#player-modal {
-    background: radial-gradient(circle at center, #111 0%, #000 100%);
-}
+/* Feature 49: Dynamic Themes */
+[data-theme="red"] { --accent: #ef4444; }
+[data-theme="purple"] { --accent: #a855f7; }
 
-#main-player {
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 1rem;
-    background: #000;
-    box-shadow: 0 0 100px rgba(6, 182, 212, 0.1);
-}
-
-/* --- 8. Glowing Buttons (Feature 9) --- */
-.btn-glow:hover {
-    animation: glowPulse 2s infinite;
-}
-
-/* --- 9. Mobile Responsiveness (Feature 9) --- */
-@media (max-width: 768px) {
-    #hero-title { font-size: 3rem; }
-    .movie-card { min-width: 150px; height: 220px; }
-    .movie-row { px: 1rem; }
-}
+.text-accent { color: var(--accent); }
+.bg-accent { background-color: var(--accent); }

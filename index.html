@@ -1,275 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Zen Shows</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-
-<style>
-:root{
-  --bg:#0b0b12;
-  --card:#14141f;
-  --accent:#7c7cff;
-  --text:#eaeaff;
-}
-*{margin:0;padding:0;box-sizing:border-box;font-family:Inter}
-body{background:var(--bg);color:var(--text)}
-header{
-  position:fixed;top:0;width:100%;z-index:100;
-  display:flex;gap:15px;align-items:center;
-  padding:15px 25px;
-  background:rgba(0,0,0,.6);
-  backdrop-filter:blur(10px)
-}
-header h1{font-weight:800;color:var(--accent)}
-header input{flex:1;padding:8px 12px;border-radius:8px;border:none;background:#1c1c2b;color:white}
-
-section{padding:90px 25px 30px}
-h2{margin-bottom:10px}
-.row{display:flex;gap:14px;overflow-x:auto}
-.card{
-  min-width:180px;background:var(--card);
-  border-radius:14px;overflow:hidden;
-  cursor:pointer;transition:.3s
-}
-.card:hover{transform:scale(1.08)}
-.card img{width:100%;height:260px;object-fit:cover}
-.card div{padding:8px;font-size:14px}
-
-#hero{
-  height:80vh;background-size:cover;
-  background-position:center;
-  display:flex;align-items:end
-}
-#heroContent{
-  width:100%;padding:40px;
-  background:linear-gradient(to top,black,transparent)
-}
-#heroContent h2{font-size:42px}
-
-button{
-  background:var(--accent);
-  border:none;padding:10px 16px;
-  border-radius:10px;font-weight:600;
-  cursor:pointer
-}
-button.alt{background:#222}
-
-.modal,.player{
-  position:fixed;inset:0;
-  background:rgba(0,0,0,.8);
-  display:none;align-items:center;justify-content:center;
-  z-index:1000
-}
-.modalContent{
-  background:#12121a;
-  width:90%;max-width:900px;
-  padding:20px;border-radius:16px
-}
-
-.player iframe{width:90%;height:80%}
-
-aside{
-  position:fixed;right:0;top:0;height:100%;
-  width:260px;background:#0e0e18;
-  padding:20px;display:none;z-index:1200
-}
-aside button{width:100%;margin-bottom:10px}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zen Shows</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-
 <body>
-
-<header>
-  <h1>Zen Shows</h1>
-  <input id="search" placeholder="Search movies or shows">
-  <button onclick="toggleSettings()">⚙️</button>
-</header>
-
-<section id="hero"></section>
-
-<section>
-  <h2>🔥 Trending</h2>
-  <div class="row" id="trending"></div>
-</section>
-
-<section>
-  <h2>🎬 Movies</h2>
-  <div class="row" id="movies"></div>
-</section>
-
-<section>
-  <h2>📺 TV Shows</h2>
-  <div class="row" id="tv"></div>
-</section>
-
-<section>
-  <h2>⭐ My List</h2>
-  <div class="row" id="mylist"></div>
-</section>
-
-<section>
-  <h2>🕒 History</h2>
-  <div class="row" id="history"></div>
-</section>
-
-<!-- DETAILS -->
-<div class="modal" id="details">
-  <div class="modalContent">
-    <h2 id="dTitle"></h2>
-    <p id="dOverview"></p><br>
-    <button onclick="openPlayer()">▶ Play</button>
-    <button class="alt" onclick="addList()">➕ My List</button>
-    <button class="alt" onclick="closeDetails()">❌</button>
-  </div>
-</div>
-
-<!-- PLAYER -->
-<div class="player" id="player">
-  <div style="width:100%">
-    <select id="sourceSelect"></select>
-    <iframe id="iframe" allowfullscreen></iframe><br>
-    <button onclick="closePlayer()">Close</button>
-  </div>
-</div>
-
-<!-- SETTINGS -->
-<aside id="settings">
-  <h3>Settings</h3>
-  <button onclick="clearList()">Clear My List</button>
-  <button onclick="clearHistory()">Clear History</button>
-  <button onclick="toggleSettings()">Close</button>
-</aside>
-
-<script>
-const API="https://api.themoviedb.org/3";
-const KEY="a45420333457411e78d5ad35d6c51a2d";
-const IMG="https://image.tmdb.org/t/p/w500";
-
-/* DOM */
-const hero=document.getElementById("hero");
-const trending=document.getElementById("trending");
-const movies=document.getElementById("movies");
-const tv=document.getElementById("tv");
-const mylist=document.getElementById("mylist");
-const historyEl=document.getElementById("history");
-const details=document.getElementById("details");
-const player=document.getElementById("player");
-const iframe=document.getElementById("iframe");
-const settings=document.getElementById("settings");
-const search=document.getElementById("search");
-const dTitle=document.getElementById("dTitle");
-const dOverview=document.getElementById("dOverview");
-
-let currentItem=null;
-
-/* SOURCES – YOU REPLACE LINKS */
-const SOURCES=[
- {name:"Source 1",movie:id=>"https://www.youtube.com/embed/dQw4w9WgXcQ",tv:(id,s,e)=>"https://www.youtube.com/embed/dQw4w9WgXcQ"},
- {name:"Source 2",movie:id=>"",tv:(id,s,e)=>""},
- {name:"Source 3",movie:id=>"",tv:(id,s,e)=>""},
- {name:"Source 4",movie:id=>"",tv:(id,s,e)=>""},
- {name:"Source 5",movie:id=>"",tv:(id,s,e)=>""}
-];
-
-const sSel=document.getElementById("sourceSelect");
-SOURCES.forEach((s,i)=>sSel.innerHTML+=`<option value="${i}">${s.name}</option>`);
-
-async function fetchRow(url,el){
- const r=await fetch(url).then(r=>r.json());
- el.innerHTML="";
- r.results.forEach(m=>{
-  if(!m.poster_path)return;
-  const c=document.createElement("div");
-  c.className="card";
-  c.innerHTML=`<img src="${IMG+m.poster_path}"><div>${m.title||m.name}</div>`;
-  c.onclick=()=>openDetails(m);
-  el.appendChild(c);
- });
-}
-
-function openDetails(m){
- currentItem=m;
- dTitle.innerText=m.title||m.name;
- dOverview.innerText=m.overview;
- details.style.display="flex";
-}
-
-function closeDetails(){details.style.display="none"}
-
-function openPlayer(){
- player.style.display="flex";
- loadSource();
- saveHistory();
-}
-function closePlayer(){player.style.display="none"}
-
-function loadSource(){
- const s=SOURCES[sSel.value];
- iframe.src=(currentItem.title?s.movie(currentItem.id):s.tv(currentItem.id,1,1));
-}
-
-function addList(){
- let l=JSON.parse(localStorage.mylist||"[]");
- if(!l.find(x=>x.id===currentItem.id))l.push(currentItem);
- localStorage.mylist=JSON.stringify(l);
- renderMyList();
-}
-
-function saveHistory(){
- let h=JSON.parse(localStorage.history||"[]");
- h.unshift(currentItem);
- localStorage.history=JSON.stringify(h.slice(0,20));
- renderHistory();
-}
-
-function renderMyList(){
- mylist.innerHTML="";
- JSON.parse(localStorage.mylist||"[]").forEach(m=>{
-  const c=document.createElement("div");
-  c.className="card";
-  c.innerHTML=`<img src="${IMG+m.poster_path}"><div>${m.title||m.name}</div>`;
-  c.onclick=()=>openDetails(m);
-  mylist.appendChild(c);
- });
-}
-
-function renderHistory(){
- historyEl.innerHTML="";
- JSON.parse(localStorage.history||"[]").forEach(m=>{
-  const c=document.createElement("div");
-  c.className="card";
-  c.innerHTML=`<img src="${IMG+m.poster_path}"><div>${m.title||m.name}</div>`;
-  historyEl.appendChild(c);
- });
-}
-
-function toggleSettings(){
- settings.style.display=settings.style.display==="block"?"none":"block";
-}
-function clearList(){localStorage.mylist="[]";renderMyList()}
-function clearHistory(){localStorage.history="[]";renderHistory()}
-
-/* SEARCH */
-search.addEventListener("input",async e=>{
- if(e.target.value.length<2)return;
- const r=await fetch(`${API}/search/multi?api_key=${KEY}&query=${e.target.value}`).then(r=>r.json());
- trending.innerHTML="";
- r.results.forEach(openDetails);
-});
-
-/* INIT */
-(async()=>{
- const t=await fetch(`${API}/trending/all/week?api_key=${KEY}`).then(r=>r.json());
- hero.style.backgroundImage=`url(${IMG+t.results[0].backdrop_path})`;
- hero.innerHTML=`<div id="heroContent"><h2>${t.results[0].title||t.results[0].name}</h2><br><button onclick='openDetails(${JSON.stringify(t.results[0])})'>Details</button></div>`;
- fetchRow(`${API}/trending/all/week?api_key=${KEY}`,trending);
- fetchRow(`${API}/movie/popular?api_key=${KEY}`,movies);
- fetchRow(`${API}/tv/popular?api_key=${KEY}`,tv);
- renderMyList();renderHistory();
-})();
-</script>
-
+    <header>
+        <h1>Zen Shows</h1>
+        <input type="text" id="search" placeholder="Search for shows...">
+        <button id="searchBtn">Search</button>
+    </header>
+    <main>
+        <section id="featured">
+            <h2>Featured Shows</h2>
+            <div class="show-container"></div>
+        </section>
+        <section id="popular">
+            <h2>Popular Shows</h2>
+            <div class="show-container"></div>
+        </section>
+        <section id="top-rated">
+            <h2>Top Rated Shows</h2>
+            <div class="show-container"></div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2023 Zen Shows. All rights reserved.</p>
+    </footer>
+    <script src="script.js"></script>
 </body>
 </html>

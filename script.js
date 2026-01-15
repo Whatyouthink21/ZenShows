@@ -1,268 +1,168 @@
-// ============================================
-// ZEN SHOWS - COMPLETE JAVASCRIPT - PART 1
-// Core Configuration, State Management, and API Functions
-// ============================================
+// TMDB API Configuration
+const TMDB_API_KEY = 'a45420333457411e78d5ad35d6c51a2d';
+const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p';
 
-// === CONFIGURATION ===
-
-const API_KEY = 'a45420333457411e78d5ad35d6c51a2d';
-const BASE_URL = 'https://api.themoviedb.org/3';
-const IMG_BASE = 'https://image.tmdb.org/t/p';
-
-// Streaming Sources (10 sources as requested)
-const SOURCES = [
-    { name: 'VidSrc', url: 'https://vidsrc.xyz/embed', movie: '/movie/', tv: '/tv/' },
-    { name: 'VidSrc PRO', url: 'https://vidsrc.pro/embed', movie: '/movie/', tv: '/tv/' },
-    { name: 'VidSrc 2', url: 'https://vidsrc.me/embed', movie: '/movie/', tv: '/tv/' },
-    { name: 'SuperEmbed', url: 'https://multiembed.mov', movie: '/?video_id=', tv: '/?video_id=' },
-    { name: 'Embed.su', url: 'https://embed.su/embed', movie: '/movie/', tv: '/tv/' },
-    { name: 'VidLink', url: 'https://vidlink.pro', movie: '/movie/', tv: '/tv/' },
-    { name: 'MoviesAPI', url: 'https://moviesapi.club', movie: '/movie/', tv: '/tv/' },
-    { name: 'AutoEmbed', url: 'https://autoembed.co', movie: '/movie/tmdb/', tv: '/tv/tmdb/' },
-    { name: 'NontonGo', url: 'https://www.NontonGo.win/embed', movie: '/movie/', tv: '/tv/' },
-    { name: 'SmashyStream', url: 'https://embed.smashystream.com/playere.php', movie: '?tmdb=', tv: '?tmdb=' }
+// Video Sources Configuration
+const VIDEO_SOURCES = [
+    { name: 'VidSrc', url: 'https://vidsrc.to/embed' },
+    { name: 'VidSrc PRO', url: 'https://vidsrc.pro/embed' },
+    { name: 'VidSrc XYZ', url: 'https://vidsrc.xyz/embed' },
+    { name: '2Embed', url: 'https://www.2embed.cc/embed' },
+    { name: 'SuperEmbed', url: 'https://multiembed.mov/directstream.php' },
+    { name: 'Embed.su', url: 'https://embed.su/embed' },
+    { name: 'NontonGo', url: 'https://www.NontonGo.win/embed' },
+    { name: 'VidLink', url: 'https://vidlink.pro/embed' },
+    { name: 'MovieAPI', url: 'https://moviesapi.club' },
+    { name: 'SmashyStream', url: 'https://player.smashy.stream' },
+    { name: 'AutoEmbed', url: 'https://autoembed.cc/embed/player.php' }
 ];
 
-// === GLOBAL STATE ===
-
+// App State
+let currentUser = null;
 let currentPage = 'home';
-let currentContent = null;
-let currentHeroContent = null;
+let currentMediaType = null;
+let currentMediaId = null;
+let currentSource = 0;
 let currentSeason = 1;
 let currentEpisode = 1;
-let watchHistory = [];
-let myList = [];
-let settings = {
-    autoplay: false,
-    skipIntro: false,
-    hd: true,
-    adult: false,
-    animations: true,
-    autoSwitch: true,
-    spoilers: true,
-    defaultSource: 0,
-    itemsPerPage: 20
-};
-let genres = [];
-let heroInterval;
-let searchTimeout;
 
-// === INITIALIZATION ===
-
+// Initialize App
 document.addEventListener('DOMContentLoaded', () => {
-    loadFromStorage();
-    loadGenres();
+    checkAuth();
     initializeEventListeners();
-    initializeSettings();
-    loadHomePage();
-    startHeroRotation();
-    initScrollToTop();
+    loadNotifications();
+    
+    if (currentUser) {
+        loadHomePage();
+    }
 });
 
-// === STORAGE MANAGEMENT ===
-
-function loadFromStorage() {
-    try {
-        const historyData = localStorage.getItem('watchHistory');
-        const listData = localStorage.getItem('myList');
-        const settingsData = localStorage.getItem('settings');
-        
-        if (historyData) watchHistory = JSON.parse(historyData);
-        if (listData) myList = JSON.parse(listData);
-        if (settingsData) settings = { ...settings, ...JSON.parse(settingsData) };
-    } catch (error) {
-        console.error('Error loading from storage:', error);
+// Authentication Functions
+function checkAuth() {
+    const user = localStorage.getItem('zenshows_user');
+    if (user) {
+        currentUser = JSON.parse(user);
+        updateUIForLoggedInUser();
+    } else {
+        showAuthModal();
     }
 }
 
-function saveToStorage() {
-    try {
-        localStorage.setItem('watchHistory', JSON.stringify(watchHistory));
-        localStorage.setItem('myList', JSON.stringify(myList));
-        localStorage.setItem('settings', JSON.stringify(settings));
-    } catch (error) {
-        console.error('Error saving to storage:', error);
+function showAuthModal() {
+    document.getElementById('authModal').classList.add('active');
+}
+
+function hideAuthModal() {
+    document.getElementById('authModal').classList.remove('active');
+}
+
+function updateUIForLoggedInUser() {
+    if (currentUser) {
+        document.querySelector('.user-avatar').src = currentUser.avatar || 'https://i.pravatar.cc/150?img=68';
     }
 }
 
-// === EVENT LISTENERS ===
-
+// Event Listeners
 function initializeEventListeners() {
-    // Navigation
+    // Navbar scroll effect
+    window.addEventListener('scroll', () => {
+        const navbar = document.getElementById('navbar');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
+    // Navigation links
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
-            navigateTo(link.dataset.page);
+            const page = e.target.dataset.page;
+            navigateToPage(page);
         });
     });
 
-    // Search
-    const searchInput = document.getElementById('searchInput');
-    searchInput.addEventListener('input', () => {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(liveSearch, 300);
-    });
-    
-    searchInput.addEventListener('focus', () => {
-        if (searchInput.value) liveSearch();
-    });
+    // Search functionality
+    document.getElementById('searchBtn').addEventListener('click', openSearch);
+    document.getElementById('closeSearch').addEventListener('click', closeSearch);
+    document.getElementById('searchInput').addEventListener('input', debounce(handleSearch, 500));
 
-    searchInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') performSearch();
-    });
-
-    // Click outside search to close
-    document.addEventListener('click', (e) => {
-        if (!e.target.closest('.search-container')) {
-            document.getElementById('searchResults').classList.remove('active');
-        }
+    // Search filters
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            handleSearch();
+        });
     });
 
-    // Scroll header effect
-    window.addEventListener('scroll', handleScroll);
+    // Notifications
+    document.getElementById('notifBtn').addEventListener('click', toggleNotifications);
+    document.getElementById('closeNotif').addEventListener('click', toggleNotifications);
 
-    // Handle window resize
-    window.addEventListener('resize', handleResize);
-}
+    // User dropdown
+    document.getElementById('profileLink').addEventListener('click', showProfile);
+    document.getElementById('settingsLink').addEventListener('click', showSettings);
+    document.getElementById('historyLink').addEventListener('click', showHistory);
+    document.getElementById('logoutBtn').addEventListener('click', logout);
 
-function handleScroll() {
-    const header = document.getElementById('header');
-    const scrollTop = document.getElementById('scrollTop');
-    
-    if (window.scrollY > 50) {
-        header.classList.add('scrolled');
-    } else {
-        header.classList.remove('scrolled');
-    }
+    // Mobile menu
+    document.getElementById('mobileMenuBtn').addEventListener('click', toggleMobileMenu);
+    document.getElementById('closeMobileMenu').addEventListener('click', toggleMobileMenu);
 
-    if (window.scrollY > 300) {
-        scrollTop.classList.add('show');
-    } else {
-        scrollTop.classList.remove('show');
-    }
-}
+    // Mobile menu links
+    document.getElementById('mobileProfile').addEventListener('click', showProfile);
+    document.getElementById('mobileSettings').addEventListener('click', showSettings);
+    document.getElementById('mobileHistory').addEventListener('click', showHistory);
+    document.getElementById('mobileLogout').addEventListener('click', logout);
 
-function handleResize() {
-    if (window.innerWidth > 768) {
-        document.getElementById('mobileMenu').classList.remove('active');
-        document.getElementById('mobileMenuOverlay').classList.remove('active');
-    }
-}
+    // Auth forms
+    document.getElementById('loginFormElement').addEventListener('submit', handleLogin);
+    document.getElementById('registerFormElement').addEventListener('submit', handleRegister);
+    document.getElementById('showRegister').addEventListener('click', showRegisterForm);
+    document.getElementById('showLogin').addEventListener('click', showLoginForm);
+    document.getElementById('closeAuth').addEventListener('click', () => {
+        if (currentUser) hideAuthModal();
+    });
 
-// === SETTINGS ===
-
-function initializeSettings() {
-    Object.keys(settings).forEach(key => {
-        const toggle = document.getElementById(key + 'Toggle');
-        if (toggle) {
-            if (settings[key]) {
-                toggle.classList.add('active');
+    // Password toggles
+    document.querySelectorAll('.toggle-password').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const input = e.target.closest('.form-group').querySelector('input');
+            const icon = e.target.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
             } else {
-                toggle.classList.remove('active');
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
             }
-        }
+        });
     });
 
-    const defaultSourceSelect = document.getElementById('defaultSource');
-    if (defaultSourceSelect) {
-        defaultSourceSelect.value = settings.defaultSource;
-    }
+    // Player controls
+    document.getElementById('closePlayer').addEventListener('click', closePlayer);
+    document.getElementById('sourceBtn').addEventListener('click', toggleSourceSelector);
+    document.getElementById('episodesBtn').addEventListener('click', toggleEpisodesPanel);
+    document.getElementById('closeDetails').addEventListener('click', closeDetailsModal);
+    document.getElementById('closeSettings').addEventListener('click', closeSettings);
 
-    const itemsPerPageSelect = document.getElementById('itemsPerPage');
-    if (itemsPerPageSelect) {
-        itemsPerPageSelect.value = settings.itemsPerPage;
-    }
+    // Trending filters
+    document.querySelectorAll('[data-trending]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('[data-trending]').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            const timeWindow = e.target.dataset.trending;
+            loadTrending(timeWindow);
+        });
+    });
 }
 
-function toggleSetting(setting) {
-    settings[setting] = !settings[setting];
-    saveToStorage();
-    const toggle = document.getElementById(setting + 'Toggle');
-    if (toggle) {
-        toggle.classList.toggle('active');
-    }
-    showToast(`${setting} ${settings[setting] ? 'enabled' : 'disabled'}`);
-}
-
-function saveDefaultSource() {
-    const select = document.getElementById('defaultSource');
-    settings.defaultSource = parseInt(select.value);
-    saveToStorage();
-    showToast('Default source updated');
-}
-
-function saveItemsPerPage() {
-    const select = document.getElementById('itemsPerPage');
-    settings.itemsPerPage = parseInt(select.value);
-    saveToStorage();
-    showToast('Items per page updated');
-}
-
-function openSettings() {
-    document.getElementById('settingsModal').classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeSettings() {
-    document.getElementById('settingsModal').classList.remove('active');
-    document.body.style.overflow = 'auto';
-}
-
-// === API FUNCTIONS ===
-
-async function fetchAPI(endpoint, params = {}) {
-    try {
-        const queryString = new URLSearchParams({
-            api_key: API_KEY,
-            ...params
-        }).toString();
-        
-        const response = await fetch(`${BASE_URL}${endpoint}?${queryString}`);
-        if (!response.ok) throw new Error('API request failed');
-        return await response.json();
-    } catch (error) {
-        console.error('API Error:', error);
-        return null;
-    }
-}
-
-async function loadGenres() {
-    try {
-        const [movieGenres, tvGenres] = await Promise.all([
-            fetchAPI('/genre/movie/list'),
-            fetchAPI('/genre/tv/list')
-        ]);
-        
-        if (movieGenres && tvGenres) {
-            const allGenres = [...movieGenres.genres, ...tvGenres.genres];
-            genres = allGenres.filter((g, i, arr) => 
-                arr.findIndex(x => x.id === g.id) === i
-            );
-        }
-    } catch (error) {
-        console.error('Error loading genres:', error);
-    }
-}
-
-function getGenreNames(genreIds) {
-    if (!genreIds || !Array.isArray(genreIds)) return [];
-    return genreIds.map(id => {
-        const genre = genres.find(g => g.id === id);
-        return genre ? genre.name : null;
-    }).filter(Boolean);
-}
-
-function getImageUrl(path, size = 'original') {
-    if (!path) return 'https://via.placeholder.com/500x750/1a1a2e/6366f1?text=No+Image';
-    return `${IMG_BASE}/${size}${path}`;
-}
-
-// === NAVIGATION ===
-
-function navigateTo(page) {
+// Navigation
+function navigateToPage(page) {
     currentPage = page;
-    
-    // Update nav links
     document.querySelectorAll('.nav-link').forEach(link => {
         link.classList.remove('active');
         if (link.dataset.page === page) {
@@ -270,10 +170,6 @@ function navigateTo(page) {
         }
     });
 
-    // Close mobile menu
-    toggleMobileMenu(false);
-
-    // Load page content
     switch(page) {
         case 'home':
             loadHomePage();
@@ -281,8 +177,8 @@ function navigateTo(page) {
         case 'movies':
             loadMoviesPage();
             break;
-        case 'shows':
-            loadShowsPage();
+        case 'series':
+            loadSeriesPage();
             break;
         case 'trending':
             loadTrendingPage();
@@ -290,1163 +186,1134 @@ function navigateTo(page) {
         case 'mylist':
             loadMyListPage();
             break;
-        case 'genres':
-            loadGenresPage();
-            break;
-    }
-
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function goHome() {
-    navigateTo('home');
-}
-
-function toggleMobileMenu(force) {
-    const menu = document.getElementById('mobileMenu');
-    const overlay = document.getElementById('mobileMenuOverlay');
-    
-    if (force === false) {
-        menu.classList.remove('active');
-        overlay.classList.remove('active');
-    } else {
-        menu.classList.toggle('active');
-        overlay.classList.toggle('active');
     }
 }
 
-// === HERO SECTION ===
-
-async function startHeroRotation() {
-    try {
-        const trending = await fetchAPI('/trending/all/week');
-        if (trending && trending.results && trending.results.length > 0) {
-            const heroItems = trending.results.slice(0, 10);
-            let currentIndex = 0;
-
-            function updateHero() {
-                const item = heroItems[currentIndex];
-                currentHeroContent = item;
-                
-                const title = item.title || item.name;
-                const backdrop = getImageUrl(item.backdrop_path);
-                const overview = item.overview || 'No description available.';
-                const mediaType = item.media_type || 'movie';
-                const rating = item.vote_average ? item.vote_average.toFixed(1) : 'N/A';
-                const year = (item.release_date || item.first_air_date || '').split('-')[0];
-
-                document.getElementById('heroBg').src = backdrop;
-                document.getElementById('heroBg').classList.add('active');
-                document.getElementById('heroTitle').textContent = title;
-                document.getElementById('heroDescription').textContent = overview.length > 200 
-                    ? overview.substring(0, 200) + '...' 
-                    : overview;
-                
-                const badge = mediaType === 'movie' ? '🎬 Movie' : '📺 TV Show';
-                document.getElementById('heroBadge').textContent = badge;
-
-                const metaHTML = `
-                    <div class="hero-meta-item">
-                        <i class="fas fa-star"></i>
-                        <span>${rating}</span>
-                    </div>
-                    <div class="hero-meta-item">
-                        <i class="fas fa-calendar"></i>
-                        <span>${year || 'N/A'}</span>
-                    </div>
-                    <div class="hero-meta-item">
-                        <i class="fas fa-fire"></i>
-                        <span>Trending</span>
-                    </div>
-                `;
-                document.getElementById('heroMeta').innerHTML = metaHTML;
-
-                currentIndex = (currentIndex + 1) % heroItems.length;
-            }
-
-            updateHero();
-            heroInterval = setInterval(updateHero, 8000);
-        }
-    } catch (error) {
-        console.error('Error loading hero content:', error);
-    }
-}
-
-function playHeroContent() {
-    if (currentHeroContent) {
-        showContentDetail(currentHeroContent);
-    }
-}
-
-function showHeroDetails() {
-    if (currentHeroContent) {
-        showContentDetail(currentHeroContent);
-    }
-}
-
-function addHeroToList() {
-    if (currentHeroContent) {
-        addToMyList(currentHeroContent);
-    }
-}
-
-// === PAGE LOADERS ===
-
+// Load Home Page
 async function loadHomePage() {
-    showLoading();
-    const main = document.getElementById('mainContent');
-    
-    try {
-        const [trending, popularMovies, popularShows, topRated, upcoming] = await Promise.all([
-            fetchAPI('/trending/all/week'),
-            fetchAPI('/movie/popular'),
-            fetchAPI('/tv/popular'),
-            fetchAPI('/movie/top_rated'),
-            fetchAPI('/movie/upcoming')
-        ]);
-
-        let html = '';
-
-        // Continue Watching
-        if (watchHistory.length > 0) {
-            html += createSection('Continue Watching', watchHistory.slice(0, 10).reverse(), 'continue', true);
-        }
-
-        // My List
-        if (myList.length > 0) {
-            html += createSection('My List', myList.slice(0, 10).reverse(), 'mylist', true);
-        }
-
-        // Trending
-        if (trending?.results) {
-            html += createSection('Trending Now', trending.results.slice(0, settings.itemsPerPage), 'trending', true);
-        }
-
-        // Popular Movies
-        if (popularMovies?.results) {
-            html += createSection('Popular Movies', popularMovies.results.slice(0, settings.itemsPerPage), 'popular-movies');
-        }
-
-        // Popular Shows
-        if (popularShows?.results) {
-            html += createSection('Popular TV Shows', popularShows.results.slice(0, settings.itemsPerPage), 'popular-shows');
-        }
-
-        // Top Rated
-        if (topRated?.results) {
-            html += createSection('Top Rated', topRated.results.slice(0, settings.itemsPerPage), 'top-rated');
-        }
-
-        // Upcoming
-        if (upcoming?.results) {
-            html += createSection('Coming Soon', upcoming.results.slice(0, settings.itemsPerPage), 'upcoming');
-        }
-
-        // Genre Sections
-        const actionMovies = await fetchAPI('/discover/movie', { with_genres: 28, sort_by: 'popularity.desc' });
-        if (actionMovies?.results) {
-            html += createSection('Action Movies', actionMovies.results.slice(0, settings.itemsPerPage), 'action');
-        }
-
-        const comedy = await fetchAPI('/discover/movie', { with_genres: 35, sort_by: 'popularity.desc' });
-        if (comedy?.results) {
-            html += createSection('Comedy', comedy.results.slice(0, settings.itemsPerPage), 'comedy');
-        }
-
-        const horror = await fetchAPI('/discover/movie', { with_genres: 27, sort_by: 'popularity.desc' });
-        if (horror?.results) {
-            html += createSection('Horror', horror.results.slice(0, settings.itemsPerPage), 'horror');
-        }
-
-        main.innerHTML = html;
-    } catch (error) {
-        console.error('Error loading home page:', error);
-        main.innerHTML = '<div class="no-results"><i class="fas fa-exclamation-circle"></i><h2>Error loading content</h2><p>Please try again later.</p></div>';
-    }
-    
-    hideLoading();
-}
-
-async function loadMoviesPage() {
-    showLoading();
-    const main = document.getElementById('mainContent');
-    
-    try {
-        const [popular, topRated, upcoming, nowPlaying] = await Promise.all([
-            fetchAPI('/movie/popular'),
-            fetchAPI('/movie/top_rated'),
-            fetchAPI('/movie/upcoming'),
-            fetchAPI('/movie/now_playing')
-        ]);
-
-        let html = '<div class="filters">';
-        const filterGenres = [
-            { id: 28, name: 'Action', icon: 'fist-raised' },
-            { id: 35, name: 'Comedy', icon: 'laugh' },
-            { id: 18, name: 'Drama', icon: 'theater-masks' },
-            { id: 27, name: 'Horror', icon: 'ghost' },
-            { id: 878, name: 'Sci-Fi', icon: 'robot' },
-            { id: 53, name: 'Thriller', icon: 'user-secret' },
-            { id: 10749, name: 'Romance', icon: 'heart' },
-            { id: 16, name: 'Animation', icon: 'palette' }
-        ];
-        
-        filterGenres.forEach(genre => {
-            html += `<button class="filter-btn" onclick="filterByGenre(${genre.id}, 'movie')">
-                <i class="fas fa-${genre.icon}"></i> ${genre.name}
-            </button>`;
-        });
-        html += '</div>';
-
-        if (popular?.results) {
-            html += createSection('Popular Movies', popular.results.slice(0, settings.itemsPerPage), 'popular-movies');
-        }
-
-        if (topRated?.results) {
-            html += createSection('Top Rated', topRated.results.slice(0, settings.itemsPerPage), 'top-rated-movies');
-        }
-
-        if (nowPlaying?.results) {
-            html += createSection('Now Playing', nowPlaying.results.slice(0, settings.itemsPerPage), 'now-playing');
-        }
-
-        if (upcoming?.results) {
-            html += createSection('Upcoming Movies', upcoming.results.slice(0, settings.itemsPerPage), 'upcoming-movies');
-        }
-
-        main.innerHTML = html;
-    } catch (error) {
-        console.error('Error loading movies page:', error);
-        main.innerHTML = '<div class="no-results"><i class="fas fa-exclamation-circle"></i><h2>Error loading movies</h2></div>';
-    }
-    
-    hideLoading();
-}
-
-async function loadShowsPage() {
-    showLoading();
-    const main = document.getElementById('mainContent');
-    
-    try {
-        const [popular, topRated, airingToday, onAir] = await Promise.all([
-            fetchAPI('/tv/popular'),
-            fetchAPI('/tv/top_rated'),
-            fetchAPI('/tv/airing_today'),
-            fetchAPI('/tv/on_the_air')
-        ]);
-
-        let html = '<div class="filters">';
-        const filterGenres = [
-            { id: 10759, name: 'Action & Adventure', icon: 'dragon' },
-            { id: 35, name: 'Comedy', icon: 'laugh' },
-            { id: 18, name: 'Drama', icon: 'theater-masks' },
-            { id: 10765, name: 'Sci-Fi & Fantasy', icon: 'hat-wizard' },
-            { id: 80, name: 'Crime', icon: 'gavel' },
-            { id: 9648, name: 'Mystery', icon: 'search' },
-            { id: 16, name: 'Animation', icon: 'palette' },
-            { id: 10751, name: 'Family', icon: 'users' }
-        ];
-        
-        filterGenres.forEach(genre => {
-            html += `<button class="filter-btn" onclick="filterByGenre(${genre.id}, 'tv')">
-                <i class="fas fa-${genre.icon}"></i> ${genre.name}
-            </button>`;
-        });
-        html += '</div>';
-
-        if (popular?.results) {
-            html += createSection('Popular TV Shows', popular.results.slice(0, settings.itemsPerPage), 'popular-shows');
-        }
-
-        if (topRated?.results) {
-            html += createSection('Top Rated', topRated.results.slice(0, settings.itemsPerPage), 'top-rated-shows');
-        }
-
-        if (airingToday?.results) {
-            html += createSection('Airing Today', airingToday.results.slice(0, settings.itemsPerPage), 'airing-today');
-        }
-
-        if (onAir?.results) {
-            html += createSection('On Air', onAir.results.slice(0, settings.itemsPerPage), 'on-air');
-        }
-
-        main.innerHTML = html;
-    } catch (error) {
-        console.error('Error loading shows page:', error);
-        main.innerHTML = '<div class="no-results"><i class="fas fa-exclamation-circle"></i><h2>Error loading TV shows</h2></div>';
-    }
-    
-    hideLoading();
-}
-
-async function loadTrendingPage() {
-    showLoading();
-    const main = document.getElementById('mainContent');
-    
-    try {
-        const [trendingDay, trendingWeek, trendingMovies, trendingShows] = await Promise.all([
-            fetchAPI('/trending/all/day'),
-            fetchAPI('/trending/all/week'),
-            fetchAPI('/trending/movie/week'),
-            fetchAPI('/trending/tv/week')
-        ]);
-
-        let html = '';
-
-        if (trendingDay?.results) {
-            html += createSection('Trending Today', trendingDay.results.slice(0, settings.itemsPerPage), 'trending-today');
-        }
-
-        if (trendingWeek?.results) {
-            html += createSection('Trending This Week', trendingWeek.results.slice(0, settings.itemsPerPage), 'trending-week');
-        }
-
-        if (trendingMovies?.results) {
-            html += createSection('Trending Movies', trendingMovies.results.slice(0, settings.itemsPerPage), 'trending-movies');
-        }
-
-        if (trendingShows?.results) {
-            html += createSection('Trending TV Shows', trendingShows.results.slice(0, settings.itemsPerPage), 'trending-shows');
-        }
-
-        main.innerHTML = html;
-    } catch (error) {
-        console.error('Error loading trending page:', error);
-        main.innerHTML = '<div class="no-results"><i class="fas fa-exclamation-circle"></i><h2>Error loading trending content</h2></div>';
-    }
-    
-    hideLoading();
-}
-
-function loadMyListPage() {
-    const main = document.getElementById('mainContent');
-    
-    if (myList.length === 0) {
-        main.innerHTML = `
-            <div class="no-results">
-                <i class="fas fa-bookmark"></i>
-                <h2>Your list is empty</h2>
-                <p>Add movies and shows to your list to watch them later</p>
-                <button class="btn btn-primary" onclick="navigateTo('home')" style="margin-top: 2rem;">
-                    <i class="fas fa-home"></i> Browse Content
-                </button>
-            </div>
-        `;
-        return;
-    }
-
-    let html = createSection('My List', myList.slice().reverse(), 'mylist-page');
-    main.innerHTML = html;
-}
-
-async function loadGenresPage() {
-    showLoading();
-    const main = document.getElementById('mainContent');
-    
-    try {
-        let html = '<div class="section"><div class="section-header"><h2 class="section-title"><i class="fas fa-list"></i> Browse by Genre</h2></div>';
-        
-        html += '<div class="cards-grid">';
-        
-        const popularGenres = [
-            { id: 28, name: 'Action', icon: 'fist-raised', type: 'movie' },
-            { id: 35, name: 'Comedy', icon: 'laugh', type: 'movie' },
-            { id: 18, name: 'Drama', icon: 'theater-masks', type: 'movie' },
-            { id: 27, name: 'Horror', icon: 'ghost', type: 'movie' },
-            { id: 878, name: 'Sci-Fi', icon: 'robot', type: 'movie' },
-            { id: 53, name: 'Thriller', icon: 'user-secret', type: 'movie' },
-            { id: 10749, name: 'Romance', icon: 'heart', type: 'movie' },
-            { id: 16, name: 'Animation', icon: 'palette', type: 'movie' },
-            { id: 10759, name: 'Action & Adventure', icon: 'dragon', type: 'tv' },
-            { id: 80, name: 'Crime', icon: 'gavel', type: 'movie' },
-            { id: 99, name: 'Documentary', icon: 'file-video', type: 'movie' },
-            { id: 10751, name: 'Family', icon: 'users', type: 'movie' }
-        ];
-
-        for (const genre of popularGenres) {
-            const data = await fetchAPI(`/discover/${genre.type}`, { 
-                with_genres: genre.id, 
-                sort_by: 'popularity.desc' 
-            });
-            
-            if (data?.results && data.results[0]) {
-                const poster = getImageUrl(data.results[0].poster_path, 'w500');
-                html += `
-                    <div class="card" onclick="filterByGenre(${genre.id}, '${genre.type}')" style="cursor: pointer;">
-                        <div class="card-poster-container">
-                            <img src="${poster}" alt="${genre.name}" class="card-poster">
-                            <div class="card-overlay">
-                                <h3 class="card-title" style="font-size: 1.5rem;">
-                                    <i class="fas fa-${genre.icon}"></i> ${genre.name}
-                                </h3>
-                                <p style="color: var(--text-dim);">Explore ${genre.name} ${genre.type === 'movie' ? 'movies' : 'shows'}</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-        }
-        
-        html += '</div></div>';
-        main.innerHTML = html;
-    } catch (error) {
-        console.error('Error loading genres page:', error);
-    }
-    
-    hideLoading();
-}
-
-async function filterByGenre(genreId, type = 'movie') {
-    showLoading();
-    const main = document.getElementById('mainContent');
-    
-    try {
-        const genreName = genres.find(g => g.id === genreId)?.name || 'Genre';
-        const data = await fetchAPI(`/discover/${type}`, { 
-            with_genres: genreId, 
-            sort_by: 'popularity.desc' 
-        });
-        
-        let html = `
-            <button class="btn btn-secondary" onclick="navigateTo('${type === 'movie' ? 'movies' : 'shows'}')" style="margin-bottom: 2rem;">
-                <i class="fas fa-arrow-left"></i> Back
-            </button>
-        `;
-        
-        if (data?.results) {
-            html += createSection(`${genreName} ${type === 'movie' ? 'Movies' : 'TV Shows'}`, data.results, `genre-${genreId}`);
-        } else {
-            html += '<div class="no-results"><i class="fas fa-film"></i><h2>No content found</h2></div>';
-        }
-
-        main.innerHTML = html;
-    } catch (error) {
-        console.error('Error filtering by genre:', error);
-    }
-    
-    hideLoading();
-}
-
-// === UTILITY FUNCTIONS ===
-
-function showLoading() {
-    document.getElementById('loadingIndicator').style.display = 'flex';
-}
-
-function hideLoading() {
-    document.getElementById('loadingIndicator').style.display = 'none';
-}
-
-function showToast(message) {
-    const toast = document.getElementById('toast');
-    const toastMessage = document.getElementById('toastMessage');
-    toastMessage.textContent = message;
-    toast.classList.add('show');
-    setTimeout(() => {
-        toast.classList.remove('show');
-    }, 3000);
-}
-
-function initScrollToTop() {
-    const scrollBtn = document.getElementById('scrollTop');
-    if (scrollBtn) {
-        scrollBtn.addEventListener('click', scrollToTop);
-    }
-}
-
-function scrollToTop() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// === DATA MANAGEMENT ===
-
-function clearHistory() {
-    if (confirm('Are you sure you want to clear your watch history?')) {
-        watchHistory = [];
-        saveToStorage();
-        showToast('Watch history cleared');
-        if (currentPage === 'home') loadHomePage();
-    }
-}
-
-function clearMyList() {
-    if (confirm('Are you sure you want to clear your list?')) {
-        myList = [];
-        saveToStorage();
-        showToast('My list cleared');
-        if (currentPage === 'mylist') loadMyListPage();
-        else if (currentPage === 'home') loadHomePage();
-    }
-}
-
-function exportData() {
-    const data = {
-        watchHistory,
-        myList,
-        settings,
-        exportDate: new Date().toISOString()
-    };
-    
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `zen-shows-data-${Date.now()}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    showToast('Data exported successfully');
-}
-
-function importData(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        try {
-            const data = JSON.parse(e.target.result);
-            
-            if (data.watchHistory) watchHistory = data.watchHistory;
-            if (data.myList) myList = data.myList;
-            if (data.settings) settings = { ...settings, ...data.settings };
-            
-            saveToStorage();
-            initializeSettings();
-            showToast('Data imported successfully');
-            loadHomePage();
-        } catch (error) {
-            console.error('Error importing data:', error);
-            showToast('Error importing data');
-        }
-    };
-    reader.readAsText(file);
-}
-
-// === RANDOM PICK ===
-
-async function randomPick() {
-    showLoading();
-    try {
-        const page = Math.floor(Math.random() * 10) + 1;
-        const mediaType = Math.random() > 0.5 ? 'movie' : 'tv';
-        const data = await fetchAPI(`/discover/${mediaType}`, { 
-            sort_by: 'popularity.desc',
-            page 
-        });
-        
-        if (data?.results && data.results.length > 0) {
-               const randomItem = data.results[Math.floor(Math.random() * data.results.length)];
-        randomItem.media_type = mediaType;
-        hideLoading();
-        showContentDetail(randomItem);
-    }
-} catch (error) {
-    console.error('Error picking random content:', error);
-    hideLoading();
-    showToast('Error picking random content');
-}
-    }
-// === NEWSLETTER & FOOTER FUNCTIONS ===
-function subscribeNewsletter() {
-const email = document.getElementById('newsletterEmail').value;
-if (email && email.includes('@')) {
-showToast('Thank you for subscribing!');
-document.getElementById('newsletterEmail').value = '';
-} else {
-showToast('Please enter a valid email');
-}
-}
-function showPrivacyPolicy() {
-alert('Privacy Policy:\n\nZen Shows respects your privacy. All data is stored locally on your device. We do not collect or share any personal information.');
-}
-function showTerms() {
-alert('Terms of Service:\n\nBy using Zen Shows, you agree to use the service for personal entertainment only. Content is provided via third-party sources.');
-}
-function showDMCA() {
-alert('DMCA:\n\nZen Shows does not host any content. All content is provided by third-party embedding services. If you believe any content violates copyright, please contact the respective streaming source.');
-}
-function showContact() {
-alert('Contact Us:\n\nFor questions or feedback, please use the GitHub repository or social media links in the footer.');
-}
-## SCRIPT.JS - PART 2
-```javascript
-// ============================================
-// ZEN SHOWS - COMPLETE JAVASCRIPT - PART 2
-// Search, Cards, Modal, and Content Display Functions
-// ============================================
-
-// === SEARCH FUNCTIONS ===
-
-async function liveSearch() {
-    const searchInput = document.getElementById('searchInput');
-    const query = searchInput.value.trim();
-    const searchResults = document.getElementById('searchResults');
-
-    if (!query) {
-        searchResults.classList.remove('active');
-        return;
-    }
-
-    try {
-        const data = await fetchAPI('/search/multi', { query });
-        
-        if (data?.results && data.results.length > 0) {
-            let html = '';
-            data.results.slice(0, 8).forEach(item => {
-                if (item.media_type === 'person') return;
-                
-                const title = item.title || item.name;
-                const poster = getImageUrl(item.poster_path, 'w200');
-                const year = (item.release_date || item.first_air_date || '').split('-')[0];
-                const mediaType = item.media_type === 'movie' ? 'Movie' : 'TV Show';
-                const rating = item.vote_average ? item.vote_average.toFixed(1) : 'N/A';
-
-                html += `
-                    <div class="search-result-item" onclick='showContentDetail(${JSON.stringify(item).replace(/'/g, "&apos;")})'>
-                        <img src="${poster}" alt="${title}" class="search-result-poster">
-                        <div class="search-result-info">
-                            <div class="search-result-title">${title}</div>
-                            <div class="search-result-meta">
-                                <span>${mediaType}</span>
-                                <span>${year || 'N/A'}</span>
-                                <span class="search-result-rating">
-                                    <i class="fas fa-star"></i> ${rating}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            searchResults.innerHTML = html;
-            searchResults.classList.add('active');
-        } else {
-            searchResults.innerHTML = '<div style="padding: 1rem; text-align: center; color: var(--text-dim);">No results found</div>';
-            searchResults.classList.add('active');
-        }
-    } catch (error) {
-        console.error('Search error:', error);
-    }
-}
-
-async function performSearch() {
-    const searchInput = document.getElementById('searchInput');
-    const query = searchInput.value.trim();
-    
-    if (!query) return;
-    
-    showLoading();
-    const main = document.getElementById('mainContent');
-    
-    try {
-        const data = await fetchAPI('/search/multi', { query });
-        
-        document.getElementById('searchResults').classList.remove('active');
-        
-        if (data?.results && data.results.length > 0) {
-            const filteredResults = data.results.filter(item => item.media_type !== 'person');
-            let html = `
-                <div class="section">
-                    <div class="section-header">
-                        <h2 class="section-title">
-                            <i class="fas fa-search"></i> Search Results for "${query}"
-                        </h2>
-                        <button class="btn btn-secondary" onclick="navigateTo('home')">
-                            <i class="fas fa-times"></i> Clear Search
-                        </button>
-                    </div>
-                    <div class="cards-grid">
-            `;
-            
-            filteredResults.forEach(item => {
-                html += createCard(item);
-            });
-            
-            html += '</div></div>';
-            main.innerHTML = html;
-        } else {
-            main.innerHTML = `
-                <div class="no-results">
-                    <i class="fas fa-search"></i>
-                    <h2>No results found for "${query}"</h2>
-                    <p>Try different keywords or browse our collection</p>
-                    <button class="btn btn-primary" onclick="navigateTo('home')" style="margin-top: 2rem;">
-                        <i class="fas fa-home"></i> Browse Content
-                    </button>
+    const mainContent = document.getElementById('mainContent');
+    mainContent.innerHTML = `
+        <section class="hero" id="heroSection">
+            <div class="hero-bg" id="heroBg"></div>
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-crown"></i> Featured
                 </div>
-            `;
-        }
-    } catch (error) {
-        console.error('Search error:', error);
-    }
-    
-    hideLoading();
-}
-
-// === SECTION & CARD CREATION ===
-
-function createSection(title, items, id, horizontal = false) {
-    if (!items || items.length === 0) return '';
-    
-    const containerClass = horizontal ? 'horizontal-scroll' : 'cards-grid';
-    
-    let html = `
-        <div class="section">
-            <div class="section-header">
-                <h2 class="section-title">
-                    <i class="fas fa-${getSectionIcon(id)}"></i> ${title}
-                </h2>
-            </div>
-            <div class="${containerClass}">
-    `;
-    
-    items.forEach(item => {
-        html += createCard(item);
-    });
-    
-    html += '</div></div>';
-    return html;
-}
-
-function getSectionIcon(id) {
-    const icons = {
-        'continue': 'play-circle',
-        'mylist': 'bookmark',
-        'trending': 'fire',
-        'popular-movies': 'film',
-        'popular-shows': 'tv',
-        'top-rated': 'star',
-        'upcoming': 'calendar',
-        'action': 'fist-raised',
-        'comedy': 'laugh',
-        'horror': 'ghost'
-    };
-    return icons[id] || 'film';
-}
-
-function createCard(item) {
-    const title = item.title || item.name;
-    const poster = getImageUrl(item.poster_path, 'w500');
-    const year = (item.release_date || item.first_air_date || '').split('-')[0];
-    const rating = item.vote_average ? item.vote_average.toFixed(1) : 'N/A';
-    const mediaType = item.media_type || (item.title ? 'movie' : 'tv');
-    const isInList = myList.some(listItem => listItem.id === item.id);
-    const genreNames = getGenreNames(item.genre_ids || []);
-    
-    // Check if in watch history
-    const historyItem = watchHistory.find(h => h.id === item.id);
-    const progress = historyItem ? historyItem.progress || 0 : 0;
-    
-    const itemData = JSON.stringify(item).replace(/'/g, "&apos;");
-    
-    let html = `
-        <div class="card" onclick='showContentDetail(${itemData})'>
-            <div class="card-poster-container">
-                <img src="${poster}" alt="${title}" class="card-poster" loading="lazy">
-                ${rating > 8 ? '<div class="trending-badge"><i class="fas fa-fire"></i> Hot</div>' : ''}
-                ${item.vote_average ? '<div class="quality-badge">HD</div>' : ''}
-                ${progress > 0 ? `<div class="progress-bar"><div class="progress-fill" style="width: ${progress}%"></div></div>` : ''}
-                <div class="card-overlay">
-                    <h3 class="card-title">${title}</h3>
-                    ${genreNames.length > 0 ? `<div class="genre-pills">${genreNames.slice(0, 3).map(g => `<span class="genre-pill">${g}</span>`).join('')}</div>` : ''}
-                    <div class="card-info">
-                        <span class="card-year">${year || 'N/A'}</span>
-                        <span class="card-rating">
-                            <i class="fas fa-star"></i> ${rating}
-                        </span>
-                    </div>
-                </div>
-                <div class="card-actions" onclick="event.stopPropagation()">
-                    <button class="card-action-btn ${isInList ? 'active' : ''}" onclick='toggleMyList(${itemData})' title="${isInList ? 'Remove from list' : 'Add to list'}">
-                        <i class="fas fa-${isInList ? 'check' : 'plus'}"></i>
+                <h1 class="hero-title" id="heroTitle"></h1>
+                <div class="hero-meta" id="heroMeta"></div>
+                <p class="hero-description" id="heroDescription"></p>
+                <div class="hero-buttons">
+                    <button class="btn-primary" id="heroPlayBtn">
+                        <i class="fas fa-play"></i> Play Now
                     </button>
-                    <button class="card-action-btn" onclick='shareContent(${itemData})' title="Share">
+                    <button class="btn-secondary" id="heroInfoBtn">
+                        <i class="fas fa-info-circle"></i> More Info
+                    </button>
+                    <button class="btn-icon" id="heroAddBtn" title="Add to My List">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <button class="btn-icon" id="heroShareBtn" title="Share">
                         <i class="fas fa-share-alt"></i>
                     </button>
                 </div>
+                <div class="hero-stats" id="heroStats"></div>
             </div>
-        </div>
+            <div class="hero-overlay"></div>
+        </section>
+
+        <section class="content-section" id="continueWatchingSection" style="display:none;">
+            <div class="section-header">
+                <h2><i class="fas fa-history"></i> Continue Watching</h2>
+            </div>
+            <div class="content-slider" id="continueWatchingSlider"></div>
+        </section>
+
+        <section class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-fire"></i> Trending Now</h2>
+                <div class="section-filters">
+                    <button class="filter-chip active" data-trending="day">Today</button>
+                    <button class="filter-chip" data-trending="week">This Week</button>
+                </div>
+            </div>
+            <div class="content-slider" id="trendingSlider"></div>
+        </section>
+
+        <section class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-film"></i> Popular Movies</h2>
+            </div>
+            <div class="content-slider" id="popularMoviesSlider"></div>
+        </section>
+
+        <section class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-tv"></i> Top Rated TV Series</h2>
+            </div>
+            <div class="content-slider" id="topSeriesSlider"></div>
+        </section>
+
+        <section class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-calendar-alt"></i> Coming Soon</h2>
+            </div>
+            <div class="content-slider" id="upcomingSlider"></div>
+        </section>
+
+        <section class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-th"></i> Browse by Genre</h2>
+            </div>
+            <div class="genre-grid" id="genreGrid"></div>
+        </section>
     `;
-    
-    return html;
+
+    // Re-attach event listeners for dynamic content
+    attachDynamicEventListeners();
+
+    // Load content
+    await loadHeroSection();
+    await loadContinueWatching();
+    await loadTrending('day');
+    await loadPopularMovies();
+    await loadTopRatedSeries();
+    await loadUpcoming();
+    await loadGenres();
 }
 
-// === MY LIST FUNCTIONS ===
-
-function toggleMyList(item) {
-    const index = myList.findIndex(listItem => listItem.id === item.id);
-    
-    if (index > -1) {
-        myList.splice(index, 1);
-        showToast('Removed from My List');
-    } else {
-        item.addedAt = Date.now();
-        myList.push(item);
-        showToast('Added to My List');
-    }
-    
-    saveToStorage();
-    
-    // Refresh page if on mylist page
-    if (currentPage === 'mylist') {
-        loadMyListPage();
-    } else if (currentPage === 'home') {
-        loadHomePage();
-    }
-}
-
-function addToMyList(item) {
-    const index = myList.findIndex(listItem => listItem.id === item.id);
-    
-    if (index === -1) {
-        item.addedAt = Date.now();
-        myList.push(item);
-        showToast('Added to My List');
-        saveToStorage();
-    } else {
-        showToast('Already in your list');
-    }
-}
-
-function shareContent(item) {
-    const title = item.title || item.name;
-    const text = `Check out ${title} on Zen Shows!`;
-    
-    if (navigator.share) {
-        navigator.share({
-            title: title,
-            text: text,
-            url: window.location.href
-        }).catch(err => console.log('Error sharing:', err));
-    } else {
-        // Fallback - copy to clipboard
-        navigator.clipboard.writeText(`${text} ${window.location.href}`).then(() => {
-            showToast('Link copied to clipboard!');
+// Attach event listeners for dynamically created elements
+function attachDynamicEventListeners() {
+    // Trending filters
+    document.querySelectorAll('[data-trending]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('[data-trending]').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            const timeWindow = e.target.dataset.trending;
+            loadTrending(timeWindow);
         });
+    });
+}
+
+// Load Hero Section
+async function loadHeroSection() {
+    try {
+        const response = await fetch(`${TMDB_BASE_URL}/trending/all/day?api_key=${TMDB_API_KEY}`);
+        const data = await response.json();
+        const featured = data.results[0];
+
+        document.getElementById('heroBg').style.backgroundImage = 
+            `url(${TMDB_IMAGE_BASE}/original${featured.backdrop_path})`;
+        document.getElementById('heroTitle').textContent = featured.title || featured.name;
+        
+        const year = (featured.release_date || featured.first_air_date || '').split('-')[0];
+        const rating = featured.vote_average.toFixed(1);
+        const type = featured.media_type === 'movie' ? 'Movie' : 'TV Series';
+        
+        document.getElementById('heroMeta').innerHTML = `
+            <span><i class="fas fa-calendar"></i> ${year}</span>
+            <span><i class="fas fa-star" style="color: var(--warning)"></i> ${rating}</span>
+            <span><i class="fas fa-film"></i> ${type}</span>
+        `;
+        
+        document.getElementById('heroDescription').textContent = 
+            featured.overview.length > 200 ? featured.overview.substring(0, 200) + '...' : featured.overview;
+        
+        document.getElementById('heroStats').innerHTML = `
+            <div>
+                <span>Rating</span>
+                <span>${rating}/10</span>
+            </div>
+            <div>
+                <span>Votes</span>
+                <span>${formatNumber(featured.vote_count)}</span>
+            </div>
+            <div>
+                <span>Popularity</span>
+                <span>${formatNumber(featured.popularity)}</span>
+            </div>
+        `;
+
+        // Hero button events
+        document.getElementById('heroPlayBtn').addEventListener('click', () => {
+            playMedia(featured.media_type, featured.id);
+        });
+        
+        document.getElementById('heroInfoBtn').addEventListener('click', () => {
+            showDetails(featured.media_type, featured.id);
+        });
+        
+        document.getElementById('heroAddBtn').addEventListener('click', () => {
+            addToMyList(featured);
+            showToast('Added to My List', 'success');
+        });
+        
+        document.getElementById('heroShareBtn').addEventListener('click', () => {
+            shareContent(featured);
+        });
+
+    } catch (error) {
+        console.error('Error loading hero section:', error);
     }
 }
 
-// === CONTENT DETAIL MODAL ===
+// Load Continue Watching
+function loadContinueWatching() {
+    const history = getWatchHistory();
+    if (history.length > 0) {
+        document.getElementById('continueWatchingSection').style.display = 'block';
+        const slider = document.getElementById('continueWatchingSlider');
+        slider.innerHTML = history.map(item => createContentCard(item, true)).join('');
+        addCardEventListeners();
+    }
+}
 
-async function showContentDetail(item) {
-    currentContent = item;
-    const modal = document.getElementById('detailModal');
-    const modalContent = document.getElementById('modalContent');
-    
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    
-    showLoading();
-    
+// Load Trending
+async function loadTrending(timeWindow = 'day') {
     try {
-        const mediaType = item.media_type || (item.title ? 'movie' : 'tv');
-        const id = item.id;
-        
-        // Fetch detailed information
-        const [details, credits, similar] = await Promise.all([
-            fetchAPI(`/${mediaType}/${id}`),
-            fetchAPI(`/${mediaType}/${id}/credits`),
-            fetchAPI(`/${mediaType}/${id}/similar`)
+        const response = await fetch(`${TMDB_BASE_URL}/trending/all/${timeWindow}?api_key=${TMDB_API_KEY}`);
+        const data = await response.json();
+        const slider = document.getElementById('trendingSlider');
+        slider.innerHTML = data.results.map(item => createContentCard(item)).join('');
+        addCardEventListeners();
+    } catch (error) {
+        console.error('Error loading trending:', error);
+    }
+}
+
+// Load Popular Movies
+async function loadPopularMovies() {
+    try {
+        const response = await fetch(`${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}`);
+        const data = await response.json();
+        const slider = document.getElementById('popularMoviesSlider');
+        slider.innerHTML = data.results.map(item => createContentCard({...item, media_type: 'movie'})).join('');
+        addCardEventListeners();
+    } catch (error) {
+        console.error('Error loading popular movies:', error);
+    }
+}
+
+// Load Top Rated Series
+async function loadTopRatedSeries() {
+    try {
+        const response = await fetch(`${TMDB_BASE_URL}/tv/top_rated?api_key=${TMDB_API_KEY}`);
+        const data = await response.json();
+        const slider = document.getElementById('topSeriesSlider');
+        slider.innerHTML = data.results.map(item => createContentCard({...item, media_type: 'tv'})).join('');
+        addCardEventListeners();
+    } catch (error) {
+        console.error('Error loading top rated series:', error);
+    }
+}
+
+// Load Upcoming
+async function loadUpcoming() {
+    try {
+        const response = await fetch(`${TMDB_BASE_URL}/movie/upcoming?api_key=${TMDB_API_KEY}`);
+        const data = await response.json();
+        const slider = document.getElementById('upcomingSlider');
+        slider.innerHTML = data.results.map(item => createContentCard({...item, media_type: 'movie'})).join('');
+        addCardEventListeners();
+    } catch (error) {
+        console.error('Error loading upcoming:', error);
+    }
+}
+
+// Load Genres
+async function loadGenres() {
+    try {
+        const [movieGenres, tvGenres] = await Promise.all([
+            fetch(`${TMDB_BASE_URL}/genre/movie/list?api_key=${TMDB_API_KEY}`).then(r => r.json()),
+            fetch(`${TMDB_BASE_URL}/genre/tv/list?api_key=${TMDB_API_KEY}`).then(r => r.json())
         ]);
         
-        if (!details) {
-            hideLoading();
-            return;
-        }
-        
-        const title = details.title || details.name;
-        const backdrop = getImageUrl(details.backdrop_path);
-        const poster = getImageUrl(details.poster_path, 'w500');
-        const overview = details.overview || 'No description available.';
-        const rating = details.vote_average ? details.vote_average.toFixed(1) : 'N/A';
-        const year = (details.release_date || details.first_air_date || '').split('-')[0];
-        const runtime = details.runtime || details.episode_run_time?.[0] || 'N/A';
-        const genres = details.genres?.map(g => g.name).join(', ') || 'N/A';
-        const status = details.status || 'N/A';
-        
-        const isInList = myList.some(listItem => listItem.id === id);
-        
-        let html = `
-            <div class="modal-backdrop">
-                <img src="${backdrop}" alt="${title}" class="modal-backdrop-img">
-                <div class="modal-backdrop-overlay"></div>
+        const allGenres = [...new Map([...movieGenres.genres, ...tvGenres.genres].map(g => [g.id, g])).values()];
+        const grid = document.getElementById('genreGrid');
+        grid.innerHTML = allGenres.map(genre => `
+            <div class="genre-card" data-genre-id="${genre.id}">
+                <span>${genre.name}</span>
             </div>
-            <div class="modal-info">
-                <h2 class="modal-title">${title}</h2>
-                <div class="modal-meta">
-                    <div class="meta-item">
-                        <i class="fas fa-star"></i>
-                        <strong>${rating}</strong> Rating
-                    </div>
-                    <div class="meta-item">
-                        <i class="fas fa-calendar"></i>
-                        <strong>${year}</strong>
-                    </div>
-                    <div class="meta-item">
-                        <i class="fas fa-clock"></i>
-                        <strong>${runtime}</strong> ${mediaType === 'movie' ? 'min' : 'min/ep'}
-                    </div>
-                    <div class="meta-item">
-                        <i class="fas fa-film"></i>
-                        <strong>${mediaType === 'movie' ? 'Movie' : 'TV Show'}</strong>
-                    </div>
-                    <div class="meta-item">
-                        <i class="fas fa-tag"></i>
-                        <strong>${genres}</strong>
-                    </div>
-                </div>
-                <p class="modal-overview">${overview}</p>
-                <div class="modal-actions">
-                    <button class="btn btn-primary" onclick="playContent()">
-                        <i class="fas fa-play"></i> Play Now
-                    </button>
-                    <button class="btn btn-secondary" onclick="toggleMyList(${JSON.stringify(item).replace(/'/g, "&apos;")})">
-                        <i class="fas fa-${isInList ? 'check' : 'plus'}"></i> ${isInList ? 'In My List' : 'Add to List'}
-                    </button>
-                    <button class="btn btn-secondary" onclick="shareContent(${JSON.stringify(item).replace(/'/g, "&apos;")})">
-                        <i class="fas fa-share-alt"></i> Share
-                    </button>
-                    <button class="btn btn-secondary" onclick="downloadInfo()">
-                        <i class="fas fa-download"></i> Download Info
-                    </button>
-                </div>
-                
-                <div class="source-selector">
-                    <label><i class="fas fa-server"></i> Select Streaming Source</label>
-                    <select id="sourceSelect" onchange="updateVideoSource()">
-                        ${SOURCES.map((source, index) => `
-                            <option value="${index}" ${index === settings.defaultSource ? 'selected' : ''}>
-                                ${source.name}
-                            </option>
-                        `).join('')}
-                    </select>
-                </div>
-                
-                <div class="video-container" id="videoContainer"></div>
-        `;
+        `).join('');
         
-        // Add TV Show seasons/episodes
-        if (mediaType === 'tv' && details.number_of_seasons) {
-            html += await createSeasonsSection(id, details.number_of_seasons);
-        }
-        
-        // Add cast and crew
-        if (credits?.cast && credits.cast.length > 0) {
-            html += `
-                <div class="cast-crew">
-                    <h3><i class="fas fa-users"></i> Cast</h3>
-                    <div class="cast-scroll">
-            `;
-            
-            credits.cast.slice(0, 10).forEach(person => {
-                const profilePic = person.profile_path 
-                    ? getImageUrl(person.profile_path, 'w200')
-                    : 'https://via.placeholder.com/200x200/1a1a2e/6366f1?text=No+Image';
-                    
-                html += `
-                    <div class="person-card">
-                        <img src="${profilePic}" alt="${person.name}" class="person-img">
-                        <div class="person-name">${person.name}</div>
-                        <div class="person-role">${person.character || 'Unknown'}</div>
-                    </div>
-                `;
+        document.querySelectorAll('.genre-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                const genreId = e.currentTarget.dataset.genreId;
+                loadByGenre(genreId);
             });
-            
-            html += '</div></div>';
-        }
-        
-        // Add similar content
-        if (similar?.results && similar.results.length > 0) {
-            html += createSection('Similar Content', similar.results.slice(0, 10), 'similar', true);
-        }
-        
-        html += '</div>';
-        
-        modalContent.innerHTML = html;
-        hideLoading();
-        
-        // Load video player
-        updateVideoSource();
-        
-        // Add to watch history
-        addToWatchHistory(item);
-        
+        });
     } catch (error) {
-        console.error('Error showing content detail:', error);
-        hideLoading();
-        modalContent.innerHTML = '<div class="no-results"><i class="fas fa-exclamation-circle"></i><h2>Error loading content details</h2></div>';
+        console.error('Error loading genres:', error);
     }
 }
 
-async function createSeasonsSection(tvId, numberOfSeasons) {
-    currentSeason = 1;
-    currentEpisode = 1;
+// Create Content Card
+function createContentCard(item, showProgress = false) {
+    const title = item.title || item.name;
+    const poster = item.poster_path ? `${TMDB_IMAGE_BASE}/w500${item.poster_path}` : 'https://via.placeholder.com/500x750?text=No+Image';
+    const rating = item.vote_average ? item.vote_average.toFixed(1) : 'N/A';
+    const year = (item.release_date || item.first_air_date || '').split('-')[0];
+    const type = item.media_type === 'movie' ? 'Movie' : item.media_type === 'tv' ? 'TV' : 'Media';
     
-    let html = `
-        <div class="seasons-episodes">
-            <h3><i class="fas fa-list-ol"></i> Seasons & Episodes</h3>
-            <div class="season-selector">
+    const progress = showProgress && item.progress ? `<div class="progress-bar" style="width: ${item.progress}%"></div>` : '';
+    
+    return `
+        <div class="content-card" data-id="${item.id}" data-type="${item.media_type || 'movie'}">
+            <img src="${poster}" alt="${title}" class="content-card-poster">
+            ${progress}
+            ${item.new ? '<div class="badge">NEW</div>' : ''}
+            <div class="content-card-overlay">
+                <div class="content-card-title">${title}</div>
+                <div class="content-card-meta">
+                    <span class="rating"><i class="fas fa-star"></i> ${rating}</span>
+                    <span>${year}</span>
+                    <span>${type}</span>
+                </div>
+                <div class="content-card-actions">
+                    <button class="action-btn play-btn" title="Play">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="action-btn info-btn" title="More Info">
+                        <i class="fas fa-info"></i>
+                    </button>
+                    <button class="action-btn add-btn" title="Add to List">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
     `;
+}
+
+// Add event listeners to cards
+function addCardEventListeners() {
+    document.querySelectorAll('.content-card').forEach(card => {
+        const id = card.dataset.id;
+        const type = card.dataset.type;
+        
+        card.querySelector('.play-btn')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            playMedia(type, id);
+        });
+        
+        card.querySelector('.info-btn')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            showDetails(type, id);
+        });
+        
+        card.querySelector('.add-btn')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            addToMyList({ id, media_type: type });
+            showToast('Added to My List', 'success');
+        });
+        
+        card.addEventListener('click', () => {
+            showDetails(type, id);
+        });
+    });
+}
+
+// Play Media
+async function playMedia(type, id, season = 1, episode = 1) {
+    currentMediaType = type;
+    currentMediaId = id;
+    currentSeason = season;
+    currentEpisode = episode;
     
-    for (let i = 1; i <= numberOfSeasons; i++) {
-        html += `
-            <button class="season-btn ${i === 1 ? 'active' : ''}" onclick="loadSeason(${tvId}, ${i})">
-                Season ${i}
-            </button>
-        `;
+    try {
+        const response = await fetch(`${TMDB_BASE_URL}/${type}/${id}?api_key=${TMDB_API_KEY}`);
+        const data = await response.json();
+        
+        const title = data.title || data.name;
+        document.getElementById('playerTitle').textContent = title;
+        
+        if (type === 'tv') {
+            document.getElementById('episodesBtn').style.display = 'flex';
+            await loadSeasons(id);
+        } else {
+            document.getElementById('episodesBtn').style.display = 'none';
+        }
+        
+        loadVideoSource(0);
+        document.getElementById('playerModal').classList.add('active');
+        
+        // Add to watch history
+        addToHistory({ ...data, media_type: type });
+        
+    } catch (error) {
+        console.error('Error playing media:', error);
+        showToast('Error loading video', 'error');
+    }
+}
+
+// Load Video Source
+function loadVideoSource(sourceIndex) {
+    currentSource = sourceIndex;
+    const source = VIDEO_SOURCES[sourceIndex];
+    const frame = document.getElementById('playerFrame');
+    const loading = document.getElementById('playerLoading');
+    
+    loading.style.display = 'flex';
+    
+    let url;
+    if (currentMediaType === 'movie') {
+        url = `${source.url}/movie/${currentMediaId}`;
+    } else {
+        url = `${source.url}/tv/${currentMediaId}/${currentSeason}/${currentEpisode}`;
     }
     
-    html += `
+    frame.src = url;
+    
+    frame.onload = () => {
+        loading.style.display = 'none';
+    };
+    
+    // Update source list
+    updateSourceList();
+}
+
+// Toggle Source Selector
+function toggleSourceSelector() {
+    const selector = document.getElementById('sourceSelector');
+    const episodesPanel = document.getElementById('episodesPanel');
+    
+    episodesPanel.classList.remove('active');
+    selector.classList.toggle('active');
+    
+    if (selector.classList.contains('active')) {
+        loadSources();
+    }
+}
+
+// Load Sources
+function loadSources() {
+    const sourceList = document.getElementById('sourceList');
+    sourceList.innerHTML = VIDEO_SOURCES.map((source, index) => `
+        <div class="source-item ${index === currentSource ? 'active' : ''}" data-index="${index}">
+            ${source.name}
+        </div>
+    `).join('');
+    
+    document.querySelectorAll('.source-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+            const index = parseInt(e.target.dataset.index);
+            loadVideoSource(index);
+        });
+    });
+}
+
+// Update Source List
+function updateSourceList() {
+    document.querySelectorAll('.source-item').forEach((item, index) => {
+        if (index === currentSource) {
+            item.classList.add('active');
+        } else {
+            item.classList.remove('active');
+        }
+    });
+}
+
+// Toggle Episodes Panel
+function toggleEpisodesPanel() {
+    const episodesPanel = document.getElementById('episodesPanel');
+    const selector = document.getElementById('sourceSelector');
+    
+    selector.classList.remove('active');
+    episodesPanel.classList.toggle('active');
+}
+
+// Load Seasons
+async function loadSeasons(tvId) {
+    try {
+        const response = await fetch(`${TMDB_BASE_URL}/tv/${tvId}?api_key=${TMDB_API_KEY}`);
+        const data = await response.json();
+        
+        const seasonsSelector = document.getElementById('seasonsSelector');
+        seasonsSelector.innerHTML = data.seasons.filter(s => s.season_number > 0).map(season => `
+            <button class="season-btn ${season.season_number === currentSeason ? 'active' : ''}" 
+                    data-season="${season.season_number}">
+                Season ${season.season_number}
+            </button>
+        `).join('');
+        
+        document.querySelectorAll('.season-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.season-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                const season = parseInt(e.target.dataset.season);
+                loadEpisodes(tvId, season);
+            });
+        });
+        
+        loadEpisodes(tvId, currentSeason);
+    } catch (error) {
+        console.error('Error loading seasons:', error);
+    }
+}
+
+// Load Episodes
+async function loadEpisodes(tvId, season) {
+    try {
+        const response = await fetch(`${TMDB_BASE_URL}/tv/${tvId}/season/${season}?api_key=${TMDB_API_KEY}`);
+        const data = await response.json();
+        
+        const episodesList = document.getElementById('episodesList');
+        episodesList.innerHTML = data.episodes.map(episode => `
+            <div class="episode-item" data-episode="${episode.episode_number}">
+                <div class="episode-number">Episode ${episode.episode_number}</div>
+                <div class="episode-title">${episode.name}</div>
+                <div class="episode-meta">${episode.air_date || 'TBA'} • ${episode.runtime || '--'} min</div>
             </div>
-            <div class="episodes-grid" id="episodesContainer">
-                <div class="loading"><div class="spinner"></div></div>
+        `).join('');
+        
+        document.querySelectorAll('.episode-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const episode = parseInt(e.currentTarget.dataset.episode);
+                currentSeason = season;
+                currentEpisode = episode;
+                loadVideoSource(currentSource);
+                document.getElementById('episodesPanel').classList.remove('active');
+            });
+        });
+    } catch (error) {
+        console.error('Error loading episodes:', error);
+    }
+}
+
+// Close Player
+function closePlayer() {
+    document.getElementById('playerModal').classList.remove('active');
+    document.getElementById('playerFrame').src = '';
+    document.getElementById('sourceSelector').classList.remove('active');
+    document.getElementById('episodesPanel').classList.remove('active');
+}
+
+// Show Details
+async function showDetails(type, id) {
+    try {
+        const [details, credits, videos, reviews, similar] = await Promise.all([
+            fetch(`${TMDB_BASE_URL}/${type}/${id}?api_key=${TMDB_API_KEY}`).then(r => r.json()),
+            fetch(`${TMDB_BASE_URL}/${type}/${id}/credits?api_key=${TMDB_API_KEY}`).then(r => r.json()),
+            fetch(`${TMDB_BASE_URL}/${type}/${id}/videos?api_key=${TMDB_API_KEY}`).then(r => r.json()),
+            fetch(`${TMDB_BASE_URL}/${type}/${id}/reviews?api_key=${TMDB_API_KEY}`).then(r => r.json()),
+            fetch(`${TMDB_BASE_URL}/${type}/${id}/similar?api_key=${TMDB_API_KEY}`).then(r => r.json())
+        ]);
+        
+        const title = details.title || details.name;
+        const backdrop = details.backdrop_path ? `${TMDB_IMAGE_BASE}/original${details.backdrop_path}` : '';
+        const poster = details.poster_path ? `${TMDB_IMAGE_BASE}/w500${details.poster_path}` : '';
+        const rating = details.vote_average.toFixed(1);
+        const year = (details.release_date || details.first_air_date || '').split('-')[0];
+        const runtime = type === 'movie' ? `${details.runtime} min` : `${details.number_of_seasons} Seasons`;
+        const genres = details.genres.map(g => g.name).join(', ');
+        
+        const detailsContent = document.getElementById('detailsContent');
+        detailsContent.innerHTML = `
+            <div class="details-hero">
+                <img src="${backdrop}" alt="${title}" class="details-hero-bg">
+                <div class="details-hero-overlay">
+                    <h1>${title}</h1>
+                    <div class="hero-meta">
+                        <span><i class="fas fa-star" style="color: var(--warning)"></i> ${rating}</span>
+                        <span>${year}</span>
+                        <span>${runtime}</span>
+                    </div>
+                    <div class="hero-buttons">
+                        <button class="btn-primary" onclick="playMedia('${type}', ${id})">
+                            <i class="fas fa-play"></i> Play Now
+                        </button>
+                        <button class="btn-secondary" onclick="addToMyList({id: ${id}, media_type: '${type}', title: '${title.replace(/'/g, "\\'")}', poster_path: '${details.poster_path}'})">
+                            <i class="fas fa-plus"></i> My List
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="details-info">
+                <p>${details.overview}</p>
+                <p style="margin-top: 1rem;"><strong>Genres:</strong> ${genres}</p>
+                ${details.production_companies?.length ? `<p><strong>Studios:</strong> ${details.production_companies.map(c => c.name).join(', ')}</p>` : ''}
+            </div>
+            
+            <div class="details-tabs">
+                <button class="tab-btn active" data-tab="cast">Cast & Crew</button>
+                <button class="tab-btn" data-tab="videos">Videos</button>
+                <button class="tab-btn" data-tab="reviews">Reviews</button>
+                <button class="tab-btn" data-tab="similar">Similar</button>
+            </div>
+            
+            <div class="tab-content active" id="castTab">
+                <div class="cast-grid">
+                    ${credits.cast.slice(0, 12).map(person => `
+                        <div class="cast-card">
+                            <img src="${person.profile_path ? TMDB_IMAGE_BASE + '/w500' + person.profile_path : 'https://via.placeholder.com/500x750?text=No+Image'}" 
+                                 alt="${person.name}" class="cast-photo">
+                            <div class="cast-name">${person.name}</div>
+                            <div class="cast-character">${person.character || person.job}</div>
+                        </div>
+                    `).join('')}8:47 PM            </div>
+        </div>
+        
+        <div class="tab-content" id="videosTab">
+            <div class="videos-grid">
+                ${videos.results.slice(0, 6).map(video => `
+                    <div class="video-card" onclick="window.open('https://www.youtube.com/watch?v=${video.key}', '_blank')">
+                        <img src="https://img.youtube.com/vi/${video.key}/hqdefault.jpg" alt="${video.name}" class="video-thumbnail">
+                        <div class="video-play-icon"><i class="fas fa-play"></i></div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+        
+        <div class="tab-content" id="reviewsTab">
+            <div class="reviews-list">
+                ${reviews.results.length ? reviews.results.slice(0, 5).map(review => `
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="review-author">
+                                <img src="${review.author_details.avatar_path ? (review.author_details.avatar_path.startsWith('/https') ? review.author_details.avatar_path.substring(1) : TMDB_IMAGE_BASE + '/w200' + review.author_details.avatar_path) : 'https://via.placeholder.com/100'}" 
+                                     alt="${review.author}" class="review-avatar">
+                                <div>
+                                    <div style="font-weight: 600;">${review.author}</div>
+                                    <div style="font-size: 0.85rem; color: var(--text-dim);">${new Date(review.created_at).toLocaleDateString()}</div>
+                                </div>
+                            </div>
+                            ${review.author_details.rating ? `
+                                <div class="review-rating">
+                                    <i class="fas fa-star"></i> ${review.author_details.rating}
+                                </div>
+                            ` : ''}
+                        </div>
+                        <div class="review-content">${review.content.substring(0, 300)}${review.content.length > 300 ? '...' : ''}</div>
+                    </div>
+                `).join('') : '<p>No reviews available yet.</p>'}
+            </div>
+        </div>
+        
+        <div class="tab-content" id="similarTab">
+            <div class="content-slider">
+                ${similar.results.slice(0, 10).map(item => createContentCard({...item, media_type: type})).join('')}
             </div>
         </div>
     `;
     
-    // Load first season episodes
-    setTimeout(() => loadSeason(tvId, 1), 100);
-    
-    return html;
-}
-
-async function loadSeason(tvId, seasonNumber) {
-    currentSeason = seasonNumber;
-    
-    // Update active season button
-    document.querySelectorAll('.season-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    event.target.classList.add('active');
-    
-    const container = document.getElementById('episodesContainer');
-    container.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
-    
-    try {
-        const seasonData = await fetchAPI(`/tv/${tvId}/season/${seasonNumber}`);
-        
-        if (seasonData?.episodes && seasonData.episodes.length > 0) {
-            let html = '';
-            seasonData.episodes.forEach((episode, index) => {
-                html += `
-                    <div class="episode-card ${index === 0 ? 'active' : ''}" onclick="selectEpisode(${tvId}, ${seasonNumber}, ${episode.episode_number})">
-                        <div class="episode-number">Episode ${episode.episode_number}</div>
-                        <div class="episode-title">${episode.name || `Episode ${episode.episode_number}`}</div>
-                        ${settings.spoilers && episode.overview ? `<div class="episode-overview">${episode.overview}</div>` : ''}
-                        ${episode.runtime ? `<div class="episode-runtime"><i class="fas fa-clock"></i> ${episode.runtime} min</div>` : ''}
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
+    // Add tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             
-            // Auto-select first episode
-            if (seasonData.episodes[0]) {
-                currentEpisode = seasonData.episodes[0].episode_number;
-                updateVideoSource();
-            }
-        } else {
-            container.innerHTML = '<div class="no-results"><i class="fas fa-tv"></i><h3>No episodes found</h3></div>';
-        }
-    } catch (error) {
-        console.error('Error loading season:', error);
-        container.innerHTML = '<div class="no-results"><i class="fas fa-exclamation-circle"></i><h3>Error loading episodes</h3></div>';
-    }
-}
-
-function selectEpisode(tvId, seasonNumber, episodeNumber) {
-    currentSeason = seasonNumber;
-    currentEpisode = episodeNumber;
-    
-    // Update active episode
-    document.querySelectorAll('.episode-card').forEach(card => {
-        card.classList.remove('active');
+            e.target.classList.add('active');
+            document.getElementById(e.target.dataset.tab + 'Tab').classList.add('active');
+        });
     });
-    event.target.closest('.episode-card').classList.add('active');
     
-    updateVideoSource();
+    addCardEventListeners();
+    document.getElementById('detailsModal').classList.add('active');
+    
+} catch (error) {
+    console.error('Error loading details:', error);
+    showToast('Error loading details', 'error');
+}
+}
+// Close Details Modal
+function closeDetailsModal() {
+document.getElementById('detailsModal').classList.remove('active');
+}
+// Search Functions
+function openSearch() {
+document.getElementById('searchOverlay').classList.add('active');
+document.getElementById('searchInput').focus();
+}
+function closeSearch() {
+document.getElementById('searchOverlay').classList.remove('active');
+document.getElementById('searchInput').value = '';
+document.getElementById('searchResults').innerHTML = '';
+}
+async function handleSearch() {
+const query = document.getElementById('searchInput').value.trim();
+const activeFilter = document.querySelector('.filter-btn.active').dataset.filter;
+if (query.length < 2) {
+    document.getElementById('searchResults').innerHTML = '';
+    return;
 }
 
-function playContent() {
-    const videoContainer = document.getElementById('videoContainer');
-    if (videoContainer) {
-        videoContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-}
-
-function updateVideoSource() {
-    if (!currentContent) return;
+try {
+    let url = `${TMDB_BASE_URL}/search/multi?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}`;
     
-    const sourceSelect = document.getElementById('sourceSelect');
-    const sourceIndex = sourceSelect ? parseInt(sourceSelect.value) : settings.defaultSource;
-    const source = SOURCES[sourceIndex];
-    
-    const mediaType = currentContent.media_type || (currentContent.title ? 'movie' : 'tv');
-    const id = currentContent.id;
-    
-    let embedUrl = '';
-    
-    if (mediaType === 'movie') {
-        embedUrl = source.url + source.movie + id;
-    } else {
-        embedUrl = source.url + source.tv + id;
-        if (currentSeason && currentEpisode) {
-            embedUrl += `/${currentSeason}/${currentEpisode}`;
-        }
-    }
-    
-    const videoContainer = document.getElementById('videoContainer');
-    if (videoContainer) {
-        videoContainer.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
-    }
-}
-
-function closeModal() {
-    document.getElementById('detailModal').classList.remove('active');
-    document.body.style.overflow = 'auto';
-    currentContent = null;
-}
-
-function addToWatchHistory(item) {
-    // Remove if already exists
-    const index = watchHistory.findIndex(h => h.id === item.id);
-    if (index > -1) {
-        watchHistory.splice(index, 1);
+    if (activeFilter !== 'all') {
+        url = `${TMDB_BASE_URL}/search/${activeFilter}?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}`;
     }
     
-    // Add to beginning with timestamp
-    item.watchedAt = Date.now();
-    item.progress = 0; // Can be updated with actual progress
-    watchHistory.unshift(item);
+    const response = await fetch(url);
+    const data = await response.json();
     
-    // Keep only last 50 items
-    if (watchHistory.length > 50) {
-        watchHistory = watchHistory.slice(0, 50);
-    }
+    const results = document.getElementById('searchResults');
+    results.innerHTML = data.results.map(item => createContentCard(item)).join('');
+    addCardEventListeners();
     
-    saveToStorage();
+} catch (error) {
+    console.error('Error searching:', error);
+}
+}
+// Notifications
+function toggleNotifications() {
+document.getElementById('notificationsPanel').classList.toggle('active');
+}
+function loadNotifications() {
+const notifications = getNotifications();
+const notifList = document.getElementById('notifList');
+if (notifications.length === 0) {
+    notifList.innerHTML = '<p style="text-align: center; padding: 2rem; color: var(--text-dim);">No notifications</p>';
+    return;
 }
 
-function downloadInfo() {
-    if (!currentContent) return;
-    
-    const title = currentContent.title || currentContent.name;
-    const info = {
-        title: title,
-        overview: currentContent.overview,
-        rating: currentContent.vote_average,
-        releaseDate: currentContent.release_date || currentContent.first_air_date,
-        genres: getGenreNames(currentContent.genre_ids || []),
-        type: currentContent.media_type || (currentContent.title ? 'movie' : 'tv')
-    };
-    
-    const blob = new Blob([JSON.stringify(info, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${title.replace(/[^a-z0-9]/gi, '_')}_info.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-    showToast('Info downloaded');
+notifList.innerHTML = notifications.map(notif => `
+    <div class="notif-item ${notif.read ? '' : 'unread'}">
+        <div class="notif-title">${notif.title}</div>
+        <div class="notif-text">${notif.text}</div>
+        <div class="notif-time">${notif.time}</div>
+    </div>
+`).join('');
 }
-```
+function getNotifications() {
+const notifications = localStorage.getItem('zenshows_notifications');
+return notifications ? JSON.parse(notifications) : [
+{ title: 'Welcome to ZenShows!', text: 'Enjoy unlimited streaming', time: 'Just now', read: false },
+{ title: 'New Feature', text: 'Check out our improved player', time: '1 hour ago', read: false },
+{ title: 'Recommendation', text: 'New movies added to your list', time: '2 hours ago', read: true }
+];
+}
+// Mobile Menu
+function toggleMobileMenu() {
+document.getElementById('mobileMenu').classList.toggle('active');
+}
+// Profile & Settings
+function showProfile() {
+showToast('Profile feature coming soon!', 'info');
+}
+function showSettings() {
+const settings = getSettings();
+const settingsContent = document.getElementById('settingsContent');
+settingsContent.innerHTML = `
+    <div class="settings-group">
+        <h3>Playback</h3>
+        <div class="setting-item">
+            <div class="setting-label">
+                <span>Auto-play next episode</span>
+                <span>Automatically play the next episode</span>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="autoplay" ${settings.autoplay ? 'checked' : ''}>
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="setting-item">
+            <div class="setting-label">
+                <span>Skip intro</span>
+                <span>Skip opening credits when available</span>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="skipIntro" ${settings.skipIntro ? 'checked' : ''}>
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div class="setting-item">
+            <div class="setting-label">
+                <span>Default video quality</span>
+            </div>
+            <select class="setting-select" id="quality">
+                <option value="auto" ${settings.quality === 'auto' ? 'selected' : ''}>Auto</option>
+                <option value="1080p" ${settings.quality === '1080p' ? 'selected' : ''}>1080p</option>
+                <option value="720p" ${settings.quality === '720p' ? 'selected' : ''}>720p</option>
+                <option value="480p" ${settings.quality === '480p' ? 'selected' : ''}>480p</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="settings-group">
+        <h3>Appearance</h3>
+        <div class="setting-item">
+            <div class="setting-label">
+                <span>Theme</span>
+            </div>
+            <select class="setting-select" id="theme">
+                <option value="dark" ${settings.theme === 'dark' ? 'selected' : ''}>Dark</option>
+                <option value="light" ${settings.theme === 'light' ? 'selected' : ''}>Light</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="settings-group">
+        <h3>Notifications</h3>
+        <div class="setting-item">
+            <div class="setting-label">
+                <span>New releases</span>
+                <span>Get notified about new content</span>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="notifications" ${settings.notifications ? 'checked' : ''}>
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+    
+    <div class="settings-group">
+        <h3>Data</h3>
+        <button class="btn-auth" onclick="clearAllData()" style="background: var(--accent);">
+            Clear All Data
+        </button>
+    </div>
+`;
 
+// Save settings on change
+settingsContent.querySelectorAll('input, select').forEach(input => {
+    input.addEventListener('change', saveSettings);
+});
+
+document.getElementById('settingsModal').classList.add('active');
+}
+function closeSettings() {
+document.getElementById('settingsModal').classList.remove('active');
+}
+function getSettings() {
+const settings = localStorage.getItem('zenshows_settings');
+return settings ? JSON.parse(settings) : {
+autoplay: true,
+skipIntro: true,
+quality: 'auto',
+theme: 'dark',
+notifications: true
+};
+}
+function saveSettings() {
+const settings = {
+autoplay: document.getElementById('autoplay')?.checked || false,
+skipIntro: document.getElementById('skipIntro')?.checked || false,
+quality: document.getElementById('quality')?.value || 'auto',
+theme: document.getElementById('theme')?.value || 'dark',
+notifications: document.getElementById('notifications')?.checked || false
+};
+localStorage.setItem('zenshows_settings', JSON.stringify(settings));
+showToast('Settings saved', 'success');
+}
+function clearAllData() {
+if (confirm('Are you sure you want to clear all data? This will remove your watch history, list, and settings.')) {
+localStorage.removeItem('zenshows_history');
+localStorage.removeItem('zenshows_mylist');
+localStorage.removeItem('zenshows_settings');
+showToast('All data cleared', 'success');
+closeSettings();
+}
+}
+// Watch History
+function showHistory() {
+const history = getWatchHistory();
+const mainContent = document.getElementById('mainContent');
+mainContent.innerHTML = `
+    <div style="max-width: 1400px; margin: 100px auto 0; padding: 2rem;">
+        <h1 style="margin-bottom: 2rem;">
+            <i class="fas fa-history"></i> Watch History
+        </h1>
+        <div class="content-slider" style="flex-wrap: wrap;">
+            ${history.length ? history.map(item => createContentCard(item)).join('') : '<p>No watch history yet</p>'}
+        </div>
+    </div>
+`;
+
+addCardEventListeners();
+}
+function addToHistory(item) {
+let history = getWatchHistory();
+// Remove if already exists
+history = history.filter(h => h.id !== item.id);
+
+// Add to beginning
+history.unshift({
+    ...item,
+    watchedAt: new Date().toISOString()
+});
+
+// Keep only last 50
+history = history.slice(0, 50);
+
+localStorage.setItem('zenshows_history', JSON.stringify(history));
+}
+function getWatchHistory() {
+const history = localStorage.getItem('zenshows_history');
+return history ? JSON.parse(history) : [];
+}
+// My List
+function loadMyListPage() {
+const myList = getMyList();
+const mainContent = document.getElementById('mainContent');
+mainContent.innerHTML = `
+    <div style="max-width: 1400px; margin: 100px auto 0; padding: 2rem;">
+        <h1 style="margin-bottom: 2rem;">
+            <i class="fas fa-heart"></i> My List
+        </h1>
+        <div class="content-slider" style="flex-wrap: wrap;">
+            ${myList.length ? myList.map(item => createContentCard(item)).join('') : '<p>Your list is empty. Add some content!</p>'}
+        </div>
+    </div>
+`;
+
+addCardEventListeners();
+}
+function addToMyList(item) {
+let myList = getMyList();
+// Check if already in list
+if (myList.some(i => i.id === item.id)) {
+    showToast('Already in your list', 'warning');
+    return;
+}
+
+myList.push(item);
+localStorage.setItem('zenshows_mylist', JSON.stringify(myList));
+}
+function getMyList() {
+const myList = localStorage.getItem('zenshows_mylist');
+return myList ? JSON.parse(myList) : [];
+}
+// Movies Page
+async function loadMoviesPage() {
+const mainContent = document.getElementById('mainContent');
+mainContent.innerHTML = `
+<div style="max-width: 1400px; margin: 100px auto 0; padding: 2rem;">
+<h1 style="margin-bottom: 2rem;"><i class="fas fa-film"></i> Movies</h1>
+        <div class="section-header">
+            <h2>Popular</h2>
+        </div>
+        <div class="content-slider" id="moviesPopular"></div>
+        
+        <div class="section-header" style="margin-top: 3rem;">
+            <h2>Top Rated</h2>
+        </div>
+        <div class="content-slider" id="moviesTopRated"></div>
+        
+        <div class="section-header" style="margin-top: 3rem;">
+            <h2>Now Playing</h2>
+        </div>
+        <div class="content-slider" id="moviesNowPlaying"></div>
+    </div>
+`;
+
+const [popular, topRated, nowPlaying] = await Promise.all([
+    fetch(`${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}`).then(r => r.json()),
+    fetch(`${TMDB_BASE_URL}/movie/top_rated?api_key=${TMDB_API_KEY}`).then(r => r.json()),
+    fetch(`${TMDB_BASE_URL}/movie/now_playing?api_key=${TMDB_API_KEY}`).then(r => r.json())
+]);
+
+document.getElementById('moviesPopular').innerHTML = popular.results.map(item => createContentCard({...item, media_type: 'movie'})).join('');
+document.getElementById('moviesTopRated').innerHTML = topRated.results.map(item => createContentCard({...item, media_type: 'movie'})).join('');
+document.getElementById('moviesNowPlaying').innerHTML = nowPlaying.results.map(item => createContentCard({...item, media_type: 'movie'})).join('');
+
+addCardEventListeners();
+}
+// Series Page
+async function loadSeriesPage() {
+const mainContent = document.getElementById('mainContent');
+mainContent.innerHTML = `
+<div style="max-width: 1400px; margin: 100px auto 0; padding: 2rem;">
+<h1 style="margin-bottom: 2rem;"><i class="fas fa-tv"></i> TV Series</h1>
+        <div class="section-header">
+            <h2>Popular</h2>
+        </div>
+        <div class="content-slider" id="seriesPopular"></div>
+        
+        <div class="section-header" style="margin-top: 3rem;">
+            <h2>Top Rated</h2>
+        </div>
+        <div class="content-slider" id="seriesTopRated"></div>
+        
+        <div class="section-header" style="margin-top: 3rem;">
+            <h2>On The Air</h2>
+        </div>
+        <div class="content-slider" id="seriesOnAir"></div>
+    </div>
+`;
+
+const [popular, topRated, onAir] = await Promise.all([
+    fetch(`${TMDB_BASE_URL}/tv/popular?api_key=${TMDB_API_KEY}`).then(r => r.json()),
+    fetch(`${TMDB_BASE_URL}/tv/top_rated?api_key=${TMDB_API_KEY}`).then(r => r.json()),
+    fetch(`${TMDB_BASE_URL}/tv/on_the_air?api_key=${TMDB_API_KEY}`).then(r => r.json())
+]);
+
+document.getElementById('seriesPopular').innerHTML = popular.results.map(item => createContentCard({...item, media_type: 'tv'})).join('');
+document.getElementById('seriesTopRated').innerHTML = topRated.results.map(item => createContentCard({...item, media_type: 'tv'})).join('');
+document.getElementById('seriesOnAir').innerHTML = onAir.results.map(item => createContentCard({...item, media_type: 'tv'})).join('');
+
+addCardEventListeners();
+}
+// Trending Page
+async function loadTrendingPage() {
+const mainContent = document.getElementById('mainContent');
+mainContent.innerHTML = `
+<div style="max-width: 1400px; margin: 100px auto 0; padding: 2rem;">
+<h1 style="margin-bottom: 2rem;"><i class="fas fa-fire"></i> Trending</h1>
+        <div class="section-header">
+            <h2>Today</h2>
+        </div>
+        <div class="content-slider" id="trendingToday"></div>
+        
+        <div class="section-header" style="margin-top: 3rem;">
+            <h2>This Week</h2>
+        </div>
+        <div class="content-slider" id="trendingWeek"></div>
+    </div>
+`;
+
+const [today, week] = await Promise.all([
+    fetch(`${TMDB_BASE_URL}/trending/all/day?api_key=${TMDB_API_KEY}`).then(r => r.json()),
+    fetch(`${TMDB_BASE_URL}/trending/all/week?api_key=${TMDB_API_KEY}`).then(r => r.json())
+]);
+
+document.getElementById('trendingToday').innerHTML = today.results.map(item => createContentCard(item)).join('');
+document.getElementById('trendingWeek').innerHTML = week.results.map(item => createContentCard(item)).join('');
+
+addCardEventListeners();
+}
+// Load by Genre
+async function loadByGenre(genreId) {
+try {
+const [movies, tv] = await Promise.all([
+fetch(${TMDB_BASE_URL}/discover/movie?api_key=${TMDB_API_KEY}&with_genres=${genreId}).then(r => r.json()),
+fetch(${TMDB_BASE_URL}/discover/tv?api_key=${TMDB_API_KEY}&with_genres=${genreId}).then(r => r.json())
+]);
+    const mainContent = document.getElementById('mainContent');
+    mainContent.innerHTML = `
+        <div style="max-width: 1400px; margin: 100px auto 0; padding: 2rem;">
+            <h1 style="margin-bottom: 2rem;"><i class="fas fa-th"></i> Genre Content</h1>
+            
+            <div class="section-header">
+                <h2>Movies</h2>
+            </div>
+            <div class="content-slider" id="genreMovies"></div>
+            
+            <div class="section-header" style="margin-top: 3rem;">
+                <h2>TV Series</h2>
+            </div>
+            <div class="content-slider" id="genreSeries"></div>
+        </div>
+    `;
+    
+    document.getElementById('genreMovies').innerHTML = movies.results.map(item => createContentCard({...item, media_type: 'movie'})).join('');
+    document.getElementById('genreSeries').innerHTML = tv.results.map(item => createContentCard({...item, media_type: 'tv'})).join('');
+    
+    addCardEventListeners();
+} catch (error) {
+    console.error('Error loading genre:', error);
+}
+}
+// Authentication
+function handleLogin(e) {
+e.preventDefault();
+const email = document.getElementById('loginEmail').value;
+const password = document.getElementById('loginPassword').value;
+// Dummy login - accept any credentials
+const user = {
+    email,
+    name: email.split('@')[0],
+    avatar: 'https://i.pravatar.cc/150?img=' + Math.floor(Math.random() * 70)
+};
+
+localStorage.setItem('zenshows_user', JSON.stringify(user));
+currentUser = user;
+
+hideAuthModal();
+updateUIForLoggedInUser();
+loadHomePage();
+showToast('Welcome to ZenShows!', 'success');
+}
+function handleRegister(e) {
+e.preventDefault();
+const name = document.getElementById('registerName').value;
+const email = document.getElementById('registerEmail').value;
+const password = document.getElementById('registerPassword').value;
+const confirmPassword = document.getElementById('registerConfirmPassword').value;
+if (password !== confirmPassword) {
+    showToast('Passwords do not match', 'error');
+    return;
+}
+
+const user = {
+    name,
+    email,
+    avatar: 'https://i.pravatar.cc/150?img=' + Math.floor(Math.random() * 70)
+};
+
+localStorage.setItem('zenshows_user', JSON.stringify(user));
+currentUser = user;
+
+hideAuthModal();
+updateUIForLoggedInUser();
+loadHomePage();
+showToast('Account created successfully!', 'success');
+}
+function showRegisterForm() {
+document.getElementById('loginForm').style.display = 'none';
+document.getElementById('registerForm').style.display = 'block';
+}
+function showLoginForm() {
+document.getElementById('registerForm').style.display = 'none';
+document.getElementById('loginForm').style.display = 'block';
+}
+function logout() {
+localStorage.removeItem('zenshows_user');
+currentUser = null;
+showAuthModal();
+showToast('Logged out successfully', 'success');
+}
+// Share Content
+function shareContent(item) {
+const title = item.title || item.name;
+const text = Check out ${title} on ZenShows!;
+if (navigator.share) {
+    navigator.share({ title, text }).catch(() => {});
+} else {
+    // Fallback - copy to clipboard
+    navigator.clipboard.writeText(text);
+    showToast('Link copied to clipboard', 'success');
+}
+}
+// Toast Notification
+function showToast(message, type = 'info') {
+const container = document.getElementById('toastContainer');
+const toast = document.createElement('div');
+toast.className = toast ${type};
+const icon = type === 'success' ? 'check-circle' : 
+             type === 'error' ? 'exclamation-circle' : 
+             type === 'warning' ? 'exclamation-triangle' : 'info-circle';
+
+toast.innerHTML = `
+    <i class="fas fa-${icon}"></i>
+    <span>${message}</span>
+`;
+
+container.appendChild(toast);
+
+setTimeout(() => {
+    toast.style.opacity = '0';
+    setTimeout(() => toast.remove(), 300);
+}, 3000);
+}
+// Utility Functions
+function debounce(func, wait) {
+let timeout;
+return function executedFunction(...args) {
+const later = () => {
+clearTimeout(timeout);
+func(...args);
+};
+clearTimeout(timeout);
+timeout = setTimeout(later, wait);
+};
+}
+function formatNumber(num) {
+if (num >= 1000000) {
+return (num / 1000000).toFixed(1) + 'M';
+}
+if (num >= 1000) {
+return (num / 1000).toFixed(1) + 'K';
+}
+return num.toString();
+}

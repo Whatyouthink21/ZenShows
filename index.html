@@ -3,424 +3,371 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Stream unlimited movies and TV shows in HD quality. Watch your favorite content anytime, anywhere.">
-    <meta name="keywords" content="movies, tv shows, streaming, watch online, HD movies">
-    <title>Zen Shows - Stream Movies & TV Shows Online</title>
-    
-    <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
-    
-    <!-- Font Awesome -->
+    <title>ZenShows - Unlimited Streaming</title>
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Stylesheet -->
-    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Scroll to Top Button -->
-    <button class="scroll-top" id="scrollTop" onclick="scrollToTop()">
-        <i class="fas fa-arrow-up"></i>
-    </button>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
 
-    <!-- Header -->
-    <header id="header">
-        <nav>
-            <div class="logo" onclick="goHome()">
-                <i class="fas fa-film"></i> ZEN SHOWS
-            </div>
-            
-            <div class="nav-links" id="navLinks">
-                <a href="#" class="nav-link active" data-page="home">
-                    <i class="fas fa-home"></i> Home
-                </a>
-                <a href="#" class="nav-link" data-page="movies">
-                    <i class="fas fa-video"></i> Movies
-                </a>
-                <a href="#" class="nav-link" data-page="shows">
-                    <i class="fas fa-tv"></i> TV Shows
-                </a>
-                <a href="#" class="nav-link" data-page="trending">
-                    <i class="fas fa-fire"></i> Trending
-                </a>
-                <a href="#" class="nav-link" data-page="mylist">
-                    <i class="fas fa-bookmark"></i> My List
-                </a>
-                <a href="#" class="nav-link" data-page="genres">
-                    <i class="fas fa-list"></i> Genres
-                </a>
-            </div>
-
-            <div class="user-actions">
-                <div class="search-container">
-                    <input type="text" class="search-input" id="searchInput" placeholder="Search movies & shows...">
-                    <button class="search-btn" onclick="performSearch()">
-                        <i class="fas fa-search"></i>
-                    </button>
-                    <div class="search-results" id="searchResults"></div>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="logo">
+                    <i class="fas fa-play-circle"></i>
+                    <span>Zen<span class="logo-accent">Shows</span></span>
                 </div>
-                
-                <button class="icon-btn tooltip" data-tooltip="Random Pick" onclick="randomPick()">
-                    <i class="fas fa-random"></i>
+                <ul class="nav-menu">
+                    <li><a href="#" class="nav-link active" data-page="home">Home</a></li>
+                    <li><a href="#" class="nav-link" data-page="movies">Movies</a></li>
+                    <li><a href="#" class="nav-link" data-page="series">TV Series</a></li>
+                    <li><a href="#" class="nav-link" data-page="trending">Trending</a></li>
+                    <li><a href="#" class="nav-link" data-page="mylist">My List</a></li>
+                </ul>
+            </div>
+            <div class="nav-right">
+                <button class="search-btn" id="searchBtn">
+                    <i class="fas fa-search"></i>
                 </button>
-                
-                <button class="icon-btn tooltip" data-tooltip="Settings" onclick="openSettings()">
-                    <i class="fas fa-cog"></i>
+                <button class="notifications-btn" id="notifBtn">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-badge">3</span>
                 </button>
-                
-                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <div class="user-menu">
+                    <img src="https://i.pravatar.cc/150?img=68" alt="User" class="user-avatar" id="userAvatar">
+                    <div class="dropdown-menu" id="userDropdown">
+                        <a href="#" id="profileLink"><i class="fas fa-user"></i> Profile</a>
+                        <a href="#" id="settingsLink"><i class="fas fa-cog"></i> Settings</a>
+                        <a href="#" id="historyLink"><i class="fas fa-history"></i> Watch History</a>
+                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
                     <i class="fas fa-bars"></i>
                 </button>
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
 
     <!-- Mobile Menu -->
-    <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="toggleMobileMenu()"></div>
     <div class="mobile-menu" id="mobileMenu">
-        <div class="mobile-menu-header">
-            <div class="logo"><i class="fas fa-film"></i> ZEN SHOWS</div>
-            <button class="mobile-menu-close" onclick="toggleMobileMenu()">
+        <button class="close-mobile-menu" id="closeMobileMenu">
+            <i class="fas fa-times"></i>
+        </button>
+        <ul>
+            <li><a href="#" data-page="home">Home</a></li>
+            <li><a href="#" data-page="movies">Movies</a></li>
+            <li><a href="#" data-page="series">TV Series</a></li>
+            <li><a href="#" data-page="trending">Trending</a></li>
+            <li><a href="#" data-page="mylist">My List</a></li>
+            <li><a href="#" id="mobileProfile">Profile</a></li>
+            <li><a href="#" id="mobileSettings">Settings</a></li>
+            <li><a href="#" id="mobileHistory">Watch History</a></li>
+            <li><a href="#" id="mobileLogout">Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Search Overlay -->
+    <div class="search-overlay" id="searchOverlay">
+        <div class="search-container">
+            <button class="close-search" id="closeSearch">
                 <i class="fas fa-times"></i>
             </button>
-        </div>
-        <div class="mobile-menu-links">
-            <a href="#" class="mobile-menu-link" onclick="navigateTo('home')">
-                <i class="fas fa-home"></i> Home
-            </a>
-            <a href="#" class="mobile-menu-link" onclick="navigateTo('movies')">
-                <i class="fas fa-video"></i> Movies
-            </a>
-            <a href="#" class="mobile-menu-link" onclick="navigateTo('shows')">
-                <i class="fas fa-tv"></i> TV Shows
-            </a>
-            <a href="#" class="mobile-menu-link" onclick="navigateTo('trending')">
-                <i class="fas fa-fire"></i> Trending
-            </a>
-            <a href="#" class="mobile-menu-link" onclick="navigateTo('mylist')">
-                <i class="fas fa-bookmark"></i> My List
-            </a>
-            <a href="#" class="mobile-menu-link" onclick="navigateTo('genres')">
-                <i class="fas fa-list"></i> Genres
-            </a>
-            <a href="#" class="mobile-menu-link" onclick="randomPick()">
-                <i class="fas fa-random"></i> Random Pick
-            </a>
-            <a href="#" class="mobile-menu-link" onclick="openSettings()">
-                <i class="fas fa-cog"></i> Settings
-            </a>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search movies, TV shows, actors...">
+            </div>
+            <div class="search-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="movie">Movies</button>
+                <button class="filter-btn" data-filter="tv">TV Shows</button>
+                <button class="filter-btn" data-filter="person">Actors</button>
+            </div>
+            <div class="search-results" id="searchResults"></div>
         </div>
     </div>
 
-    <!-- Hero Section -->
-    <section class="hero" id="hero">
-        <div class="hero-slider">
-            <img class="hero-bg" id="heroBg" src="" alt="">
+    <!-- Notifications Panel -->
+    <div class="notifications-panel" id="notificationsPanel">
+        <div class="notif-header">
+            <h3>Notifications</h3>
+            <button class="close-notif" id="closeNotif">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
-        <div class="hero-overlay"></div>
-        <div class="hero-content">
-            <div class="hero-badge" id="heroBadge"></div>
-            <h1 class="hero-title" id="heroTitle">Welcome to Zen Shows</h1>
-            <div class="hero-meta" id="heroMeta"></div>
-            <p class="hero-description" id="heroDescription">
-                Discover unlimited movies and TV shows. Stream now in HD quality.
-            </p>
-            <div class="hero-buttons">
-                <button class="btn btn-primary" onclick="playHeroContent()">
-                    <i class="fas fa-play"></i> Play Now
-                </button>
-                <button class="btn btn-secondary" onclick="showHeroDetails()">
-                    <i class="fas fa-info-circle"></i> More Info
-                </button>
-                <button class="btn btn-secondary" onclick="addHeroToList()">
-                    <i class="fas fa-plus"></i> Add to List
-                </button>
-            </div>
-        </div>
-    </section>
+        <div class="notif-list" id="notifList"></div>
+    </div>
 
     <!-- Main Content -->
     <main id="mainContent">
-        <div id="loadingIndicator" class="loading" style="display: none;">
-            <div class="spinner"></div>
-            <p>Loading amazing content...</p>
-        </div>
+        <!-- Hero Section -->
+        <section class="hero" id="heroSection">
+            <div class="hero-bg" id="heroBg"></div>
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <i class="fas fa-crown"></i> Featured
+                </div>
+                <h1 class="hero-title" id="heroTitle"></h1>
+                <div class="hero-meta" id="heroMeta"></div>
+                <p class="hero-description" id="heroDescription"></p>
+                <div class="hero-buttons">
+                    <button class="btn-primary" id="heroPlayBtn">
+                        <i class="fas fa-play"></i> Play Now
+                    </button>
+                    <button class="btn-secondary" id="heroInfoBtn">
+                        <i class="fas fa-info-circle"></i> More Info
+                    </button>
+                    <button class="btn-icon" id="heroAddBtn" title="Add to My List">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <button class="btn-icon" id="heroShareBtn" title="Share">
+                        <i class="fas fa-share-alt"></i>
+                    </button>
+                </div>
+                <div class="hero-stats" id="heroStats"></div>
+            </div>
+            <div class="hero-overlay"></div>
+        </section>
+
+        <!-- Continue Watching -->
+        <section class="content-section" id="continueWatchingSection">
+            <div class="section-header">
+                <h2><i class="fas fa-history"></i> Continue Watching</h2>
+                <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="content-slider" id="continueWatchingSlider"></div>
+        </section>
+
+        <!-- Trending Now -->
+        <section class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-fire"></i> Trending Now</h2>
+                <div class="section-filters">
+                    <button class="filter-chip active" data-trending="day">Today</button>
+                    <button class="filter-chip" data-trending="week">This Week</button>
+                </div>
+            </div>
+            <div class="content-slider" id="trendingSlider"></div>
+        </section>
+
+        <!-- Popular Movies -->
+        <section class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-film"></i> Popular Movies</h2>
+                <a href="#" class="view-all" data-page="movies">View All <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="content-slider" id="popularMoviesSlider"></div>
+        </section>
+
+        <!-- Top Rated Series -->
+        <section class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-tv"></i> Top Rated TV Series</h2>
+                <a href="#" class="view-all" data-page="series">View All <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="content-slider" id="topSeriesSlider"></div>
+        </section>
+
+        <!-- Upcoming -->
+        <section class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-calendar-alt"></i> Coming Soon</h2>
+            </div>
+            <div class="content-slider" id="upcomingSlider"></div>
+        </section>
+
+        <!-- Genres -->
+        <section class="content-section">
+            <div class="section-header">
+                <h2><i class="fas fa-th"></i> Browse by Genre</h2>
+            </div>
+            <div class="genre-grid" id="genreGrid"></div>
+        </section>
     </main>
 
-    <!-- Detail Modal -->
-    <div class="modal" id="detailModal">
-        <button class="modal-close" onclick="closeModal()">
+    <!-- Video Player Modal -->
+    <div class="player-modal" id="playerModal">
+        <div class="player-container">
+            <div class="player-header">
+                <div class="player-title" id="playerTitle"></div>
+                <div class="player-controls-top">
+                    <button class="player-source-btn" id="sourceBtn">
+                        <i class="fas fa-server"></i> Change Source
+                    </button>
+                    <button class="player-episodes-btn" id="episodesBtn" style="display:none;">
+                        <i class="fas fa-list"></i> Episodes
+                    </button>
+                    <button class="player-close" id="closePlayer">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="player-wrapper">
+                <iframe id="playerFrame" allowfullscreen></iframe>
+                <div class="player-loading" id="playerLoading">
+                    <div class="spinner"></div>
+                    <p>Loading video...</p>
+                </div>
+            </div>
+            <div class="source-selector" id="sourceSelector">
+                <h4>Select Video Source</h4>
+                <div class="source-list" id="sourceList"></div>
+            </div>
+            <div class="episodes-panel" id="episodesPanel">
+                <h4>Select Episode</h4>
+                <div class="seasons-selector" id="seasonsSelector"></div>
+                <div class="episodes-list" id="episodesList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details Modal -->
+    <div class="details-modal" id="detailsModal">
+        <button class="close-modal" id="closeDetails">
             <i class="fas fa-times"></i>
         </button>
-        <div class="modal-content" id="modalContent">
-            <!-- Content loaded dynamically -->
+        <div class="details-content" id="detailsContent"></div>
+    </div>
+
+    <!-- Login/Register Modal -->
+    <div class="auth-modal" id="authModal">
+        <div class="auth-container">
+            <button class="close-auth" id="closeAuth">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="auth-forms">
+                <!-- Login Form -->
+                <div class="auth-form" id="loginForm">
+                    <h2>Welcome Back</h2>
+                    <p class="auth-subtitle">Sign in to continue watching</p>
+                    <form id="loginFormElement">
+                        <div class="form-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="loginEmail" placeholder="Email" required>
+                        </div>
+                        <div class="form-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="loginPassword" placeholder="Password" required>
+                            <button type="button" class="toggle-password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="form-options">
+                            <label class="checkbox">
+                                <input type="checkbox" id="rememberMe">
+                                <span>Remember me</span>
+                            </label>
+                            <a href="#" class="forgot-password">Forgot password?</a>
+                        </div>
+                        <button type="submit" class="btn-auth">Sign In</button>
+                    </form>
+                    <div class="auth-switch">
+                        Don't have an account? <a href="#" id="showRegister">Sign Up</a>
+                    </div>
+                </div>
+
+                <!-- Register Form -->
+                <div class="auth-form" id="registerForm" style="display:none;">
+                    <h2>Create Account</h2>
+                    <p class="auth-subtitle">Join ZenShows today</p>
+                    <form id="registerFormElement">
+                        <div class="form-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="registerName" placeholder="Full Name" required>
+                        </div>
+                        <div class="form-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="registerEmail" placeholder="Email" required>
+                        </div>
+                        <div class="form-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="registerPassword" placeholder="Password" required>
+                            <button type="button" class="toggle-password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="form-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="registerConfirmPassword" placeholder="Confirm Password" required>
+                        </div>
+                        <label class="checkbox">
+                            <input type="checkbox" id="agreeTerms" required>
+                            <span>I agree to the Terms & Conditions</span>
+                        </label>
+                        <button type="submit" class="btn-auth">Create Account</button>
+                    </form>
+                    <div class="auth-switch">
+                        Already have an account? <a href="#" id="showLogin">Sign In</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Settings Modal -->
-    <div class="modal" id="settingsModal">
-        <button class="modal-close" onclick="closeSettings()">
-            <i class="fas fa-times"></i>
-        </button>
-        <div class="modal-content">
-            <div class="settings-content">
-                <h2><i class="fas fa-cog"></i> Settings & Preferences</h2>
-                
-                <div class="settings-section">
-                    <h3><i class="fas fa-play-circle"></i> Playback Settings</h3>
-                    <div class="setting-item">
-                        <div>
-                            <strong>Autoplay Next Episode</strong>
-                            <p>Automatically play the next episode when current one ends</p>
-                        </div>
-                        <div class="toggle-switch" id="autoplayToggle" onclick="toggleSetting('autoplay')"></div>
-                    </div>
-                    <div class="setting-item">
-                        <div>
-                            <strong>Skip Intro/Outro</strong>
-                            <p>Skip opening and ending credits automatically</p>
-                        </div>
-                        <div class="toggle-switch" id="skipIntroToggle" onclick="toggleSetting('skipIntro')"></div>
-                    </div>
-                    <div class="setting-item">
-                        <div>
-                            <strong>HD Quality Default</strong>
-                            <p>Always prefer HD quality when available</p>
-                        </div>
-                        <div class="toggle-switch active" id="hdToggle" onclick="toggleSetting('hd')"></div>
-                    </div>
-                    <div class="setting-item">
-                        <div>
-                            <strong>Auto-Switch Sources</strong>
-                            <p>Try next source if current one fails</p>
-                        </div>
-                        <div class="toggle-switch active" id="autoSwitchToggle" onclick="toggleSetting('autoSwitch')"></div>
-                    </div>
-                </div>
-
-                <div class="settings-section">
-                    <h3><i class="fas fa-palette"></i> Interface Settings</h3>
-                    <div class="setting-item">
-                        <div>
-                            <strong>Show Adult Content</strong>
-                            <p>Display mature/adult rated content</p>
-                        </div>
-                        <div class="toggle-switch" id="adultToggle" onclick="toggleSetting('adult')"></div>
-                    </div>
-                    <div class="setting-item">
-                        <div>
-                            <strong>Enable Animations</strong>
-                            <p>Show smooth transitions and effects</p>
-                        </div>
-                        <div class="toggle-switch active" id="animationsToggle" onclick="toggleSetting('animations')"></div>
-                    </div>
-                    <div class="setting-item">
-                        <div>
-                            <strong>Dark Theme</strong>
-                            <p>Use dark color scheme (currently only option)</p>
-                        </div>
-                        <div class="toggle-switch active" id="darkThemeToggle"></div>
-                    </div>
-                    <div class="setting-item">
-                        <div>
-                            <strong>Show Spoilers</strong>
-                            <p>Display plot summaries and episode descriptions</p>
-                        </div>
-                        <div class="toggle-switch active" id="spoilersToggle" onclick="toggleSetting('spoilers')"></div>
-                    </div>
-                </div>
-
-                <div class="settings-section">
-                    <h3><i class="fas fa-language"></i> Content Preferences</h3>
-                    <div class="setting-item">
-                        <div>
-                            <strong>Default Source</strong>
-                            <p>Your preferred streaming source</p>
-                        </div>
-                        <select id="defaultSource" onchange="saveDefaultSource()">
-                            <option value="0">VidSrc</option>
-                            <option value="1">VidSrc PRO</option>
-                            <option value="2">VidSrc 2</option>
-                            <option value="3">SuperEmbed</option>
-                            <option value="4">Embed.su</option>
-                            <option value="5">VidLink</option>
-                            <option value="6">MoviesAPI</option>
-                            <option value="7">AutoEmbed</option>
-                            <option value="8">NontonGo</option>
-                            <option value="9">SmashyStream</option>
-                        </select>
-                    </div>
-                    <div class="setting-item">
-                        <div>
-                            <strong>Items per Page</strong>
-                            <p>Number of items to load per section</p>
-                        </div>
-                        <select id="itemsPerPage" onchange="saveItemsPerPage()">
-                            <option value="10">10</option>
-                            <option value="20" selected>20</option>
-                            <option value="30">30</option>
-                            <option value="50">50</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="settings-section">
-                    <h3><i class="fas fa-database"></i> Data Management</h3>
-                    <div class="setting-item">
-                        <div>
-                            <strong>Watch History</strong>
-                            <p>Clear all viewing history</p>
-                        </div>
-                        <button class="btn btn-secondary" onclick="clearHistory()">
-                            <i class="fas fa-trash"></i> Clear History
-                        </button>
-                    </div>
-                    <div class="setting-item">
-                        <div>
-                            <strong>My List</strong>
-                            <p>Remove all items from your list</p>
-                        </div>
-                        <button class="btn btn-secondary" onclick="clearMyList()">
-                            <i class="fas fa-trash"></i> Clear List
-                        </button>
-                    </div>
-                    <div class="setting-item">
-                        <div>
-                            <strong>Export Data</strong>
-                            <p>Download your watch history and list</p>
-                        </div>
-                        <button class="btn btn-secondary" onclick="exportData()">
-                            <i class="fas fa-download"></i> Export
-                        </button>
-                    </div>
-                    <div class="setting-item">
-                        <div>
-                            <strong>Import Data</strong>
-                            <p>Import previously exported data</p>
-                        </div>
-                        <button class="btn btn-secondary" onclick="document.getElementById('importFile').click()">
-                            <i class="fas fa-upload"></i> Import
-                        </button>
-                        <input type="file" id="importFile" style="display:none" accept=".json" onchange="importData(event)">
-                    </div>
-                </div>
-
-                <div class="settings-section">
-                    <h3><i class="fas fa-info-circle"></i> About Zen Shows</h3>
-                    <div class="about-info">
-                        <p><strong>Version:</strong> 1.0.0</p>
-                        <p><strong>Made with:</strong> ❤️ for movie & TV lovers</p>
-                        <p><strong>Features:</strong> 50+ features including advanced search, multiple sources, watchlist, history tracking, and more</p>
-                        <p><strong>Data Provider:</strong> The Movie Database (TMDB)</p>
-                        <p><strong>Streaming Sources:</strong> 10 different sources for maximum availability</p>
-                        <div class="tmdb-attribution">
-                            <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDB">
-                            <p>This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="settings-modal" id="settingsModal">
+        <div class="settings-container">
+            <button class="close-settings" id="closeSettings">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2>Settings</h2>
+            <div class="settings-content" id="settingsContent"></div>
         </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div class="toast" id="toast">
-        <i class="fas fa-check-circle"></i>
-        <span id="toastMessage"></span>
-    </div>
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
 
     <!-- Footer -->
-    <footer>
+    <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <h3><i class="fas fa-film"></i> Zen Shows</h3>
-                <p>Your ultimate destination for streaming movies and TV shows. Enjoy unlimited entertainment in HD quality with multiple streaming sources.</p>
-                <div class="footer-stats">
-                    <div class="stat">
-                        <strong id="movieCount">10,000+</strong>
-                        <span>Movies</span>
-                    </div>
-                    <div class="stat">
-                        <strong id="showCount">5,000+</strong>
-                        <span>TV Shows</span>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Browse</h3>
-                <ul class="footer-links">
-                    <li><a href="#" onclick="navigateTo('home')"><i class="fas fa-home"></i> Home</a></li>
-                    <li><a href="#" onclick="navigateTo('movies')"><i class="fas fa-video"></i> Movies</a></li>
-                    <li><a href="#" onclick="navigateTo('shows')"><i class="fas fa-tv"></i> TV Shows</a></li>
-                    <li><a href="#" onclick="navigateTo('trending')"><i class="fas fa-fire"></i> Trending</a></li>
-                    <li><a href="#" onclick="navigateTo('mylist')"><i class="fas fa-bookmark"></i> My List</a></li>
-                    <li><a href="#" onclick="navigateTo('genres')"><i class="fas fa-list"></i> All Genres</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Popular Genres</h3>
-                <ul class="footer-links">
-                    <li><a href="#" onclick="filterByGenre(28, 'movie')"><i class="fas fa-fist-raised"></i> Action</a></li>
-                    <li><a href="#" onclick="filterByGenre(35, 'movie')"><i class="fas fa-laugh"></i> Comedy</a></li>
-                    <li><a href="#" onclick="filterByGenre(18, 'movie')"><i class="fas fa-theater-masks"></i> Drama</a></li>
-                    <li><a href="#" onclick="filterByGenre(27, 'movie')"><i class="fas fa-ghost"></i> Horror</a></li>
-                    <li><a href="#" onclick="filterByGenre(878, 'movie')"><i class="fas fa-robot"></i> Sci-Fi</a></li>
-                    <li><a href="#" onclick="filterByGenre(53, 'movie')"><i class="fas fa-user-secret"></i> Thriller</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-section">
-                <h3>Connect With Us</h3>
+                <h3>ZenShows</h3>
+                <p>Your ultimate streaming destination</p>
                 <div class="social-links">
-                    <a href="#" class="social-link" title="Facebook">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
-                    <a href="#" class="social-link" title="Twitter">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="#" class="social-link" title="Instagram">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="#" class="social-link" title="YouTube">
-                        <i class="fab fa-youtube"></i>
-                    </a>
-                    <a href="#" class="social-link" title="Discord">
-                        <i class="fab fa-discord"></i>
-                    </a>
-                    <a href="#" class="social-link" title="Reddit">
-                        <i class="fab fa-reddit"></i>
-                    </a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
                 </div>
-                <div class="newsletter">
-                    <h4>Stay Updated</h4>
-                    <p>Get notified about new releases</p>
-                    <div class="newsletter-form">
-                        <input type="email" placeholder="Your email" id="newsletterEmail">
-                        <button onclick="subscribeNewsletter()"><i class="fas fa-paper-plane"></i></button>
-                    </div>
-                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Help Center</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                    <li><a href="#">DMCA</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Credits</h4>
+                <p>This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
+                <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDB" style="width:100px;margin-top:10px;">
             </div>
         </div>
-        
         <div class="footer-bottom">
-            <div class="footer-bottom-content">
-                <p>&copy; 2025 Zen Shows. All rights reserved. Made with <i class="fas fa-heart" style="color: #ef4444;"></i> for entertainment lovers.</p>
-                <div class="footer-links-inline">
-                    <a href="#" onclick="showPrivacyPolicy()">Privacy Policy</a>
-                    <a href="#" onclick="showTerms()">Terms of Service</a>
-                    <a href="#" onclick="showDMCA()">DMCA</a>
-                    <a href="#" onclick="showContact()">Contact</a>
-                </div>
-            </div>
-            <div class="tmdb-credit">
-                <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDB" class="tmdb-logo">
-                <span>Powered by TMDB</span>
-            </div>
+            <p>&copy; 2024 ZenShows. All rights reserved. | Made with <i class="fas fa-heart"></i> for movie lovers</p>
         </div>
     </footer>
 
-    <!-- Script -->
-    <script src="script.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>

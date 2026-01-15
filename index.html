@@ -3,230 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZenShows - Unlimited Streaming</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>ZenShows - Ultimate Streaming</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎥</text></svg>">
 </head>
 <body>
-    <!-- Animated Background -->
-    <div class="bg-animation">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-    </div>
-
-    <!-- Navigation -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <div class="nav-left">
-                <div class="logo">
-                    <i class="fas fa-play-circle"></i>
-                    <span>Zen<span class="logo-accent">Shows</span></span>
-                </div>
-                <ul class="nav-menu">
-                    <li><a href="#" class="nav-link active" data-page="home">Home</a></li>
-                    <li><a href="#" class="nav-link" data-page="movies">Movies</a></li>
-                    <li><a href="#" class="nav-link" data-page="series">TV Series</a></li>
-                    <li><a href="#" class="nav-link" data-page="mylist">My List</a></li>
-                </ul>
+    <header class="header">
+        <div class="logo">ZenShows</div>
+        <nav class="nav">
+            <a href="#" class="nav-link" data-page="home">Home</a>
+            <a href="#" class="nav-link" data-page="movies">Movies</a>
+            <a href="#" class="nav-link" data-page="series">Series</a>
+            <a href="#" class="nav-link" data-page="my-list">My List</a>
+            <a href="#" class="nav-link" data-page="history">History</a>
+            <a href="#" class="nav-link" data-page="settings">Settings</a>
+            <button class="search-btn">Search</button>
+            <button class="login-btn" id="loginBtn">Login</button>
+        </nav>
+    </header>
+    <main class="main">
+        <section class="hero" id="hero">
+            <div class="hero-content">
+                <h1>Welcome to ZenShows</h1>
+                <p>Stream unlimited movies and shows for free.</p>
+                <button class="cta-btn">Start Watching</button>
             </div>
-            <div class="nav-right">
-                <button class="search-btn" id="searchBtn"><i class="fas fa-search"></i></button>
-                <button class="notifications-btn" id="notifBtn">
-                    <i class="fas fa-bell"></i>
-                    <span class="notif-badge">3</span>
-                </button>
-                <div class="user-menu">
-                    <img src="https://i.pravatar.cc/150?img=68" alt="User" class="user-avatar" id="userAvatar">
-                    <div class="dropdown-menu" id="userDropdown">
-                        <a href="#" id="settingsLink"><i class="fas fa-cog"></i> Settings</a>
-                        <a href="#" id="historyLink"><i class="fas fa-history"></i> History</a>
-                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
-                    </div>
-                </div>
-                <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
+            <div class="hero-bg"></div>
+        </section>
+        <section class="content" id="content">
+            <div class="trending" id="trending">
+                <h2>Trending Now</h2>
+                <div class="grid" id="trendingGrid"></div>
             </div>
+            <div class="popular" id="popular">
+                <h2>Popular</h2>
+                <div class="grid" id="popularGrid"></div>
+            </div>
+            <div class="genres" id="genres">
+                <h2>Genres</h2>
+                <div class="genre-list" id="genreList"></div>
+            </div>
+            <div class="recommendations" id="recommendations">
+                <h2>Recommended for You</h2>
+                <div class="grid" id="recGrid"></div>
+            </div>
+        </section>
+    </main>
+    <footer class="footer">
+        <p>&copy; 2023 ZenShows. Powered by <a href="https://www.themoviedb.org/" target="_blank">TMDB</a>. All rights reserved.</p>
+    </footer>
+    <!-- Modals -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Login</h2>
+            <form id="loginForm">
+                <input type="text" id="username" placeholder="Username" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
         </div>
-    </nav>
-
-    <!-- Mobile Menu -->
-    <div class="mobile-menu" id="mobileMenu">
-        <button class="close-mobile-menu" id="closeMobileMenu"><i class="fas fa-times"></i></button>
-        <ul>
-            <li><a href="#" data-page="home">Home</a></li>
-            <li><a href="#" data-page="movies">Movies</a></li>
-            <li><a href="#" data-page="series">TV Series</a></li>
-            <li><a href="#" data-page="mylist">My List</a></li>
-            <li><a href="#" id="mobileSettings">Settings</a></li>
-            <li><a href="#" id="mobileHistory">History</a></li>
-            <li><a href="#" id="mobileLogout">Logout</a></li>
-        </ul>
     </div>
-    <!-- Search Overlay -->
-    <div class="search-overlay" id="searchOverlay">
-        <div class="search-container">
-            <button class="close-search" id="closeSearch"><i class="fas fa-times"></i></button>
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Search movies, TV shows...">
+    <div class="modal" id="searchModal">
+        <div class="modal-content large">
+            <span class="close">&times;</span>
+            <h2>Search</h2>
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="movies">Movies</button>
+                <button class="tab-btn" data-tab="series">Series</button>
             </div>
-            <div class="search-filters">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="movie">Movies</button>
-                <button class="filter-btn" data-filter="tv">TV Shows</button>
-            </div>
+            <input type="text" id="searchInput" placeholder="Search...">
             <div class="search-results" id="searchResults"></div>
         </div>
     </div>
-
-    <!-- Notifications Panel -->
-    <div class="notifications-panel" id="notificationsPanel">
-        <div class="notif-header">
-            <h3>Notifications</h3>
-            <button class="close-notif" id="closeNotif"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="notif-list" id="notifList"></div>
-    </div>
-
-    <!-- Main Content -->
-    <main id="mainContent"></main>
-
-    <!-- Video Player Modal -->
-    <div class="player-modal" id="playerModal">
-        <div class="player-container">
-            <div class="player-header">
-                <div class="player-title" id="playerTitle"></div>
-                <div class="player-controls-top">
-                    <button class="player-source-btn" id="sourceBtn">
-                        <i class="fas fa-server"></i> Source
-                    </button>
-                    <button class="player-episodes-btn" id="episodesBtn" style="display:none;">
-                        <i class="fas fa-list"></i> Episodes
-                    </button>
-                    <button class="player-close" id="closePlayer"><i class="fas fa-times"></i></button>
-                </div>
-            </div>
-            <div class="player-wrapper">
-                <iframe id="playerFrame" allowfullscreen></iframe>
-                <div class="player-loading" id="playerLoading">
-                    <div class="spinner"></div>
-                    <p>Loading...</p>
-                </div>
-            </div>
-            <div class="source-selector" id="sourceSelector">
-                <h4>Select Source</h4>
-                <div class="source-list" id="sourceList"></div>
-            </div>
-            <div class="episodes-panel" id="episodesPanel">
-                <h4>Episodes</h4>
-                <div class="seasons-selector" id="seasonsSelector"></div>
-                <div class="episodes-list" id="episodesList"></div>
-            </div>
+    <div class="modal" id="detailsModal">
+        <div class="modal-content large">
+            <span class="close">&times;</span>
+            <div id="detailsContent"></div>
         </div>
     </div>
-
-    <!-- Details Modal -->
-    <div class="details-modal" id="detailsModal">
-        <button class="close-modal" id="closeDetails"><i class="fas fa-times"></i></button>
-        <div class="details-content" id="detailsContent"></div>
-    </div>
-    <!-- Login/Register Modal -->
-    <div class="auth-modal" id="authModal">
-        <div class="auth-container">
-            <button class="close-auth" id="closeAuth"><i class="fas fa-times"></i></button>
-            <div class="auth-forms">
-                <!-- Login Form -->
-                <div class="auth-form" id="loginForm">
-                    <h2>Welcome Back</h2>
-                    <p class="auth-subtitle">Sign in to continue</p>
-                    <form id="loginFormElement">
-                        <div class="form-group">
-                            <i class="fas fa-envelope"></i>
-                            <input type="email" id="loginEmail" placeholder="Email" required>
-                        </div>
-                        <div class="form-group">
-                            <i class="fas fa-lock"></i>
-                            <input type="password" id="loginPassword" placeholder="Password" required>
-                            <button type="button" class="toggle-password">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                        <div class="form-options">
-                            <label class="checkbox">
-                                <input type="checkbox" id="rememberMe">
-                                <span>Remember me</span>
-                            </label>
-                        </div>
-                        <button type="submit" class="btn-auth">Sign In</button>
-                    </form>
-                    <div class="auth-switch">
-                        Don't have an account? <a href="#" id="showRegister">Sign Up</a>
-                    </div>
-                </div>
-
-                <!-- Register Form -->
-                <div class="auth-form" id="registerForm" style="display:none;">
-                    <h2>Create Account</h2>
-                    <p class="auth-subtitle">Join ZenShows</p>
-                    <form id="registerFormElement">
-                        <div class="form-group">
-                            <i class="fas fa-user"></i>
-                            <input type="text" id="registerName" placeholder="Full Name" required>
-                        </div>
-                        <div class="form-group">
-                            <i class="fas fa-envelope"></i>
-                            <input type="email" id="registerEmail" placeholder="Email" required>
-                        </div>
-                        <div class="form-group">
-                            <i class="fas fa-lock"></i>
-                            <input type="password" id="registerPassword" placeholder="Password" required>
-                        </div>
-                        <button type="submit" class="btn-auth">Create Account</button>
-                    </form>
-                    <div class="auth-switch">
-                        Already have an account? <a href="#" id="showLogin">Sign In</a>
-                    </div>
-                </div>
-            </div>
+    <div class="modal" id="playerModal">
+        <div class="modal-content full">
+            <span class="close">&times;</span>
+            <div id="playerContent"></div>
         </div>
     </div>
-
-    <!-- Settings Modal -->
-    <div class="settings-modal" id="settingsModal">
-        <div class="settings-container">
-            <button class="close-settings" id="closeSettings"><i class="fas fa-times"></i></button>
+    <div class="toast" id="toast"></div>
+    <!-- Additional modals for features -->
+    <div class="modal" id="castModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Cast & Crew</h2>
+            <div id="castContent"></div>
+        </div>
+    </div>
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
             <h2>Settings</h2>
-            <div class="settings-content" id="settingsContent"></div>
+            <label><input type="checkbox" id="darkMode"> Dark Mode</label>
+            <label><input type="checkbox" id="notifications"> Enable Notifications</label>
+            <label><input type="checkbox" id="autoPlay"> Auto-play Next</label>
+            <label><input type="checkbox" id="kidsMode"> Kids Mode</label>
+            <button id="saveSettings">Save</button>
         </div>
     </div>
-
-    <!-- Toast Notifications -->
-    <div class="toast-container" id="toastContainer"></div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>ZenShows</h3>
-                <p>Your ultimate streaming destination</p>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-            <div class="footer-section">
-                <h4>Credits</h4>
-                <p>Powered by TMDB API</p>
-                <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" 
-                     alt="TMDB" style="width:80px;margin-top:10px;">
-            </div>
+    <div class="modal" id="myListModal">
+        <div class="modal-content large">
+            <span class="close">&times;</span>
+            <h2>My List</h2>
+            <div id="myListContent"></div>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 ZenShows. All rights reserved.</p>
+    </div>
+    <div class="modal" id="historyModal">
+        <div class="modal-content large">
+            <span class="close">&times;</span>
+            <h2>Watch History</h2>
+            <div id="historyContent"></div>
         </div>
-    </footer>
-
-    <script src="app.js"></script>
+    </div>
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Profile</h2>
+            <div id="profileContent"></div>
+        </div>
+    </div>
+    <div class="modal" id="shareModal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Share</h2>
+            <input type="text" id="shareLink" readonly>
+            <button onclick="navigator.share({url: document.getElementById('shareLink').value})">Share</button>
+        </div>
+    </div>
+    <div class="intrusive-banner" id="adBanner">
+        <p>Watch Ad-Free? Upgrade Now!</p>
+        <button class="close-ad">&times;</button>
+    </div>
+    <!-- More features: Notifications, Reviews, etc. -->
+    <div class="notifications" id="notifications">
+        <!-- Dynamic toasts -->
+    </div>
+    <div class="comments" id="commentsSection" style="display:none;">
+        <h3>Comments</h3>
+        <div id="commentsList"></div>
+        <textarea id="commentInput" placeholder="Add a comment..."></textarea>
+        <button id="submitComment">Submit</button>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>

@@ -3,799 +3,230 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamVerse - Ultimate Entertainment</title>
-    <link rel="stylesheet" href="style.css">
+    <title>ZenShows - Unlimited Streaming</title>
+    <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Preloader -->
-    <div class="preloader" id="preloader">
-        <div class="loader-animation">
-            <div class="cube"></div>
-            <div class="cube"></div>
-            <div class="cube"></div>
-            <div class="cube"></div>
-        </div>
-        <p class="loader-text">Loading StreamVerse...</p>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
     </div>
 
-    <!-- Navigation Bar -->
+    <!-- Navigation -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <div class="nav-left">
-                <div class="logo-container">
-                    <i class="fas fa-play-circle logo-icon"></i>
-                    <h1 class="logo">StreamVerse</h1>
+                <div class="logo">
+                    <i class="fas fa-play-circle"></i>
+                    <span>Zen<span class="logo-accent">Shows</span></span>
                 </div>
-                <ul class="nav-menu" id="navMenu">
+                <ul class="nav-menu">
                     <li><a href="#" class="nav-link active" data-page="home">Home</a></li>
                     <li><a href="#" class="nav-link" data-page="movies">Movies</a></li>
                     <li><a href="#" class="nav-link" data-page="series">TV Series</a></li>
-                    <li><a href="#" class="nav-link" data-page="trending">Trending</a></li>
                     <li><a href="#" class="nav-link" data-page="mylist">My List</a></li>
-                    <li><a href="#" class="nav-link" data-page="history">History</a></li>
                 </ul>
             </div>
             <div class="nav-right">
-                <div class="search-container">
-                    <i class="fas fa-search search-icon" id="searchIcon"></i>
-                    <input type="text" class="search-input" id="searchInput" placeholder="Search movies, series...">
-                </div>
-                <div class="notifications" id="notificationBtn">
+                <button class="search-btn" id="searchBtn"><i class="fas fa-search"></i></button>
+                <button class="notifications-btn" id="notifBtn">
                     <i class="fas fa-bell"></i>
-                    <span class="notification-badge">3</span>
-                </div>
+                    <span class="notif-badge">3</span>
+                </button>
                 <div class="user-menu">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=User" alt="User" class="user-avatar" id="userAvatar">
+                    <img src="https://i.pravatar.cc/150?img=68" alt="User" class="user-avatar" id="userAvatar">
                     <div class="dropdown-menu" id="userDropdown">
-                        <div class="dropdown-header">
-                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=User" alt="User">
-                            <div>
-                                <h4 id="userName">Guest</h4>
-                                <p id="userEmail">guest@streamverse.com</p>
-                            </div>
-                        </div>
-                        <a href="#" class="dropdown-item" data-action="profile"><i class="fas fa-user"></i> Profile</a>
-                        <a href="#" class="dropdown-item" data-action="settings"><i class="fas fa-cog"></i> Settings</a>
-                        <a href="#" class="dropdown-item" data-action="downloads"><i class="fas fa-download"></i> Downloads</a>
-                        <a href="#" class="dropdown-item" data-action="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        <a href="#" id="settingsLink"><i class="fas fa-cog"></i> Settings</a>
+                        <a href="#" id="historyLink"><i class="fas fa-history"></i> History</a>
+                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
                     </div>
                 </div>
-                <div class="hamburger" id="hamburger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
+                <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
             </div>
         </div>
     </nav>
 
-    <!-- Login Modal -->
-    <div class="modal" id="loginModal">
-        <div class="modal-content login-modal">
-            <button class="close-modal" id="closeLogin">&times;</button>
-            <div class="modal-header">
-                <h2>Welcome Back</h2>
-                <p>Sign in to access your personalized experience</p>
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <button class="close-mobile-menu" id="closeMobileMenu"><i class="fas fa-times"></i></button>
+        <ul>
+            <li><a href="#" data-page="home">Home</a></li>
+            <li><a href="#" data-page="movies">Movies</a></li>
+            <li><a href="#" data-page="series">TV Series</a></li>
+            <li><a href="#" data-page="mylist">My List</a></li>
+            <li><a href="#" id="mobileSettings">Settings</a></li>
+            <li><a href="#" id="mobileHistory">History</a></li>
+            <li><a href="#" id="mobileLogout">Logout</a></li>
+        </ul>
+    </div>
+    <!-- Search Overlay -->
+    <div class="search-overlay" id="searchOverlay">
+        <div class="search-container">
+            <button class="close-search" id="closeSearch"><i class="fas fa-times"></i></button>
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search movies, TV shows...">
             </div>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label>Email or Username</label>
-                    <input type="text" id="loginEmail" placeholder="Enter your email" required>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="loginPassword" placeholder="Enter your password" required>
-                </div>
-                <div class="form-options">
-                    <label class="checkbox-container">
-                        <input type="checkbox" id="rememberMe">
-                        <span>Remember me</span>
-                    </label>
-                    <a href="#" class="forgot-password">Forgot password?</a>
-                </div>
-                <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-                <p class="form-footer">Don't have an account? <a href="#" id="showSignup">Sign up</a></p>
-            </form>
+            <div class="search-filters">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="movie">Movies</button>
+                <button class="filter-btn" data-filter="tv">TV Shows</button>
+            </div>
+            <div class="search-results" id="searchResults"></div>
         </div>
     </div>
 
-    <!-- Signup Modal -->
-    <div class="modal" id="signupModal">
-        <div class="modal-content signup-modal">
-            <button class="close-modal" id="closeSignup">&times;</button>
-            <div class="modal-header">
-                <h2>Create Account</h2>
-                <p>Join StreamVerse today</p>
-            </div>
-            <form id="signupForm">
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" id="signupUsername" placeholder="Choose a username" required>
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="signupEmail" placeholder="Enter your email" required>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="signupPassword" placeholder="Create a password" required>
-                </div>
-                <div class="form-group">
-                    <label>Confirm Password</label>
-                    <input type="password" id="signupConfirmPassword" placeholder="Confirm your password" required>
-                </div>
-                <label class="checkbox-container">
-                    <input type="checkbox" required>
-                    <span>I agree to the Terms and Conditions</span>
-                </label>
-                <button type="submit" class="btn btn-primary btn-block">Create Account</button>
-                <p class="form-footer">Already have an account? <a href="#" id="showLogin">Sign in</a></p>
-            </form>
+    <!-- Notifications Panel -->
+    <div class="notifications-panel" id="notificationsPanel">
+        <div class="notif-header">
+            <h3>Notifications</h3>
+            <button class="close-notif" id="closeNotif"><i class="fas fa-times"></i></button>
         </div>
+        <div class="notif-list" id="notifList"></div>
     </div>
 
     <!-- Main Content -->
-    <main class="main-content" id="mainContent">
-        
-        <!-- Home Page -->
-        <section class="page active" id="homePage">
-            <!-- Hero Section -->
-            <div class="hero-section" id="heroSection">
-                <div class="hero-background">
-                    <div class="hero-overlay"></div>
-                </div>
-                <div class="hero-content">
-                    <div class="hero-badges">
-                        <span class="badge badge-new">NEW</span>
-                        <span class="badge badge-rating"><i class="fas fa-star"></i> 8.5</span>
-                    </div>
-                    <h1 class="hero-title"></h1>
-                    <div class="hero-meta">
-                        <span class="hero-year"></span>
-                        <span class="hero-separator">•</span>
-                        <span class="hero-runtime"></span>
-                        <span class="hero-separator">•</span>
-                        <span class="hero-genres"></span>
-                    </div>
-                    <p class="hero-overview"></p>
-                    <div class="hero-actions">
-                        <button class="btn btn-primary btn-lg" id="heroPlayBtn">
-                            <i class="fas fa-play"></i> Play Now
-                        </button>
-                        <button class="btn btn-secondary btn-lg" id="heroInfoBtn">
-                            <i class="fas fa-info-circle"></i> More Info
-                        </button>
-                        <button class="btn btn-icon" id="heroAddBtn">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                        <button class="btn btn-icon" id="heroLikeBtn">
-                            <i class="fas fa-thumbs-up"></i>
-                        </button>
-                    </div>
-                </div>
-                <div class="hero-nav">
-                    <button class="hero-nav-btn" id="heroPrev"><i class="fas fa-chevron-left"></i></button>
-                    <button class="hero-nav-btn" id="heroNext"><i class="fas fa-chevron-right"></i></button>
-                </div>
-                <div class="hero-indicators" id="heroIndicators"></div>
-            </div>
+    <main id="mainContent"></main>
 
-            <!-- Content Rows -->
-            <div class="content-rows">
-                <div class="content-row">
-                    <div class="row-header">
-                        <h2>Continue Watching</h2>
-                        <a href="#" class="view-all">View All <i class="fas fa-chevron-right"></i></a>
-                    </div>
-                    <div class="content-slider" id="continueWatching"></div>
-                </div>
-
-                <div class="content-row">
-                    <div class="row-header">
-                        <h2>Trending Now</h2>
-                        <div class="row-filters">
-                            <button class="filter-btn active" data-filter="all">All</button>
-                            <button class="filter-btn" data-filter="today">Today</button>
-                            <button class="filter-btn" data-filter="week">This Week</button>
-                        </div>
-                    </div>
-                    <div class="content-slider" id="trendingNow"></div>
-                </div>
-
-                <div class="content-row">
-                    <div class="row-header">
-                        <h2>Popular Movies</h2>
-                    </div>
-                    <div class="content-slider" id="popularMovies"></div>
-                </div>
-
-                <div class="content-row">
-                    <div class="row-header">
-                        <h2>Top Rated Series</h2>
-                    </div>
-                    <div class="content-slider" id="topRatedSeries"></div>
-                </div>
-
-                <div class="content-row">
-                    <div class="row-header">
-                        <h2>Action Packed</h2>
-                    </div>
-                    <div class="content-slider" id="actionMovies"></div>
-                </div>
-                <div class="content-row">
-                    <div class="row-header">
-                        <h2>Romantic Comedies</h2>
-                    </div>
-                    <div class="content-slider" id="comedyMovies"></div>
-                </div>
-
-                <div class="content-row">
-                    <div class="row-header">
-                        <h2>Sci-Fi Adventures</h2>
-                    </div>
-                    <div class="content-slider" id="scifiMovies"></div>
-                </div>
-
-                <div class="content-row">
-                    <div class="row-header">
-                        <h2>Horror Thrillers</h2>
-                    </div>
-                    <div class="content-slider" id="horrorMovies"></div>
-                </div>
-
-                <div class="content-row">
-                    <div class="row-header">
-                        <h2>Documentaries</h2>
-                    </div>
-                    <div class="content-slider" id="documentaries"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Movies Page -->
-        <section class="page" id="moviesPage">
-            <div class="page-header">
-                <h1>Movies</h1>
-                <div class="page-filters">
-                    <select class="filter-select" id="movieGenreFilter">
-                        <option value="">All Genres</option>
-                        <option value="28">Action</option>
-                        <option value="12">Adventure</option>
-                        <option value="16">Animation</option>
-                        <option value="35">Comedy</option>
-                        <option value="80">Crime</option>
-                        <option value="99">Documentary</option>
-                        <option value="18">Drama</option>
-                        <option value="10751">Family</option>
-                        <option value="14">Fantasy</option>
-                        <option value="27">Horror</option>
-                        <option value="10402">Music</option>
-                        <option value="9648">Mystery</option>
-                        <option value="10749">Romance</option>
-                        <option value="878">Science Fiction</option>
-                        <option value="53">Thriller</option>
-                        <option value="10752">War</option>
-                    </select>
-                    <select class="filter-select" id="movieSortFilter">
-                        <option value="popularity.desc">Popular</option>
-                        <option value="vote_average.desc">Top Rated</option>
-                        <option value="release_date.desc">Latest</option>
-                        <option value="revenue.desc">Highest Grossing</option>
-                    </select>
-                    <select class="filter-select" id="movieYearFilter">
-                        <option value="">All Years</option>
-                        <option value="2024">2024</option>
-                        <option value="2023">2023</option>
-                        <option value="2022">2022</option>
-                        <option value="2021">2021</option>
-                        <option value="2020">2020</option>
-                    </select>
-                </div>
-            </div>
-            <div class="content-grid" id="moviesGrid"></div>
-            <div class="pagination" id="moviesPagination"></div>
-        </section>
-
-        <!-- TV Series Page -->
-        <section class="page" id="seriesPage">
-            <div class="page-header">
-                <h1>TV Series</h1>
-                <div class="page-filters">
-                    <select class="filter-select" id="seriesGenreFilter">
-                        <option value="">All Genres</option>
-                        <option value="10759">Action & Adventure</option>
-                        <option value="16">Animation</option>
-                        <option value="35">Comedy</option>
-                        <option value="80">Crime</option>
-                        <option value="99">Documentary</option>
-                        <option value="18">Drama</option>
-                        <option value="10751">Family</option>
-                        <option value="10762">Kids</option>
-                        <option value="9648">Mystery</option>
-                        <option value="10763">News</option>
-                        <option value="10764">Reality</option>
-                        <option value="10765">Sci-Fi & Fantasy</option>
-                        <option value="10766">Soap</option>
-                        <option value="10767">Talk</option>
-                        <option value="10768">War & Politics</option>
-                        <option value="37">Western</option>
-                    </select>
-                    <select class="filter-select" id="seriesSortFilter">
-                        <option value="popularity.desc">Popular</option>
-                        <option value="vote_average.desc">Top Rated</option>
-                        <option value="first_air_date.desc">Latest</option>
-                    </select>
-                </div>
-            </div>
-            <div class="content-grid" id="seriesGrid"></div>
-            <div class="pagination" id="seriesPagination"></div>
-        </section>
-
-        <!-- Trending Page -->
-        <section class="page" id="trendingPage">
-            <div class="page-header">
-                <h1>Trending</h1>
-                <div class="page-filters">
-                    <button class="filter-btn active" data-trending="day">Today</button>
-                    <button class="filter-btn" data-trending="week">This Week</button>
-                </div>
-            </div>
-            <div class="content-grid" id="trendingGrid"></div>
-        </section>
-
-        <!-- My List Page -->
-        <section class="page" id="mylistPage">
-            <div class="page-header">
-                <h1>My List</h1>
-                <p class="page-subtitle">Your personal collection of favorites</p>
-            </div>
-            <div class="content-grid" id="mylistGrid">
-                <div class="empty-state">
-                    <i class="fas fa-heart"></i>
-                    <h3>Your list is empty</h3>
-                    <p>Add movies and series to your list to watch them later</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- History Page -->
-        <section class="page" id="historyPage">
-            <div class="page-header">
-                <h1>Watch History</h1>
-                <button class="btn btn-secondary" id="clearHistory">
-                    <i class="fas fa-trash"></i> Clear History
-                </button>
-            </div>
-            <div class="content-grid" id="historyGrid">
-                <div class="empty-state">
-                    <i class="fas fa-history"></i>
-                    <h3>No watch history</h3>
-                    <p>Your recently watched content will appear here</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Search Results Page -->
-        <section class="page" id="searchPage">
-            <div class="search-header">
-                <h1>Search Results for "<span id="searchQuery"></span>"</h1>
-                <div class="search-tabs">
-                    <button class="tab-btn active" data-tab="all">All</button>
-                    <button class="tab-btn" data-tab="movies">Movies</button>
-                    <button class="tab-btn" data-tab="series">TV Series</button>
-                    <button class="tab-btn" data-tab="people">People</button>
-                </div>
-            </div>
-            <div class="tab-content active" id="searchAllTab">
-                <div class="content-grid" id="searchAllGrid"></div>
-            </div>
-            <div class="tab-content" id="searchMoviesTab">
-                <div class="content-grid" id="searchMoviesGrid"></div>
-            </div>
-            <div class="tab-content" id="searchSeriesTab">
-                <div class="content-grid" id="searchSeriesGrid"></div>
-            </div>
-            <div class="tab-content" id="searchPeopleTab">
-                <div class="content-grid people-grid" id="searchPeopleGrid"></div>
-            </div>
-        </section>
-
-        <!-- Settings Page -->
-        <section class="page" id="settingsPage">
-            <div class="settings-container">
-                <h1>Settings</h1>
-                <div class="settings-sections">
-                    <div class="settings-section">
-                        <h2><i class="fas fa-user-circle"></i> Account</h2>
-                        <div class="setting-item">
-                            <label>Username</label>
-                            <input type="text" id="settingsUsername" class="setting-input">
-                        </div>
-                        <div class="setting-item">
-                            <label>Email</label>
-                            <input type="email" id="settingsEmail" class="setting-input">
-                        </div>
-                        <button class="btn btn-primary" id="saveAccount">Save Changes</button>
-                    </div>
-
-                    <div class="settings-section">
-                        <h2><i class="fas fa-video"></i> Playback</h2>
-                        <div class="setting-item">
-                            <label>Auto-play next episode</label>
-                            <label class="switch">
-                                <input type="checkbox" id="autoplayNext" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        <div class="setting-item">
-                            <label>Auto-play previews</label>
-                            <label class="switch">
-                                <input type="checkbox" id="autoplayPreviews" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        <div class="setting-item">
-                            <label>Default video quality</label>
-                            <select class="setting-select" id="videoQuality">
-                                <option value="auto">Auto</option>
-                                <option value="1080p">1080p</option>
-                                <option value="720p">720p</option>
-                                <option value="480p">480p</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="settings-section">
-                        <h2><i class="fas fa-bell"></i> Notifications</h2>
-                        <div class="setting-item">
-                            <label>New releases</label>
-                            <label class="switch">
-                                <input type="checkbox" id="notifyReleases" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        <div class="setting-item">
-                            <label>Recommendations</label>
-                            <label class="switch">
-                                <input type="checkbox" id="notifyRecommendations" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="settings-section">
-                        <h2><i class="fas fa-palette"></i> Appearance</h2>
-                        <div class="setting-item">
-                            <label>Theme</label>
-                            <select class="setting-select" id="themeSelect">
-                                <option value="dark">Dark</option>
-                                <option value="light">Light</option>
-                                <option value="auto">Auto</option>
-                            </select>
-                        </div>
-                        <div class="setting-item">
-                            <label>Accent Color</label>
-                            <div class="color-picker">
-                                <button class="color-option active" data-color="#e50914" style="background: #e50914;"></button>
-                                <button class="color-option" data-color="#0080ff" style="background: #0080ff;"></button>
-                                <button class="color-option" data-color="#00c853" style="background: #00c853;"></button>
-                                <button class="color-option" data-color="#ff6d00" style="background: #ff6d00;"></button>
-                                <button class="color-option" data-color="#aa00ff" style="background: #aa00ff;"></button>
-                            </div>
-                        </div>
-                        <div class="setting-item">
-                            <label>Reduce animations</label>
-                            <label class="switch">
-                                <input type="checkbox" id="reduceAnimations">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="settings-section">
-                        <h2><i class="fas fa-language"></i> Language & Region</h2>
-                        <div class="setting-item">
-                            <label>Language</label>
-                            <select class="setting-select" id="languageSelect">
-                                <option value="en">English</option>
-                                <option value="es">Español</option>
-                                <option value="fr">Français</option>
-                                <option value="de">Deutsch</option>
-                                <option value="ja">日本語</option>
-                            </select>
-                        </div>
-                        <div class="setting-item">
-                            <label>Subtitle language</label>
-                            <select class="setting-select" id="subtitleLanguage">
-                                <option value="en">English</option>
-                                <option value="es">Spanish</option>
-                                <option value="fr">French</option>
-                                <option value="off">Off</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="settings-section">
-                        <h2><i class="fas fa-shield-alt"></i> Privacy & Security</h2>
-                        <div class="setting-item">
-                            <label>Watch history</label>
-                            <label class="switch">
-                                <input type="checkbox" id="saveHistory" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        <div class="setting-item">
-                            <label>Personalized recommendations</label>
-                            <label class="switch">
-                                <input type="checkbox" id="personalizedRecs" checked>
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        <button class="btn btn-secondary" id="clearAllData">Clear All Data</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-    <!-- Player Modal -->
-    <div class="modal player-modal" id="playerModal">
+    <!-- Video Player Modal -->
+    <div class="player-modal" id="playerModal">
         <div class="player-container">
-            <button class="close-player" id="closePlayer">
-                <i class="fas fa-times"></i>
-            </button>
             <div class="player-header">
-                <h2 id="playerTitle"></h2>
+                <div class="player-title" id="playerTitle"></div>
                 <div class="player-controls-top">
-                    <select class="episode-selector" id="episodeSelector" style="display:none;">
-                        <option>Select Episode</option>
-                    </select>
-                    <select class="server-selector" id="serverSelector">
-                        <option value="vidsrc">VidSrc</option>
-                        <option value="vidsrc2">VidSrc Pro</option>
-                        <option value="embed">Embed</option>
-                        <option value="smashystream">SmashyStream</option>
-                        <option value="autoembed">AutoEmbed</option>
-                        <option value="2embed">2Embed</option>
-                        <option value="nontonGo">NontonGo</option>
-                        <option value="multiembed">MultiEmbed</option>
-                        <option value="vidsrcpro">VidSrc.PRO</option>
-                        <option value="moviesapi">MoviesAPI</option>
-                    </select>
-                    <button class="btn btn-icon" id="toggleFullscreen">
-                        <i class="fas fa-expand"></i>
+                    <button class="player-source-btn" id="sourceBtn">
+                        <i class="fas fa-server"></i> Source
                     </button>
+                    <button class="player-episodes-btn" id="episodesBtn" style="display:none;">
+                        <i class="fas fa-list"></i> Episodes
+                    </button>
+                    <button class="player-close" id="closePlayer"><i class="fas fa-times"></i></button>
                 </div>
             </div>
             <div class="player-wrapper">
-                <iframe id="playerIframe" allowfullscreen></iframe>
-                <div class="player-loading">
+                <iframe id="playerFrame" allowfullscreen></iframe>
+                <div class="player-loading" id="playerLoading">
                     <div class="spinner"></div>
-                    <p>Loading player...</p>
+                    <p>Loading...</p>
                 </div>
             </div>
-            <div class="player-info">
-                <div class="player-meta">
-                    <span id="playerYear"></span>
-                    <span id="playerRating"></span>
-                    <span id="playerGenres"></span>
-                </div>
-                <p id="playerOverview"></p>
+            <div class="source-selector" id="sourceSelector">
+                <h4>Select Source</h4>
+                <div class="source-list" id="sourceList"></div>
+            </div>
+            <div class="episodes-panel" id="episodesPanel">
+                <h4>Episodes</h4>
+                <div class="seasons-selector" id="seasonsSelector"></div>
+                <div class="episodes-list" id="episodesList"></div>
             </div>
         </div>
     </div>
 
-    <!-- Info Modal -->
-    <div class="modal info-modal" id="infoModal">
-        <div class="info-container">
-            <button class="close-modal" id="closeInfo">&times;</button>
-            <div class="info-backdrop">
-                <div class="info-overlay"></div>
-                <img id="infoBackdrop" alt="">
-            </div>
-            <div class="info-content">
-                <div class="info-header">
-                    <div>
-                        <h1 id="infoTitle"></h1>
-                        <div class="info-meta">
-                            <span class="info-rating"><i class="fas fa-star"></i> <span id="infoRating"></span></span>
-                            <span id="infoYear"></span>
-                            <span id="infoRuntime"></span>
+    <!-- Details Modal -->
+    <div class="details-modal" id="detailsModal">
+        <button class="close-modal" id="closeDetails"><i class="fas fa-times"></i></button>
+        <div class="details-content" id="detailsContent"></div>
+    </div>
+    <!-- Login/Register Modal -->
+    <div class="auth-modal" id="authModal">
+        <div class="auth-container">
+            <button class="close-auth" id="closeAuth"><i class="fas fa-times"></i></button>
+            <div class="auth-forms">
+                <!-- Login Form -->
+                <div class="auth-form" id="loginForm">
+                    <h2>Welcome Back</h2>
+                    <p class="auth-subtitle">Sign in to continue</p>
+                    <form id="loginFormElement">
+                        <div class="form-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="loginEmail" placeholder="Email" required>
                         </div>
-                    </div>
-                    <div class="info-actions">
-                        <button class="btn btn-primary" id="infoPlayBtn">
-                            <i class="fas fa-play"></i> Play
-                        </button>
-                        <button class="btn btn-secondary" id="infoAddBtn">
-                            <i class="fas fa-plus"></i> My List
-                        </button>
-                        <button class="btn btn-icon" id="infoLikeBtn">
-                            <i class="fas fa-thumbs-up"></i>
-                        </button>
-                        <button class="btn btn-icon" id="infoShareBtn">
-                            <i class="fas fa-share-alt"></i>
-                        </button>
+                        <div class="form-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="loginPassword" placeholder="Password" required>
+                            <button type="button" class="toggle-password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="form-options">
+                            <label class="checkbox">
+                                <input type="checkbox" id="rememberMe">
+                                <span>Remember me</span>
+                            </label>
+                        </div>
+                        <button type="submit" class="btn-auth">Sign In</button>
+                    </form>
+                    <div class="auth-switch">
+                        Don't have an account? <a href="#" id="showRegister">Sign Up</a>
                     </div>
                 </div>
-                
-                <div class="info-details">
-                    <div class="info-main">
-                        <p id="infoOverview"></p>
-                        
-                        <div class="info-genres">
-                            <h3>Genres</h3>
-                            <div id="infoGenres"></div>
-                        </div>
 
-                        <div class="info-cast" id="infoCastSection">
-                            <h3>Cast</h3>
-                            <div class="cast-slider" id="infoCast"></div>
+                <!-- Register Form -->
+                <div class="auth-form" id="registerForm" style="display:none;">
+                    <h2>Create Account</h2>
+                    <p class="auth-subtitle">Join ZenShows</p>
+                    <form id="registerFormElement">
+                        <div class="form-group">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="registerName" placeholder="Full Name" required>
                         </div>
-
-                        <div class="info-crew" id="infoCrewSection">
-                            <h3>Crew</h3>
-                            <div class="crew-list" id="infoCrew"></div>
+                        <div class="form-group">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="registerEmail" placeholder="Email" required>
                         </div>
-
-                        <div class="info-seasons" id="infoSeasonsSection" style="display:none;">
-                            <h3>Seasons</h3>
-                            <div class="seasons-list" id="infoSeasons"></div>
+                        <div class="form-group">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="registerPassword" placeholder="Password" required>
                         </div>
-
-                        <div class="info-videos" id="infoVideosSection">
-                            <h3>Videos & Trailers</h3>
-                            <div class="videos-slider" id="infoVideos"></div>
-                        </div>
-
-                        <div class="info-similar" id="infoSimilarSection">
-                            <h3>More Like This</h3>
-                            <div class="content-slider" id="infoSimilar"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="info-sidebar">
-                        <div class="sidebar-item">
-                            <strong>Status:</strong>
-                            <span id="infoStatus"></span>
-                        </div>
-                        <div class="sidebar-item">
-                            <strong>Original Language:</strong>
-                            <span id="infoLanguage"></span>
-                        </div>
-                        <div class="sidebar-item">
-                            <strong>Budget:</strong>
-                            <span id="infoBudget"></span>
-                        </div>
-                        <div class="sidebar-item">
-                            <strong>Revenue:</strong>
-                            <span id="infoRevenue"></span>
-                        </div>
-                        <div class="sidebar-item">
-                            <strong>Production:</strong>
-                            <span id="infoProduction"></span>
-                        </div>
+                        <button type="submit" class="btn-auth">Create Account</button>
+                    </form>
+                    <div class="auth-switch">
+                        Already have an account? <a href="#" id="showLogin">Sign In</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Person Modal -->
-    <div class="modal person-modal" id="personModal">
-        <div class="person-container">
-            <button class="close-modal" id="closePerson">&times;</button>
-            <div class="person-header">
-                <img id="personImage" alt="">
-                <div class="person-info">
-                    <h1 id="personName"></h1>
-                    <p class="person-role" id="personKnownFor"></p>
-                    <div class="person-meta">
-                        <span><strong>Born:</strong> <span id="personBirthday"></span></span>
-                        <span><strong>Place:</strong> <span id="personBirthplace"></span></span>
-                    </div>
-                    <div class="person-bio" id="personBio"></div>
-                </div>
-            </div>
-            <div class="person-credits">
-                <h2>Known For</h2>
-                <div class="content-slider" id="personCredits"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Notification Panel -->
-    <div class="notification-panel" id="notificationPanel">
-        <div class="notification-header">
-            <h3>Notifications</h3>
-            <button class="clear-notifications" id="clearNotifications">Clear All</button>
-        </div>
-        <div class="notification-list" id="notificationList">
-            <div class="notification-item new">
-                <i class="fas fa-star"></i>
-                <div>
-                    <h4>New Trending Movies</h4>
-                    <p>Check out what's trending this week</p>
-                    <span class="notification-time">2 hours ago</span>
-                </div>
-            </div>
-            <div class="notification-item new">
-                <i class="fas fa-film"></i>
-                <div>
-                    <h4>New Season Released</h4>
-                    <p>Your favorite series has a new season</p>
-                    <span class="notification-time">5 hours ago</span>
-                </div>
-            </div>
-            <div class="notification-item">
-                <i class="fas fa-heart"></i>
-                <div>
-                    <h4>Recommendation for You</h4>
-                    <p>Based on your watch history</p>
-                    <span class="notification-time">1 day ago</span>
-                </div>
-            </div>
+    <!-- Settings Modal -->
+    <div class="settings-modal" id="settingsModal">
+        <div class="settings-container">
+            <button class="close-settings" id="closeSettings"><i class="fas fa-times"></i></button>
+            <h2>Settings</h2>
+            <div class="settings-content" id="settingsContent"></div>
         </div>
     </div>
 
     <!-- Toast Notifications -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- Scroll to Top Button -->
-    <button class="scroll-top" id="scrollTop">
-        <i class="fas fa-chevron-up"></i>
-    </button>
-
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <h3>StreamVerse</h3>
-                <p>Your ultimate streaming destination for movies and TV series.</p>
+                <h3>ZenShows</h3>
+                <p>Your ultimate streaming destination</p>
                 <div class="social-links">
                     <a href="#"><i class="fab fa-facebook"></i></a>
                     <a href="#"><i class="fab fa-twitter"></i></a>
                     <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
             <div class="footer-section">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Help Center</a></li>
-                    <li><a href="#">Terms of Service</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Categories</h4>
-                <ul>
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Comedy</a></li>
-                    <li><a href="#">Drama</a></li>
-                    <li><a href="#">Horror</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Support</h4>
-                <ul>
-                    <li><a href="#">FAQ</a></li>
-                    <li><a href="#">Contact Us</a></li>
-                    <li><a href="#">Report Issue</a></li>
-                    <li><a href="#">Feedback</a></li>
-                </ul>
+                <h4>Credits</h4>
+                <p>Powered by TMDB API</p>
+                <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" 
+                     alt="TMDB" style="width:80px;margin-top:10px;">
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2024 StreamVerse. All rights reserved.</p>
-            <p class="tmdb-credit">
-                <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDB" style="height: 20px; vertical-align: middle;">
-                This product uses the TMDB API but is not endorsed or certified by TMDB.
-            </p>
+            <p>&copy; 2024 ZenShows. All rights reserved.</p>
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>

@@ -538,3 +538,264 @@
             </div>
         </section>
     </main>
+<!-- Player Modal -->
+    <div class="modal player-modal" id="playerModal">
+        <div class="player-container">
+            <button class="close-player" id="closePlayer">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="player-header">
+                <h2 id="playerTitle"></h2>
+                <div class="player-controls-top">
+                    <select class="episode-selector" id="episodeSelector" style="display:none;">
+                        <option>Select Episode</option>
+                    </select>
+                    <select class="server-selector" id="serverSelector">
+                        <option value="vidsrc">VidSrc</option>
+                        <option value="vidsrc2">VidSrc Pro</option>
+                        <option value="embed">Embed</option>
+                        <option value="smashystream">SmashyStream</option>
+                        <option value="autoembed">AutoEmbed</option>
+                        <option value="2embed">2Embed</option>
+                        <option value="nontonGo">NontonGo</option>
+                        <option value="multiembed">MultiEmbed</option>
+                        <option value="vidsrcpro">VidSrc.PRO</option>
+                        <option value="moviesapi">MoviesAPI</option>
+                    </select>
+                    <button class="btn btn-icon" id="toggleFullscreen">
+                        <i class="fas fa-expand"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="player-wrapper">
+                <iframe id="playerIframe" allowfullscreen></iframe>
+                <div class="player-loading">
+                    <div class="spinner"></div>
+                    <p>Loading player...</p>
+                </div>
+            </div>
+            <div class="player-info">
+                <div class="player-meta">
+                    <span id="playerYear"></span>
+                    <span id="playerRating"></span>
+                    <span id="playerGenres"></span>
+                </div>
+                <p id="playerOverview"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Modal -->
+    <div class="modal info-modal" id="infoModal">
+        <div class="info-container">
+            <button class="close-modal" id="closeInfo">&times;</button>
+            <div class="info-backdrop">
+                <div class="info-overlay"></div>
+                <img id="infoBackdrop" alt="">
+            </div>
+            <div class="info-content">
+                <div class="info-header">
+                    <div>
+                        <h1 id="infoTitle"></h1>
+                        <div class="info-meta">
+                            <span class="info-rating"><i class="fas fa-star"></i> <span id="infoRating"></span></span>
+                            <span id="infoYear"></span>
+                            <span id="infoRuntime"></span>
+                        </div>
+                    </div>
+                    <div class="info-actions">
+                        <button class="btn btn-primary" id="infoPlayBtn">
+                            <i class="fas fa-play"></i> Play
+                        </button>
+                        <button class="btn btn-secondary" id="infoAddBtn">
+                            <i class="fas fa-plus"></i> My List
+                        </button>
+                        <button class="btn btn-icon" id="infoLikeBtn">
+                            <i class="fas fa-thumbs-up"></i>
+                        </button>
+                        <button class="btn btn-icon" id="infoShareBtn">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="info-details">
+                    <div class="info-main">
+                        <p id="infoOverview"></p>
+                        
+                        <div class="info-genres">
+                            <h3>Genres</h3>
+                            <div id="infoGenres"></div>
+                        </div>
+
+                        <div class="info-cast" id="infoCastSection">
+                            <h3>Cast</h3>
+                            <div class="cast-slider" id="infoCast"></div>
+                        </div>
+
+                        <div class="info-crew" id="infoCrewSection">
+                            <h3>Crew</h3>
+                            <div class="crew-list" id="infoCrew"></div>
+                        </div>
+
+                        <div class="info-seasons" id="infoSeasonsSection" style="display:none;">
+                            <h3>Seasons</h3>
+                            <div class="seasons-list" id="infoSeasons"></div>
+                        </div>
+
+                        <div class="info-videos" id="infoVideosSection">
+                            <h3>Videos & Trailers</h3>
+                            <div class="videos-slider" id="infoVideos"></div>
+                        </div>
+
+                        <div class="info-similar" id="infoSimilarSection">
+                            <h3>More Like This</h3>
+                            <div class="content-slider" id="infoSimilar"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-sidebar">
+                        <div class="sidebar-item">
+                            <strong>Status:</strong>
+                            <span id="infoStatus"></span>
+                        </div>
+                        <div class="sidebar-item">
+                            <strong>Original Language:</strong>
+                            <span id="infoLanguage"></span>
+                        </div>
+                        <div class="sidebar-item">
+                            <strong>Budget:</strong>
+                            <span id="infoBudget"></span>
+                        </div>
+                        <div class="sidebar-item">
+                            <strong>Revenue:</strong>
+                            <span id="infoRevenue"></span>
+                        </div>
+                        <div class="sidebar-item">
+                            <strong>Production:</strong>
+                            <span id="infoProduction"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Person Modal -->
+    <div class="modal person-modal" id="personModal">
+        <div class="person-container">
+            <button class="close-modal" id="closePerson">&times;</button>
+            <div class="person-header">
+                <img id="personImage" alt="">
+                <div class="person-info">
+                    <h1 id="personName"></h1>
+                    <p class="person-role" id="personKnownFor"></p>
+                    <div class="person-meta">
+                        <span><strong>Born:</strong> <span id="personBirthday"></span></span>
+                        <span><strong>Place:</strong> <span id="personBirthplace"></span></span>
+                    </div>
+                    <div class="person-bio" id="personBio"></div>
+                </div>
+            </div>
+            <div class="person-credits">
+                <h2>Known For</h2>
+                <div class="content-slider" id="personCredits"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Panel -->
+    <div class="notification-panel" id="notificationPanel">
+        <div class="notification-header">
+            <h3>Notifications</h3>
+            <button class="clear-notifications" id="clearNotifications">Clear All</button>
+        </div>
+        <div class="notification-list" id="notificationList">
+            <div class="notification-item new">
+                <i class="fas fa-star"></i>
+                <div>
+                    <h4>New Trending Movies</h4>
+                    <p>Check out what's trending this week</p>
+                    <span class="notification-time">2 hours ago</span>
+                </div>
+            </div>
+            <div class="notification-item new">
+                <i class="fas fa-film"></i>
+                <div>
+                    <h4>New Season Released</h4>
+                    <p>Your favorite series has a new season</p>
+                    <span class="notification-time">5 hours ago</span>
+                </div>
+            </div>
+            <div class="notification-item">
+                <i class="fas fa-heart"></i>
+                <div>
+                    <h4>Recommendation for You</h4>
+                    <p>Based on your watch history</p>
+                    <span class="notification-time">1 day ago</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-top" id="scrollTop">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>StreamVerse</h3>
+                <p>Your ultimate streaming destination for movies and TV series.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Categories</h4>
+                <ul>
+                    <li><a href="#">Action</a></li>
+                    <li><a href="#">Comedy</a></li>
+                    <li><a href="#">Drama</a></li>
+                    <li><a href="#">Horror</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Report Issue</a></li>
+                    <li><a href="#">Feedback</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 StreamVerse. All rights reserved.</p>
+            <p class="tmdb-credit">
+                <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDB" style="height: 20px; vertical-align: middle;">
+                This product uses the TMDB API but is not endorsed or certified by TMDB.
+            </p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

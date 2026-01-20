@@ -3,579 +3,2102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StreamVerse - Watch Unlimited Movies & TV Shows</title>
-    <link rel="stylesheet" href="style.css">
+    <title>ZenShows - Stream Movies & TV Shows</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+        
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a25;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0b0;
+            --accent: #8b5cf6;
+            --accent-hover: #7c3aed;
+            --gradient: linear-gradient(135deg, #8b5cf6, #ec4899);
+        }
+        
+        .light-mode {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+        }
+        
+        /* Color Themes */
+        .theme-purple {
+            --accent: #8b5cf6;
+            --accent-hover: #7c3aed;
+            --gradient: linear-gradient(135deg, #8b5cf6, #ec4899);
+        }
+        
+        .theme-blue {
+            --accent: #3b82f6;
+            --accent-hover: #2563eb;
+            --gradient: linear-gradient(135deg, #3b82f6, #06b6d4);
+        }
+        
+        .theme-green {
+            --accent: #10b981;
+            --accent-hover: #059669;
+            --gradient: linear-gradient(135deg, #10b981, #84cc16);
+        }
+        
+        .theme-red {
+            --accent: #ef4444;
+            --accent-hover: #dc2626;
+            --gradient: linear-gradient(135deg, #ef4444, #f97316);
+        }
+        
+        .theme-orange {
+            --accent: #f97316;
+            --accent-hover: #ea580c;
+            --gradient: linear-gradient(135deg, #f97316, #eab308);
+        }
+        
+        .theme-cyan {
+            --accent: #06b6d4;
+            --accent-hover: #0891b2;
+            --gradient: linear-gradient(135deg, #06b6d4, #8b5cf6);
+        }
+        
+        .theme-pink {
+            --accent: #ec4899;
+            --accent-hover: #db2777;
+            --gradient: linear-gradient(135deg, #ec4899, #f43f5e);
+        }
+        
+        .theme-gold {
+            --accent: #eab308;
+            --accent-hover: #ca8a04;
+            --gradient: linear-gradient(135deg, #eab308, #f97316);
+        }
+        
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .glass {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .light-mode .glass {
+            background: rgba(255,255,255,0.8);
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        /* Intrusive Animations */
+        @keyframes floatIn {
+            0% { opacity: 0; transform: translateY(100px) scale(0.8) rotateX(20deg); }
+            50% { transform: translateY(-20px) scale(1.05); }
+            100% { opacity: 1; transform: translateY(0) scale(1) rotateX(0); }
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(139,92,246,0.3); }
+            50% { box-shadow: 0 0 40px rgba(139,92,246,0.6), 0 0 60px rgba(236,72,153,0.3); }
+        }
+        
+        @keyframes slideInBounce {
+            0% { transform: translateX(-100%) rotate(-5deg); opacity: 0; }
+            60% { transform: translateX(10%) rotate(2deg); }
+            80% { transform: translateX(-5%) rotate(-1deg); }
+            100% { transform: translateX(0) rotate(0); opacity: 1; }
+        }
+        
+        @keyframes morphBackground {
+            0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+        }
+        
+        @keyframes textGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        @keyframes ripple {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(4); opacity: 0; }
+        }
+        
+        @keyframes particleFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-20px) rotate(90deg); }
+            50% { transform: translateY(-10px) rotate(180deg); }
+            75% { transform: translateY(-30px) rotate(270deg); }
+        }
+        
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); }
+        }
+        
+        @keyframes neonPulse {
+            0%, 100% { text-shadow: 0 0 5px #8b5cf6, 0 0 10px #8b5cf6, 0 0 20px #8b5cf6; }
+            50% { text-shadow: 0 0 10px #ec4899, 0 0 20px #ec4899, 0 0 40px #ec4899; }
+        }
+        
+        .animate-float-in { animation: floatIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        .animate-pulse-glow { animation: pulseGlow 2s ease-in-out infinite; }
+        .animate-slide-bounce { animation: slideInBounce 0.8s ease-out forwards; }
+        .animate-morph { animation: morphBackground 8s ease-in-out infinite; }
+        .animate-shake { animation: shake 0.5s ease-in-out; }
+        .animate-glitch { animation: glitch 0.3s ease-in-out; }
+        .animate-neon { animation: neonPulse 2s ease-in-out infinite; }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, #8b5cf6, #ec4899, #8b5cf6);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textGradient 3s linear infinite;
+        }
+        
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-15px) scale(1.05) rotateY(5deg);
+            box-shadow: 0 25px 50px -12px rgba(139,92,246,0.4);
+        }
+        
+        .btn-3d {
+            position: relative;
+            transform-style: preserve-3d;
+            transition: all 0.3s;
+        }
+        
+        .btn-3d:hover {
+            transform: translateY(-5px) rotateX(10deg);
+        }
+        
+        .btn-3d:active {
+            transform: translateY(2px);
+        }
+        
+        .ripple-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .ripple-effect::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 50%;
+            transform: scale(0);
+            pointer-events: none;
+        }
+        
+        .ripple-effect:active::after {
+            animation: ripple 0.6s linear;
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { 
+            background: var(--gradient);
+            border-radius: 10px;
+        }
+        
+        /* Modal Animations */
+        .modal-enter {
+            animation: floatIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        
+        .modal-backdrop {
+            animation: fadeIn 0.3s ease forwards;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Particle Background */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            animation: particleFloat 10s ease-in-out infinite;
+        }
+        
+        /* Loading Animation */
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid transparent;
+            border-top-color: #8b5cf6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Dropdown styling */
+        .dropdown-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+        
+        .dropdown-content.show {
+            max-height: 300px;
+            opacity: 1;
+        }
+        
+        /* Source selector */
+        .source-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .source-btn.active {
+            background: var(--gradient);
+            transform: scale(1.05);
+        }
+        
+        .source-btn:hover:not(.active) {
+            background: rgba(139,92,246,0.3);
+            transform: translateX(5px);
+        }
+        
+        /* Hero parallax */
+        .hero-bg {
+            background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(236,72,153,0.2));
+            animation: morphBackground 15s ease-in-out infinite;
+        }
+        
+        /* Toast notifications */
+        .toast {
+            animation: slideInBounce 0.5s ease forwards;
+        }
+        
+        .toast-exit {
+            animation: slideOut 0.5s ease forwards;
+        }
+        
+        @keyframes slideOut {
+            to { transform: translateX(150%); opacity: 0; }
+        }
+        
+        /* Page transitions */
+        .page {
+            display: none;
+            opacity: 0;
+        }
+        
+        .page.active {
+            display: block;
+            animation: floatIn 0.6s ease forwards;
+        }
+        
+        /* Surprise button special effect */
+        .surprise-btn {
+            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            background-size: 400%;
+            animation: rainbow 8s linear infinite;
+        }
+        
+        @keyframes rainbow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Calendar styling */
+        .calendar-day {
+            transition: all 0.3s ease;
+        }
+        
+        .calendar-day:hover {
+            transform: scale(1.2);
+            background: var(--gradient);
+        }
+        
+        .calendar-day.has-movie {
+            background: rgba(139,92,246,0.3);
+            border: 2px solid #8b5cf6;
+        }
+        
+        /* Hero Carousel */
+        .hero-carousel {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .hero-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 1s ease-in-out, transform 0.5s ease;
+            transform: scale(1.05);
+        }
+        
+        .hero-slide.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .hero-indicators {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .hero-indicator {
+            width: 40px;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .hero-indicator.active {
+            background: var(--gradient);
+            width: 60px;
+        }
+        
+        .hero-indicator:hover:not(.active) {
+            background: rgba(255,255,255,0.5);
+        }
+        
+        /* Theme color preview */
+        .theme-color-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 3px solid transparent;
+        }
+        
+        .theme-color-btn:hover {
+            transform: scale(1.2);
+        }
+        
+        .theme-color-btn.active {
+            border-color: white;
+            box-shadow: 0 0 15px currentColor;
+        }
+    </style>
 </head>
-<body>
-    <!-- Loading Screen -->
-    <div id="loadingScreen" class="loading-screen">
-        <div class="loader-container">
-            <div class="loader"></div>
-            <p class="loading-text">StreamVerse</p>
-        </div>
-    </div>
-
-    <!-- Login Modal -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content login-modal">
-            <button class="close-modal" onclick="closeLoginModal()">&times;</button>
-            <div class="login-header">
-                <h2>Welcome to StreamVerse</h2>
-                <p>Sign in to continue watching</p>
-            </div>
-            <div class="login-tabs">
-                <button class="tab-btn active" onclick="switchTab('signin')">Sign In</button>
-                <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
-            </div>
-            <form id="signinForm" class="auth-form">
-                <div class="form-group">
-                    <input type="text" id="signinUsername" placeholder="Username" required>
-                    <i class="fas fa-user"></i>
-                </div>
-                <div class="form-group">
-                    <input type="password" id="signinPassword" placeholder="Password" required>
-                    <i class="fas fa-lock"></i>
-                </div>
-                <button type="submit" class="auth-btn">Sign In</button>
-            </form>
-            <form id="signupForm" class="auth-form" style="display:none;">
-                <div class="form-group">
-                    <input type="text" id="signupUsername" placeholder="Username" required>
-                    <i class="fas fa-user"></i>
-                </div>
-                <div class="form-group">
-                    <input type="email" id="signupEmail" placeholder="Email" required>
-                    <i class="fas fa-envelope"></i>
-                </div>
-                <div class="form-group">
-                    <input type="password" id="signupPassword" placeholder="Password" required>
-                    <i class="fas fa-lock"></i>
-                </div>
-                <button type="submit" class="auth-btn">Sign Up</button>
-            </form>
-        </div>
-    </div>
-
+<body class="min-h-screen">
+    <!-- Particles Background -->
+    <div id="particles" class="fixed inset-0 pointer-events-none z-0"></div>
+    
     <!-- Navigation -->
-    <nav id="navbar" class="navbar">
-        <div class="nav-container">
-            <div class="nav-left">
-                <div class="logo">
-                    <i class="fas fa-play-circle"></i>
-                    <span>StreamVerse</span>
-                </div>
-                <ul class="nav-menu">
-                    <li><a href="#" onclick="showHome()" class="active">Home</a></li>
-                    <li><a href="#" onclick="showMovies()">Movies</a></li>
-                    <li><a href="#" onclick="showTVShows()">TV Shows</a></li>
-                    <li><a href="#" onclick="showMyList()">My List</a></li>
-                    <li><a href="#" onclick="showHistory()">History</a></li>
-                </ul>
-            </div>
-            <div class="nav-right">
-                <button class="search-btn" onclick="toggleSearch()">
-                    <i class="fas fa-search"></i>
-                </button>
-                <div class="user-menu">
-                    <button class="user-btn" onclick="toggleUserMenu()">
-                        <i class="fas fa-user-circle"></i>
-                        <span id="username">Guest</span>
-                    </button>
-                    <div id="userDropdown" class="user-dropdown">
-                        <a href="#" onclick="showProfile()"><i class="fas fa-user"></i> Profile</a>
-                        <a href="#" onclick="showSettings()"><i class="fas fa-cog"></i> Settings</a>
-                        <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    <nav class="fixed top-0 left-0 right-0 z-50 glass">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-8">
+                    <h1 class="text-2xl font-bold gradient-text cursor-pointer animate-neon" onclick="showPage('home')">
+                        <i class="fas fa-film mr-2"></i>ZenShows
+                    </h1>
+                    <div class="hidden md:flex items-center gap-6">
+                        <a href="#" onclick="showPage('home')" class="nav-link hover:text-purple-400 transition-all hover:scale-110">Home</a>
+                        <a href="#" onclick="showPage('movies')" class="nav-link hover:text-purple-400 transition-all hover:scale-110">Movies</a>
+                        <a href="#" onclick="showPage('tvshows')" class="nav-link hover:text-purple-400 transition-all hover:scale-110">TV Shows</a>
+                        <a href="#" onclick="showPage('calendar')" class="nav-link hover:text-purple-400 transition-all hover:scale-110">Calendar</a>
+                        <a href="#" onclick="showPage('privacy')" class="nav-link hover:text-purple-400 transition-all hover:scale-110">Privacy</a>
                     </div>
                 </div>
-                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
-        </div>
-        <div id="searchBar" class="search-bar">
-            <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Search for movies, TV shows...">
-                <button onclick="performSearch()"><i class="fas fa-search"></i></button>
-                <button onclick="toggleSearch()" class="close-search"><i class="fas fa-times"></i></button>
+                
+                <div class="flex items-center gap-4">
+                    <!-- Search Button -->
+                    <button onclick="openSearch()" class="p-2 rounded-full hover:bg-white/10 transition-all hover:scale-110 hover:rotate-12">
+                        <i class="fas fa-search text-xl"></i>
+                    </button>
+                    
+                    <!-- Surprise Me Button -->
+                    <button onclick="surpriseMe()" class="surprise-btn px-4 py-2 rounded-full font-semibold text-white btn-3d hidden md:block">
+                        <i class="fas fa-magic mr-2"></i>Surprise Me!
+                    </button>
+                    
+                    <!-- Settings -->
+                    <button onclick="openSettings()" class="p-2 rounded-full hover:bg-white/10 transition-all hover:scale-110 hover:rotate-90">
+                        <i class="fas fa-cog text-xl"></i>
+                    </button>
+                    
+                    <!-- Theme Toggle -->
+                    <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-white/10 transition-all hover:scale-110" id="themeBtn">
+                        <i class="fas fa-moon text-xl" id="themeIcon"></i>
+                    </button>
+                    
+                    <!-- User Menu -->
+                    <div class="relative">
+                        <button onclick="toggleUserMenu()" class="flex items-center gap-2 p-2 rounded-full hover:bg-white/10 transition-all" id="userBtn">
+                            <i class="fas fa-user-circle text-2xl"></i>
+                            <span id="userDisplayName" class="hidden md:block">Guest</span>
+                        </button>
+                        <div id="userDropdown" class="absolute right-0 top-full mt-2 w-48 glass rounded-xl overflow-hidden hidden">
+                            <div id="loggedOutMenu">
+                                <button onclick="openAuthModal('login')" class="w-full px-4 py-3 text-left hover:bg-white/10 transition-all">
+                                    <i class="fas fa-sign-in-alt mr-2"></i>Login
+                                </button>
+                                <button onclick="openAuthModal('signup')" class="w-full px-4 py-3 text-left hover:bg-white/10 transition-all">
+                                    <i class="fas fa-user-plus mr-2"></i>Sign Up
+                                </button>
+                            </div>
+                            <div id="loggedInMenu" class="hidden">
+                                <div class="px-4 py-3 border-b border-white/10">
+                                    <p class="font-semibold" id="menuUserName">User</p>
+                                    <p class="text-sm text-gray-400" id="menuUserEmail">email@example.com</p>
+                                </div>
+                                <button onclick="showPage('watchlist')" class="w-full px-4 py-3 text-left hover:bg-white/10 transition-all">
+                                    <i class="fas fa-bookmark mr-2"></i>Watchlist
+                                </button>
+                                <button onclick="logout()" class="w-full px-4 py-3 text-left hover:bg-white/10 transition-all text-red-400">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
 
-    <!-- Mobile Menu -->
-    <div id="mobileMenu" class="mobile-menu">
-        <button class="close-mobile-menu" onclick="toggleMobileMenu()">
-            <i class="fas fa-times"></i>
-        </button>
-        <ul>
-            <li><a href="#" onclick="showHome(); toggleMobileMenu();">Home</a></li>
-            <li><a href="#" onclick="showMovies(); toggleMobileMenu();">Movies</a></li>
-            <li><a href="#" onclick="showTVShows(); toggleMobileMenu();">TV Shows</a></li>
-            <li><a href="#" onclick="showMyList(); toggleMobileMenu();">My List</a></li>
-            <li><a href="#" onclick="showHistory(); toggleMobileMenu();">History</a></li>
-            <li><a href="#" onclick="showProfile(); toggleMobileMenu();">Profile</a></li>
-            <li><a href="#" onclick="showSettings(); toggleMobileMenu();">Settings</a></li>
-        </ul>
+    <!-- Search Modal -->
+    <div id="searchModal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/80 modal-backdrop" onclick="closeSearch()"></div>
+        <div class="relative max-w-3xl mx-auto mt-20 px-4">
+            <div class="glass rounded-2xl overflow-hidden modal-enter">
+                <div class="p-6">
+                    <div class="flex items-center gap-4 mb-6">
+                        <i class="fas fa-search text-2xl text-purple-400"></i>
+                        <input type="text" id="searchInput" placeholder="Search movies, TV shows, actors..." 
+                            class="flex-1 bg-transparent text-xl outline-none" oninput="handleSearch(this.value)" autofocus>
+                        <button onclick="closeSearch()" class="p-2 hover:bg-white/10 rounded-full transition-all">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <div id="searchResults" class="max-h-96 overflow-y-auto">
+                        <div class="text-center text-gray-400 py-8">
+                            <i class="fas fa-film text-4xl mb-4 opacity-50"></i>
+                            <p>Start typing to search...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Main Container -->
-    <main id="mainContainer">
+    <!-- Auth Modal -->
+    <div id="authModal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/80 modal-backdrop" onclick="closeAuthModal()"></div>
+        <div class="relative max-w-md mx-auto mt-20 px-4">
+            <div class="glass rounded-2xl overflow-hidden modal-enter p-8">
+                <h2 id="authTitle" class="text-2xl font-bold gradient-text mb-6 text-center">Login</h2>
+                
+                <form id="authForm" onsubmit="handleAuth(event)">
+                    <div id="signupNameField" class="mb-4 hidden">
+                        <label class="block text-sm mb-2">Full Name</label>
+                        <input type="text" id="authName" class="w-full p-3 rounded-xl bg-white/10 outline-none focus:ring-2 focus:ring-purple-500 transition-all">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm mb-2">Email</label>
+                        <input type="email" id="authEmail" class="w-full p-3 rounded-xl bg-white/10 outline-none focus:ring-2 focus:ring-purple-500 transition-all" required>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-sm mb-2">Password</label>
+                        <input type="password" id="authPassword" class="w-full p-3 rounded-xl bg-white/10 outline-none focus:ring-2 focus:ring-purple-500 transition-all" required>
+                    </div>
+                    
+                    <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 font-semibold btn-3d ripple-effect">
+                        <span id="authBtnText">Login</span>
+                    </button>
+                </form>
+                
+                <div class="mt-6 text-center text-sm">
+                    <span id="authSwitch">Don't have an account? 
+                        <button onclick="switchAuthMode()" class="text-purple-400 hover:underline">Sign Up</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/80 modal-backdrop" onclick="closeSettings()"></div>
+        <div class="relative max-w-lg mx-auto mt-20 px-4">
+            <div class="glass rounded-2xl overflow-hidden modal-enter">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-2xl font-bold gradient-text">Settings</h2>
+                        <button onclick="closeSettings()" class="p-2 hover:bg-white/10 rounded-full transition-all">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <!-- Theme Mode -->
+                        <div class="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                            <div>
+                                <h3 class="font-semibold">Theme Mode</h3>
+                                <p class="text-sm text-gray-400">Choose dark or light mode</p>
+                            </div>
+                            <select id="themeSelect" onchange="setTheme(this.value)" class="px-4 py-2 rounded-lg bg-white/10 outline-none">
+                                <option value="dark">Dark</option>
+                                <option value="light">Light</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Accent Color -->
+                        <div class="p-4 rounded-xl bg-white/5">
+                            <div class="mb-4">
+                                <h3 class="font-semibold">Accent Color</h3>
+                                <p class="text-sm text-gray-400">Choose your favorite color theme</p>
+                            </div>
+                            <div class="flex flex-wrap gap-3" id="colorThemes">
+                                <button onclick="setColorTheme('purple')" class="theme-color-btn active" style="background: linear-gradient(135deg, #8b5cf6, #ec4899);" title="Purple"></button>
+                                <button onclick="setColorTheme('blue')" class="theme-color-btn" style="background: linear-gradient(135deg, #3b82f6, #06b6d4);" title="Blue"></button>
+                                <button onclick="setColorTheme('green')" class="theme-color-btn" style="background: linear-gradient(135deg, #10b981, #84cc16);" title="Green"></button>
+                                <button onclick="setColorTheme('red')" class="theme-color-btn" style="background: linear-gradient(135deg, #ef4444, #f97316);" title="Red"></button>
+                                <button onclick="setColorTheme('orange')" class="theme-color-btn" style="background: linear-gradient(135deg, #f97316, #eab308);" title="Orange"></button>
+                                <button onclick="setColorTheme('cyan')" class="theme-color-btn" style="background: linear-gradient(135deg, #06b6d4, #8b5cf6);" title="Cyan"></button>
+                                <button onclick="setColorTheme('pink')" class="theme-color-btn" style="background: linear-gradient(135deg, #ec4899, #f43f5e);" title="Pink"></button>
+                                <button onclick="setColorTheme('gold')" class="theme-color-btn" style="background: linear-gradient(135deg, #eab308, #f97316);" title="Gold"></button>
+                            </div>
+                        </div>
+                        
+                        <!-- Default Source -->
+                        <div class="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                            <div>
+                                <h3 class="font-semibold">Default Source</h3>
+                                <p class="text-sm text-gray-400">Preferred video source</p>
+                            </div>
+                            <select id="defaultSource" onchange="saveSettings()" class="px-4 py-2 rounded-lg bg-white/10 outline-none">
+                                <option value="vidsrc">VidSrc</option>
+                                <option value="cinemaos">CinemaOS</option>
+                                <option value="vidsrcpro">VidSrc Pro</option>
+                                <option value="embedsu">Embed.su</option>
+                                <option value="autoembed">AutoEmbed</option>
+                                <option value="multiembed">MultiEmbed</option>
+                                <option value="2embed">2Embed</option>
+                                <option value="moviesapi">MoviesAPI</option>
+                                <option value="vidsrcme">VidSrc.me</option>
+                                <option value="smashystream">SmashyStream</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Autoplay -->
+                        <div class="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                            <div>
+                                <h3 class="font-semibold">Autoplay Next</h3>
+                                <p class="text-sm text-gray-400">Auto play next episode</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="autoplayToggle" onchange="saveSettings()" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-600 peer-focus:ring-2 peer-focus:ring-purple-500 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500"></div>
+                            </label>
+                        </div>
+                        
+                        <!-- Animations -->
+                        <div class="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                            <div>
+                                <h3 class="font-semibold">Animations</h3>
+                                <p class="text-sm text-gray-400">Enable fancy animations</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="animationsToggle" onchange="saveSettings()" checked class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-600 peer-focus:ring-2 peer-focus:ring-purple-500 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500"></div>
+                            </label>
+                        </div>
+                        
+                        <!-- Notifications -->
+                        <div class="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                            <div>
+                                <h3 class="font-semibold">Notifications</h3>
+                                <p class="text-sm text-gray-400">Show toast notifications</p>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="notificationsToggle" onchange="saveSettings()" checked class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-600 peer-focus:ring-2 peer-focus:ring-purple-500 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Movie/Show Detail Modal -->
+    <div id="detailModal" class="fixed inset-0 z-[100] hidden overflow-y-auto">
+        <div class="absolute inset-0 bg-black/90 modal-backdrop" onclick="closeDetailModal()"></div>
+        <div class="relative max-w-6xl mx-auto my-10 px-4">
+            <div class="glass rounded-2xl overflow-hidden modal-enter" id="detailContent">
+                <!-- Content loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed bottom-4 right-4 z-[200] space-y-2"></div>
+
+    <!-- Main Content -->
+    <main class="pt-20">
         <!-- Home Page -->
         <div id="homePage" class="page active">
-            <!-- Hero Section -->
-            <section id="heroSection" class="hero-section">
-                <div class="hero-overlay"></div>
-                <div class="hero-content">
-                    <div class="hero-info">
-                        <h1 id="heroTitle" class="hero-title"></h1>
-                        <div class="hero-meta">
-                            <span id="heroRating" class="rating"></span>
-                            <span id="heroYear"></span>
-                            <span id="heroRuntime"></span>
-                        </div>
-                        <p id="heroOverview" class="hero-overview"></p>
-                        <div class="hero-buttons">
-                            <button class="btn-play" id="heroPlayBtn">
-                                <i class="fas fa-play"></i> Play Now
-                            </button>
-                            <button class="btn-info" id="heroInfoBtn">
-                                <i class="fas fa-info-circle"></i> More Info
-                            </button>
-                            <button class="btn-list" id="heroListBtn">
-                                <i class="fas fa-plus"></i> My List
-                            </button>
-                        </div>
+            <!-- Hero Section with Carousel -->
+            <section class="relative h-[85vh] overflow-hidden">
+                <div class="hero-carousel" id="heroCarousel">
+                    <!-- Slides will be loaded dynamically -->
+                </div>
+                
+                <!-- Hero Navigation -->
+                <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
+                    <div class="hero-indicators" id="heroIndicators">
+                        <!-- Indicators loaded dynamically -->
+                    </div>
+                </div>
+                
+                <!-- Hero Nav Arrows -->
+                <button onclick="prevHeroSlide()" class="absolute left-4 top-1/2 transform -translate-y-1/2 z-20 p-4 glass rounded-full hover:bg-white/20 transition-all hover:scale-110">
+                    <i class="fas fa-chevron-left text-2xl"></i>
+                </button>
+                <button onclick="nextHeroSlide()" class="absolute right-4 top-1/2 transform -translate-y-1/2 z-20 p-4 glass rounded-full hover:bg-white/20 transition-all hover:scale-110">
+                    <i class="fas fa-chevron-right text-2xl"></i>
+                </button>
+                
+                <!-- Floating elements -->
+                <div class="absolute top-1/4 right-1/4 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl animate-morph pointer-events-none"></div>
+                <div class="absolute bottom-1/4 right-1/3 w-48 h-48 bg-pink-500/20 rounded-full blur-3xl animate-morph pointer-events-none" style="animation-delay: -4s"></div>
+            </section>
+
+            <!-- Trending Movies -->
+            <section class="py-12 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-3xl font-bold">
+                            <i class="fas fa-fire text-orange-500 mr-3"></i>Trending Movies
+                        </h2>
+                        <button onclick="showPage('movies')" class="text-purple-400 hover:text-purple-300 transition-all">
+                            View All <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6" id="trendingMovies">
+                        <!-- Movies loaded dynamically -->
                     </div>
                 </div>
             </section>
 
-            <!-- Content Sections -->
-            <div class="content-sections">
-                <section class="content-row">
-                    <div class="row-header">
-                        <h2>Trending Now</h2>
-                        <button class="view-all" onclick="viewAll('trending')">View All <i class="fas fa-arrow-right"></i></button>
+            <!-- Popular TV Shows -->
+            <section class="py-12 px-4 bg-white/5">
+                <div class="max-w-7xl mx-auto">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-3xl font-bold">
+                            <i class="fas fa-tv text-blue-500 mr-3"></i>Popular TV Shows
+                        </h2>
+                        <button onclick="showPage('tvshows')" class="text-purple-400 hover:text-purple-300 transition-all">
+                            View All <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
                     </div>
-                    <div id="trendingRow" class="content-grid"></div>
-                </section>
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6" id="popularTVShows">
+                        <!-- Shows loaded dynamically -->
+                    </div>
+                </div>
+            </section>
 
-                <section class="content-row">
-                    <div class="row-header">
-                        <h2>Popular Movies</h2>
-                        <button class="view-all" onclick="viewAll('popular-movies')">View All <i class="fas fa-arrow-right"></i></button>
+            <!-- Top Rated -->
+            <section class="py-12 px-4">
+                <div class="max-w-7xl mx-auto">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-3xl font-bold">
+                            <i class="fas fa-trophy text-yellow-500 mr-3"></i>Top Rated
+                        </h2>
                     </div>
-                    <div id="popularMoviesRow" class="content-grid"></div>
-                </section>
-
-                <section class="content-row">
-                    <div class="row-header">
-                        <h2>Top Rated Movies</h2>
-                        <button class="view-all" onclick="viewAll('toprated-movies')">View All <i class="fas fa-arrow-right"></i></button>
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6" id="topRated">
+                        <!-- Movies loaded dynamically -->
                     </div>
-                    <div id="topratedMoviesRow" class="content-grid"></div>
-                </section>
-
-                <section class="content-row">
-                    <div class="row-header">
-                        <h2>Popular TV Shows</h2>
-                        <button class="view-all" onclick="viewAll('popular-tv')">View All <i class="fas fa-arrow-right"></i></button>
-                    </div>
-                    <div id="popularTVRow" class="content-grid"></div>
-                </section>
-
-                <section class="content-row">
-                    <div class="row-header">
-                        <h2>Top Rated TV Shows</h2>
-                        <button class="view-all" onclick="viewAll('toprated-tv')">View All <i class="fas fa-arrow-right"></i></button>
-                    </div>
-                    <div id="topratedTVRow" class="content-grid"></div>
-                </section>
-
-                <section class="content-row">
-                    <div class="row-header">
-                        <h2>Action Movies</h2>
-                        <button class="view-all" onclick="viewAll('action')">View All <i class="fas fa-arrow-right"></i></button>
-                    </div>
-                    <div id="actionRow" class="content-grid"></div>
-                </section>
-
-                <section class="content-row">
-                    <div class="row-header">
-                        <h2>Comedy Movies</h2>
-                        <button class="view-all" onclick="viewAll('comedy')">View All <i class="fas fa-arrow-right"></i></button>
-                    </div>
-                    <div id="comedyRow" class="content-grid"></div>
-                </section>
-                <section class="content-row">
-                    <div class="row-header">
-                        <h2>Horror Movies</h2>
-                        <button class="view-all" onclick="viewAll('horror')">View All <i class="fas fa-arrow-right"></i></button>
-                    </div>
-                    <div id="horrorRow" class="content-grid"></div>
-                </section>
-
-                <section class="content-row">
-                    <div class="row-header">
-                        <h2>Romance Movies</h2>
-                        <button class="view-all" onclick="viewAll('romance')">View All <i class="fas fa-arrow-right"></i></button>
-                    </div>
-                    <div id="romanceRow" class="content-grid"></div>
-                </section>
-
-                <section class="content-row">
-                    <div class="row-header">
-                        <h2>Sci-Fi Movies</h2>
-                        <button class="view-all" onclick="viewAll('scifi')">View All <i class="fas fa-arrow-right"></i></button>
-                    </div>
-                    <div id="scifiRow" class="content-grid"></div>
-                </section>
-            </div>
+                </div>
+            </section>
         </div>
 
         <!-- Movies Page -->
         <div id="moviesPage" class="page">
-            <div class="page-header">
-                <h1>Movies</h1>
-                <div class="filter-buttons">
-                    <button class="filter-btn active" onclick="filterMovies('popular')">Popular</button>
-                    <button class="filter-btn" onclick="filterMovies('toprated')">Top Rated</button>
-                    <button class="filter-btn" onclick="filterMovies('upcoming')">Upcoming</button>
-                    <button class="filter-btn" onclick="filterMovies('nowplaying')">Now Playing</button>
+            <div class="max-w-7xl mx-auto px-4 py-12">
+                <h1 class="text-4xl font-bold mb-8 gradient-text">Movies</h1>
+                
+                <!-- Filters -->
+                <div class="flex flex-wrap gap-4 mb-8">
+                    <select onchange="filterMovies(this.value)" class="px-4 py-2 rounded-xl bg-white/10 outline-none">
+                        <option value="popular">Popular</option>
+                        <option value="top_rated">Top Rated</option>
+                        <option value="upcoming">Upcoming</option>
+                        <option value="now_playing">Now Playing</option>
+                    </select>
+                    
+                    <select id="genreFilter" onchange="filterByGenre(this.value)" class="px-4 py-2 rounded-xl bg-white/10 outline-none">
+                        <option value="">All Genres</option>
+                        <option value="28">Action</option>
+                        <option value="12">Adventure</option>
+                        <option value="16">Animation</option>
+                        <option value="35">Comedy</option>
+                        <option value="80">Crime</option>
+                        <option value="99">Documentary</option>
+                        <option value="18">Drama</option>
+                        <option value="10751">Family</option>
+                        <option value="14">Fantasy</option>
+                        <option value="36">History</option>
+                        <option value="27">Horror</option>
+                        <option value="10402">Music</option>
+                        <option value="9648">Mystery</option>
+                        <option value="10749">Romance</option>
+                        <option value="878">Science Fiction</option>
+                        <option value="53">Thriller</option>
+                        <option value="10752">War</option>
+                        <option value="37">Western</option>
+                    </select>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6" id="moviesGrid">
+                    <!-- Movies loaded dynamically -->
                 </div>
             </div>
-            <div id="moviesGrid" class="content-grid-full"></div>
-            <button id="loadMoreMovies" class="load-more-btn">Load More</button>
         </div>
 
         <!-- TV Shows Page -->
         <div id="tvshowsPage" class="page">
-            <div class="page-header">
-                <h1>TV Shows</h1>
-                <div class="filter-buttons">
-                    <button class="filter-btn active" onclick="filterTV('popular')">Popular</button>
-                    <button class="filter-btn" onclick="filterTV('toprated')">Top Rated</button>
-                    <button class="filter-btn" onclick="filterTV('airing')">Airing Today</button>
-                    <button class="filter-btn" onclick="filterTV('onair')">On Air</button>
+            <div class="max-w-7xl mx-auto px-4 py-12">
+                <h1 class="text-4xl font-bold mb-8 gradient-text">TV Shows</h1>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6" id="tvshowsGrid">
+                    <!-- Shows loaded dynamically -->
                 </div>
             </div>
-            <div id="tvGrid" class="content-grid-full"></div>
-            <button id="loadMoreTV" class="load-more-btn">Load More</button>
         </div>
 
-        <!-- Search Results Page -->
-        <div id="searchPage" class="page">
-            <div class="page-header">
-                <h1>Search Results for "<span id="searchQuery"></span>"</h1>
-                <div class="search-tabs">
-                    <button class="search-tab active" onclick="switchSearchTab('movies')">Movies</button>
-                    <button class="search-tab" onclick="switchSearchTab('tv')">TV Shows</button>
+        <!-- Calendar Page -->
+        <div id="calendarPage" class="page">
+            <div class="max-w-7xl mx-auto px-4 py-12">
+                <h1 class="text-4xl font-bold mb-8 gradient-text">
+                    <i class="fas fa-calendar-alt mr-3"></i>Upcoming Releases
+                </h1>
+                
+                <div class="glass rounded-2xl p-6 mb-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <button onclick="prevMonth()" class="p-2 hover:bg-white/10 rounded-full transition-all">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <h2 class="text-2xl font-bold" id="calendarMonth">December 2024</h2>
+                        <button onclick="nextMonth()" class="p-2 hover:bg-white/10 rounded-full transition-all">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-7 gap-2 mb-4">
+                        <div class="text-center text-gray-400 text-sm">Sun</div>
+                        <div class="text-center text-gray-400 text-sm">Mon</div>
+                        <div class="text-center text-gray-400 text-sm">Tue</div>
+                        <div class="text-center text-gray-400 text-sm">Wed</div>
+                        <div class="text-center text-gray-400 text-sm">Thu</div>
+                        <div class="text-center text-gray-400 text-sm">Fri</div>
+                        <div class="text-center text-gray-400 text-sm">Sat</div>
+                    </div>
+                    
+                    <div class="grid grid-cols-7 gap-2" id="calendarGrid">
+                        <!-- Calendar days loaded dynamically -->
+                    </div>
                 </div>
-            </div>
-            <div id="searchMoviesGrid" class="content-grid-full"></div>
-            <div id="searchTVGrid" class="content-grid-full" style="display:none;"></div>
-            <div id="noResults" class="no-results" style="display:none;">
-                <i class="fas fa-search"></i>
-                <p>No results found</p>
-            </div>
-        </div>
-
-        <!-- My List Page -->
-        <div id="mylistPage" class="page">
-            <div class="page-header">
-                <h1>My List</h1>
-                <p class="page-subtitle">Your saved movies and TV shows</p>
-            </div>
-            <div id="mylistGrid" class="content-grid-full"></div>
-            <div id="emptyList" class="empty-state" style="display:none;">
-                <i class="fas fa-heart"></i>
-                <h3>Your list is empty</h3>
-                <p>Add movies and TV shows to your list to watch later</p>
-            </div>
-        </div>
-
-        <!-- History Page -->
-        <div id="historyPage" class="page">
-            <div class="page-header">
-                <h1>Watch History</h1>
-                <button class="clear-history-btn" onclick="clearHistory()">
-                    <i class="fas fa-trash"></i> Clear History
-                </button>
-            </div>
-            <div id="historyGrid" class="content-grid-full"></div>
-            <div id="emptyHistory" class="empty-state" style="display:none;">
-                <i class="fas fa-history"></i>
-                <h3>No watch history</h3>
-                <p>Start watching movies and TV shows to build your history</p>
-            </div>
-        </div>
-
-        <!-- Detail Page -->
-        <div id="detailPage" class="page">
-            <div class="detail-hero">
-                <div class="detail-backdrop"></div>
-                <div class="detail-overlay"></div>
-                <div class="detail-content">
-                    <button class="back-btn" onclick="goBack()">
-                        <i class="fas fa-arrow-left"></i> Back
-                    </button>
-                    <div class="detail-info">
-                        <h1 id="detailTitle"></h1>
-                        <div class="detail-meta">
-                            <span id="detailRating"></span>
-                            <span id="detailYear"></span>
-                            <span id="detailRuntime"></span>
-                            <span id="detailGenres"></span>
-                        </div>
-                        <p id="detailOverview"></p>
-                        <div class="detail-buttons">
-                            <button class="btn-play-large" id="detailPlayBtn">
-                                <i class="fas fa-play"></i> Play Now
-                            </button>
-                            <button class="btn-outline" id="detailListBtn">
-                                <i class="fas fa-plus"></i> Add to List
-                            </button>
-                            <button class="btn-outline" onclick="shareContent()">
-                                <i class="fas fa-share"></i> Share
-                            </button>
-                        </div>
+                
+                <div id="upcomingMovies">
+                    <h3 class="text-2xl font-bold mb-6">Coming Soon</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6" id="upcomingGrid">
+                        <!-- Upcoming movies loaded dynamically -->
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="detail-sections">
-                <!-- Episode Selector for TV Shows -->
-                <div id="episodeSelector" class="episode-selector" style="display:none;">
-                    <h2>Episodes</h2>
-                    <div class="season-selector">
-                        <label>Season:</label>
-                        <select id="seasonSelect" onchange="loadEpisodes()"></select>
+        <!-- Privacy Page -->
+        <div id="privacyPage" class="page">
+            <div class="max-w-4xl mx-auto px-4 py-12">
+                <h1 class="text-4xl font-bold mb-8 gradient-text">Privacy Policy</h1>
+                
+                <div class="glass rounded-2xl p-8 space-y-6">
+                    <section>
+                        <h2 class="text-2xl font-bold mb-4">
+                            <i class="fas fa-shield-alt text-purple-400 mr-2"></i>Introduction
+                        </h2>
+                        <p class="text-gray-300 leading-relaxed">
+                            Welcome to ZenShows. We respect your privacy and are committed to protecting your personal data. 
+                            This privacy policy explains how we handle your information when you use our service.
+                        </p>
+                    </section>
+                    
+                    <section>
+                        <h2 class="text-2xl font-bold mb-4">
+                            <i class="fas fa-server text-blue-400 mr-2"></i>Third-Party Content
+                        </h2>
+                        <p class="text-gray-300 leading-relaxed mb-4">
+                            <strong>Important Disclaimer:</strong> ZenShows does not host, store, or upload any video files on our servers. 
+                            All movies, TV shows, and other media content displayed on this platform are hosted on third-party servers 
+                            and are embedded from external sources.
+                        </p>
+                        <ul class="list-disc list-inside text-gray-300 space-y-2">
+                            <li>We do not control the content hosted on third-party servers</li>
+                            <li>We are not responsible for the availability or quality of third-party content</li>
+                            <li>We do not own any copyrights to the media displayed on this platform</li>
+                            <li>All trademarks and copyrights belong to their respective owners</li>
+                        </ul>
+                    </section>
+                    
+                    <section>
+                        <h2 class="text-2xl font-bold mb-4">
+                            <i class="fas fa-database text-green-400 mr-2"></i>Data Collection
+                        </h2>
+                        <p class="text-gray-300 leading-relaxed">
+                            ZenShows collects minimal data to provide our services:
+                        </p>
+                        <ul class="list-disc list-inside text-gray-300 space-y-2 mt-4">
+                            <li>Account information (stored locally in your browser)</li>
+                            <li>Watchlist and preferences (stored locally)</li>
+                            <li>Theme and settings preferences</li>
+                        </ul>
+                    </section>
+                    
+                    <section>
+                        <h2 class="text-2xl font-bold mb-4">
+                            <i class="fas fa-cookie text-orange-400 mr-2"></i>Cookies & Local Storage
+                        </h2>
+                        <p class="text-gray-300 leading-relaxed">
+                            We use browser localStorage to save your preferences and account data. 
+                            This data is stored only on your device and is not transmitted to any external servers.
+                        </p>
+                    </section>
+                    
+                    <section>
+                        <h2 class="text-2xl font-bold mb-4">
+                            <i class="fas fa-gavel text-red-400 mr-2"></i>Legal Notice
+                        </h2>
+                        <p class="text-gray-300 leading-relaxed">
+                            This service is provided for educational and informational purposes only. Users are responsible 
+                            for ensuring they have the right to access any content through this platform based on their 
+                            local laws and regulations. We encourage all users to support content creators by using 
+                            official and licensed streaming services.
+                        </p>
+                    </section>
+                    
+                    <section>
+                        <h2 class="text-2xl font-bold mb-4">
+                            <i class="fas fa-exclamation-triangle text-yellow-400 mr-2"></i>DMCA
+                        </h2>
+                        <p class="text-gray-300 leading-relaxed">
+                            If you believe that any content accessible through ZenShows infringes your copyright, 
+                            please contact the respective third-party hosting providers directly, as we do not host 
+                            any content on our servers.
+                        </p>
+                    </section>
+                    
+                    <section>
+                        <h2 class="text-2xl font-bold mb-4">
+                            <i class="fas fa-envelope text-pink-400 mr-2"></i>Contact Us
+                        </h2>
+                        <p class="text-gray-300 leading-relaxed">
+                            For any questions regarding this privacy policy or our services, please contact us at 
+                            <a href="mailto:contact@zenshows.example" class="text-purple-400 hover:underline">contact@zenshows.example</a>
+                        </p>
+                    </section>
+                    
+                    <div class="text-center text-gray-500 text-sm pt-6 border-t border-white/10">
+                        Last updated: December 2024
                     </div>
-                    <div id="episodesGrid" class="episodes-grid"></div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Cast & Crew -->
-                <section class="cast-section">
-                    <h2>Cast & Crew</h2>
-                    <div id="castGrid" class="cast-grid"></div>
-                </section>
-
-                <!-- Similar Content -->
-                <section class="similar-section">
-                    <h2>More Like This</h2>
-                    <div id="similarGrid" class="content-grid"></div>
-                </section>
-
-                <!-- Reviews -->
-                <section class="reviews-section">
-                    <h2>Reviews</h2>
-                    <div id="reviewsContainer" class="reviews-container"></div>
-                </section>
-
-                <!-- Details -->
-                <section class="info-section">
-                    <h2>Details</h2>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <strong>Status:</strong>
-                            <span id="detailStatus"></span>
-                        </div>
-                        <div class="info-item">
-                            <strong>Original Language:</strong>
-                            <span id="detailLanguage"></span>
-                        </div>
-                        <div class="info-item">
-                            <strong>Budget:</strong>
-                            <span id="detailBudget"></span>
-                        </div>
-                        <div class="info-item">
-                            <strong>Revenue:</strong>
-                            <span id="detailRevenue"></span>
-                        </div>
+        <!-- Watchlist Page -->
+        <div id="watchlistPage" class="page">
+            <div class="max-w-7xl mx-auto px-4 py-12">
+                <h1 class="text-4xl font-bold mb-8 gradient-text">
+                    <i class="fas fa-bookmark mr-3"></i>My Watchlist
+                </h1>
+                
+                <div id="watchlistContent">
+                    <div class="text-center py-16 text-gray-400">
+                        <i class="fas fa-bookmark text-6xl mb-4 opacity-30"></i>
+                        <p class="text-xl">Your watchlist is empty</p>
+                        <p class="mt-2">Start adding movies and shows to watch later!</p>
                     </div>
-                </section>
+                </div>
             </div>
         </div>
 
         <!-- Player Page -->
         <div id="playerPage" class="page">
-            <div class="player-container">
-                <button class="back-player-btn" onclick="closePlayer()">
-                    <i class="fas fa-arrow-left"></i> Back
+            <div class="max-w-7xl mx-auto px-4 py-6">
+                <!-- Back Button -->
+                <button onclick="goBack()" class="mb-4 px-4 py-2 glass rounded-xl hover:bg-white/10 transition-all">
+                    <i class="fas fa-arrow-left mr-2"></i>Back
                 </button>
-                <div class="player-info">
-                    <h2 id="playerTitle"></h2>
-                    <p id="playerMeta"></p>
-                </div>
-                <div id="videoPlayer" class="video-player"></div>
-                <div class="player-controls-info">
-                    <button class="next-episode-btn" id="nextEpisodeBtn" style="display:none;" onclick="playNextEpisode()">
-                        <i class="fas fa-forward"></i> Next Episode
-                    </button>
-                </div>
-            </div>
-        </div>
-        <!-- Person/Cast Detail Page -->
-        <div id="personPage" class="page">
-            <div class="person-header">
-                <button class="back-btn" onclick="goBack()">
-                    <i class="fas fa-arrow-left"></i> Back
-                </button>
-                <div class="person-info-header">
-                    <img id="personImage" class="person-image" alt="">
-                    <div class="person-details">
-                        <h1 id="personName"></h1>
-                        <p id="personBirthday"></p>
-                        <p id="personBirthplace"></p>
-                        <p id="personKnownFor"></p>
-                    </div>
-                </div>
-            </div>
-            <div class="person-content">
-                <section class="biography-section">
-                    <h2>Biography</h2>
-                    <p id="personBiography"></p>
-                </section>
-                <section class="filmography-section">
-                    <h2>Known For</h2>
-                    <div id="personCredits" class="content-grid"></div>
-                </section>
-            </div>
-        </div>
-
-        <!-- Profile Page -->
-        <div id="profilePage" class="page">
-            <div class="page-header">
-                <h1>Profile</h1>
-            </div>
-            <div class="profile-container">
-                <div class="profile-card">
-                    <div class="profile-avatar">
-                        <i class="fas fa-user-circle"></i>
-                    </div>
-                    <h2 id="profileUsername"></h2>
-                    <p id="profileEmail"></p>
-                    <div class="profile-stats">
-                        <div class="stat">
-                            <strong id="statWatched">0</strong>
-                            <span>Watched</span>
+                
+                <!-- Player Title -->
+                <h1 class="text-3xl font-bold mb-4" id="playerTitle">Now Playing</h1>
+                
+                <!-- Source Selector -->
+                <div class="mb-4">
+                    <div class="flex flex-wrap items-center gap-4">
+                        <label class="font-semibold">Select Source:</label>
+                        <div class="relative">
+                            <button onclick="toggleSourceDropdown()" class="px-4 py-2 glass rounded-xl flex items-center gap-2 hover:bg-white/10 transition-all" id="sourceBtn">
+                                <span id="currentSource">VidSrc</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div id="sourceDropdown" class="absolute top-full left-0 mt-2 w-48 glass rounded-xl overflow-hidden hidden z-50">
+                                <button onclick="changeSource('vidsrc')" class="source-btn w-full px-4 py-3 text-left hover:bg-white/10 active">VidSrc</button>
+                                <button onclick="changeSource('cinemaos')" class="source-btn w-full px-4 py-3 text-left hover:bg-white/10">CinemaOS</button>
+                                <button onclick="changeSource('vidsrcpro')" class="source-btn w-full px-4 py-3 text-left hover:bg-white/10">VidSrc Pro</button>
+                                <button onclick="changeSource('embedsu')" class="source-btn w-full px-4 py-3 text-left hover:bg-white/10">Embed.su</button>
+                                <button onclick="changeSource('autoembed')" class="source-btn w-full px-4 py-3 text-left hover:bg-white/10">AutoEmbed</button>
+                                <button onclick="changeSource('multiembed')" class="source-btn w-full px-4 py-3 text-left hover:bg-white/10">MultiEmbed</button>
+                                <button onclick="changeSource('2embed')" class="source-btn w-full px-4 py-3 text-left hover:bg-white/10">2Embed</button>
+                                <button onclick="changeSource('moviesapi')" class="source-btn w-full px-4 py-3 text-left hover:bg-white/10">MoviesAPI</button>
+                                <button onclick="changeSource('vidsrcme')" class="source-btn w-full px-4 py-3 text-left hover:bg-white/10">VidSrc.me</button>
+                                <button onclick="changeSource('smashystream')" class="source-btn w-full px-4 py-3 text-left hover:bg-white/10">SmashyStream</button>
+                            </div>
                         </div>
-                        <div class="stat">
-                            <strong id="statList">0</strong>
-                            <span>My List</span>
-                        </div>
-                        <div class="stat">
-                            <strong id="statHours">0</strong>
-                            <span>Hours</span>
+                        
+                        <!-- Season/Episode for TV Shows -->
+                        <div id="tvControls" class="hidden flex items-center gap-4">
+                            <div class="flex items-center gap-2">
+                                <label>Season:</label>
+                                <select id="seasonSelect" onchange="changeSeason()" class="px-3 py-2 rounded-lg bg-white/10 outline-none">
+                                    <option value="1">1</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <label>Episode:</label>
+                                <select id="episodeSelect" onchange="changeEpisode()" class="px-3 py-2 rounded-lg bg-white/10 outline-none">
+                                    <option value="1">1</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Settings Page -->
-        <div id="settingsPage" class="page">
-            <div class="page-header">
-                <h1>Settings</h1>
-            </div>
-            <div class="settings-container">
-                <div class="settings-section">
-                    <h3>Playback</h3>
-                    <div class="setting-item">
-                        <label>
-                            <span>Autoplay Next Episode</span>
-                            <input type="checkbox" id="autoplayToggle" onchange="saveSetting('autoplay', this.checked)">
-                        </label>
-                    </div>
-                    <div class="setting-item">
-                        <label>
-                            <span>Video Quality</span>
-                            <select id="qualitySelect" onchange="saveSetting('quality', this.value)">
-                                <option value="auto">Auto</option>
-                                <option value="1080p">1080p</option>
-                                <option value="720p">720p</option>
-                                <option value="480p">480p</option>
-                            </select>
-                        </label>
+                
+                <!-- Video Player -->
+                <div class="relative aspect-video bg-black rounded-2xl overflow-hidden mb-6 animate-pulse-glow">
+                    <iframe id="videoPlayer" class="w-full h-full" allowfullscreen></iframe>
+                    <div id="playerLoader" class="absolute inset-0 flex items-center justify-center bg-black/50">
+                        <div class="loader"></div>
                     </div>
                 </div>
-                <div class="settings-section">
-                    <h3>Appearance</h3>
-                    <div class="setting-item">
-                        <label>
-                            <span>Dark Mode</span>
-                            <input type="checkbox" id="darkModeToggle" checked onchange="saveSetting('darkMode', this.checked)">
-                        </label>
-                    </div>
-                    <div class="setting-item">
-                        <label>
-                            <span>Show Mature Content</span>
-                            <input type="checkbox" id="matureToggle" onchange="saveSetting('mature', this.checked)">
-                        </label>
-                    </div>
-                </div>
-                <div class="settings-section">
-                    <h3>Notifications</h3>
-                    <div class="setting-item">
-                        <label>
-                            <span>New Releases</span>
-                            <input type="checkbox" id="releasesToggle" checked onchange="saveSetting('releases', this.checked)">
-                        </label>
-                    </div>
-                </div>
-                <div class="settings-section">
-                    <h3>Data</h3>
-                    <button class="danger-btn" onclick="clearAllData()">
-                        <i class="fas fa-trash"></i> Clear All Data
-                    </button>
+                
+                <!-- Player Info -->
+                <div id="playerInfo" class="glass rounded-2xl p-6">
+                    <!-- Content loaded dynamically -->
                 </div>
             </div>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>StreamVerse</h4>
-                <p>Your ultimate streaming destination</p>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
+    <footer class="mt-20 py-12 px-4 glass">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="text-2xl font-bold gradient-text mb-4">ZenShows</h3>
+                    <p class="text-gray-400">Your ultimate destination for streaming movies and TV shows. Enjoy unlimited entertainment.</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Navigation</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" onclick="showPage('home')" class="hover:text-purple-400 transition-all">Home</a></li>
+                        <li><a href="#" onclick="showPage('movies')" class="hover:text-purple-400 transition-all">Movies</a></li>
+                        <li><a href="#" onclick="showPage('tvshows')" class="hover:text-purple-400 transition-all">TV Shows</a></li>
+                        <li><a href="#" onclick="showPage('calendar')" class="hover:text-purple-400 transition-all">Calendar</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Legal</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" onclick="showPage('privacy')" class="hover:text-purple-400 transition-all">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-all">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-all">DMCA</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-all">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-4">Connect</h4>
+                    <div class="flex gap-4">
+                        <a href="#" class="p-3 glass rounded-full hover:bg-purple-500 transition-all hover:scale-110">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="p-3 glass rounded-full hover:bg-purple-500 transition-all hover:scale-110">
+                            <i class="fab fa-discord"></i>
+                        </a>
+                        <a href="#" class="p-3 glass rounded-full hover:bg-purple-500 transition-all hover:scale-110">
+                            <i class="fab fa-telegram"></i>
+                        </a>
+                        <a href="#" class="p-3 glass rounded-full hover:bg-purple-500 transition-all hover:scale-110">
+                            <i class="fab fa-reddit"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
-            <div class="footer-section">
-                <h4>Quick Links</h4>
-                <ul>
-                    <li><a href="#" onclick="showHome()">Home</a></li>
-                    <li><a href="#" onclick="showMovies()">Movies</a></li>
-                    <li><a href="#" onclick="showTVShows()">TV Shows</a></li>
-                    <li><a href="#" onclick="showMyList()">My List</a></li>
-                </ul>
+            <div class="text-center text-gray-500 text-sm pt-8 border-t border-white/10">
+                <p>© 2024 ZenShows. All rights reserved. We do not host any content.</p>
+                <p class="mt-2">All content is provided by third-party services.</p>
             </div>
-            <div class="footer-section">
-                <h4>Legal</h4>
-                <ul>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Terms of Service</a></li>
-                    <li><a href="#">Cookie Policy</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h4>Credits</h4>
-                <p>This product uses the TMDB API but is not endorsed or certified by TMDB.</p>
-                <img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDB" class="tmdb-logo">
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 StreamVerse. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- Notifications -->
-    <div id="notification" class="notification"></div>
+    <script>
+        // ========== DATA ==========
+        const API_KEY = 'a45420333457411e78d5ad35d6c51a2d';
+        const BASE_URL = 'https://api.themoviedb.org/3';
+        const IMG_BASE = 'https://image.tmdb.org/t/p/w500';
+        const BACKDROP_BASE = 'https://image.tmdb.org/t/p/original';
+        
+        // Video Sources
+        const sources = {
+            vidsrc: {
+                name: 'VidSrc',
+                movie: (id) => `https://vidsrc.xyz/embed/movie/${id}`,
+                tv: (id, s, e) => `https://vidsrc.xyz/embed/tv/${id}/${s}/${e}`
+            },
+            cinemaos: {
+                name: 'CinemaOS',
+                movie: (id) => `https://cinemaos.tech/player/${id}`,
+                tv: (id, s, e) => `https://cinemaos.tech/player/${id}/${s}/${e}`
+            },
+            vidsrcpro: {
+                name: 'VidSrc Pro',
+                movie: (id) => `https://vidsrc.pro/embed/movie/${id}`,
+                tv: (id, s, e) => `https://vidsrc.pro/embed/tv/${id}/${s}/${e}`
+            },
+            embedsu: {
+                name: 'Embed.su',
+                movie: (id) => `https://embed.su/embed/movie/${id}`,
+                tv: (id, s, e) => `https://embed.su/embed/tv/${id}/${s}/${e}`
+            },
+            autoembed: {
+                name: 'AutoEmbed',
+                movie: (id) => `https://autoembed.co/movie/tmdb/${id}`,
+                tv: (id, s, e) => `https://autoembed.co/tv/tmdb/${id}-${s}-${e}`
+            },
+            multiembed: {
+                name: 'MultiEmbed',
+                movie: (id) => `https://multiembed.mov/?video_id=${id}&tmdb=1`,
+                tv: (id, s, e) => `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}`
+            },
+            '2embed': {
+                name: '2Embed',
+                movie: (id) => `https://www.2embed.cc/embed/${id}`,
+                tv: (id, s, e) => `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}`
+            },
+            moviesapi: {
+                name: 'MoviesAPI',
+                movie: (id) => `https://moviesapi.club/movie/${id}`,
+                tv: (id, s, e) => `https://moviesapi.club/tv/${id}/${s}/${e}`
+            },
+            vidsrcme: {
+                name: 'VidSrc.me',
+                movie: (id) => `https://vidsrc.me/embed/movie/${id}`,
+                tv: (id, s, e) => `https://vidsrc.me/embed/tv/${id}/${s}/${e}`
+            },
+            smashystream: {
+                name: 'SmashyStream',
+                movie: (id) => `https://player.smashy.stream/movie/${id}`,
+                tv: (id, s, e) => `https://player.smashy.stream/tv/${id}?s=${s}&e=${e}`
+            }
+        };
+        
+        // State
+        let currentUser = JSON.parse(localStorage.getItem('zenShowsUser')) || null;
+        let watchlist = JSON.parse(localStorage.getItem('zenShowsWatchlist')) || [];
+        let settings = JSON.parse(localStorage.getItem('zenShowsSettings')) || {
+            theme: 'dark',
+            colorTheme: 'purple',
+            defaultSource: 'vidsrc',
+            autoplay: true,
+            animations: true,
+            notifications: true
+        };
+        
+        // Hero carousel data
+        let heroMovies = [];
+        let currentHeroSlide = 0;
+        let heroInterval = null;
+        let currentPlayingContent = null;
+        let currentSource = settings.defaultSource;
+        let currentSeason = 1;
+        let currentEpisode = 1;
+        let calendarDate = new Date();
+        let authMode = 'login';
 
-    <script src="script.js"></script>
+        // ========== INITIALIZATION ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSettings();
+            loadColorTheme();
+            updateUserUI();
+            createParticles();
+            loadContent();
+            loadHeroCarousel();
+        });
+
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.cssText = `
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                    width: ${Math.random() * 10 + 5}px;
+                    height: ${Math.random() * 10 + 5}px;
+                    background: ${Math.random() > 0.5 ? 'rgba(139,92,246,0.3)' : 'rgba(236,72,153,0.3)'};
+                    border-radius: 50%;
+                    animation-delay: ${Math.random() * 10}s;
+                    animation-duration: ${Math.random() * 10 + 10}s;
+                `;
+                container.appendChild(particle);
+            }
+        }
+
+        async function loadContent() {
+            await Promise.all([
+                loadTrendingMovies(),
+                loadPopularTVShows(),
+                loadTopRated(),
+                loadMoviesGrid(),
+                loadTVShowsGrid(),
+                loadUpcoming(),
+                loadCalendar()
+            ]);
+        }
+
+        // ========== API CALLS ==========
+        async function fetchTMDB(endpoint) {
+            try {
+                const response = await fetch(`${BASE_URL}${endpoint}?api_key=${API_KEY}`);
+                return await response.json();
+            } catch (error) {
+                console.error('API Error:', error);
+                return { results: [] };
+            }
+        }
+
+        async function loadTrendingMovies() {
+            const data = await fetchTMDB('/trending/movie/week');
+            renderCards('trendingMovies', data.results.slice(0, 12), 'movie');
+        }
+
+        async function loadPopularTVShows() {
+            const data = await fetchTMDB('/tv/popular');
+            renderCards('popularTVShows', data.results.slice(0, 12), 'tv');
+        }
+
+        async function loadTopRated() {
+            const data = await fetchTMDB('/movie/top_rated');
+            renderCards('topRated', data.results.slice(0, 12), 'movie');
+        }
+
+        async function loadMoviesGrid() {
+            const data = await fetchTMDB('/movie/popular');
+            renderCards('moviesGrid', data.results, 'movie');
+        }
+
+        async function loadTVShowsGrid() {
+            const data = await fetchTMDB('/tv/popular');
+            renderCards('tvshowsGrid', data.results, 'tv');
+        }
+
+        async function loadUpcoming() {
+            const data = await fetchTMDB('/movie/upcoming');
+            renderCards('upcomingGrid', data.results.slice(0, 12), 'movie');
+        }
+
+        // ========== RENDERING ==========
+        function renderCards(containerId, items, type) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            container.innerHTML = items.map((item, index) => `
+                <div class="card-hover cursor-pointer animate-float-in" style="animation-delay: ${index * 0.05}s" onclick="showDetails('${type}', ${item.id})">
+                    <div class="relative aspect-[2/3] rounded-xl overflow-hidden mb-3">
+                        <img src="${item.poster_path ? IMG_BASE + item.poster_path : 'https://via.placeholder.com/300x450?text=No+Image'}" 
+                             alt="${item.title || item.name}" 
+                             class="w-full h-full object-cover"
+                             loading="lazy">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 hover:opacity-100 transition-all flex items-end p-4">
+                            <div>
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="text-yellow-400"><i class="fas fa-star"></i> ${item.vote_average?.toFixed(1)}</span>
+                                    <span class="text-sm">${(item.release_date || item.first_air_date || '').slice(0, 4)}</span>
+                                </div>
+                                <button onclick="event.stopPropagation(); playContent('${type}', ${item.id})" 
+                                        class="w-full py-2 bg-purple-500 rounded-lg font-semibold text-sm hover:bg-purple-600 transition-all">
+                                    <i class="fas fa-play mr-2"></i>Play
+                                </button>
+                            </div>
+                        </div>
+                        ${isInWatchlist(item.id) ? '<div class="absolute top-2 right-2 p-2 bg-purple-500 rounded-full"><i class="fas fa-bookmark text-sm"></i></div>' : ''}
+                    </div>
+                    <h3 class="font-semibold text-sm truncate">${item.title || item.name}</h3>
+                    <p class="text-xs text-gray-400">${type === 'movie' ? 'Movie' : 'TV Show'}</p>
+                </div>
+            `).join('');
+        }
+
+        // ========== NAVIGATION ==========
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId + 'Page')?.classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            closeUserMenu();
+        }
+
+        function goBack() {
+            showPage('home');
+        }
+
+        // ========== SEARCH ==========
+        function openSearch() {
+            document.getElementById('searchModal').classList.remove('hidden');
+            document.getElementById('searchInput').focus();
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSearch() {
+            document.getElementById('searchModal').classList.add('hidden');
+            document.getElementById('searchInput').value = '';
+            document.body.style.overflow = '';
+        }
+
+        let searchTimeout;
+        async function handleSearch(query) {
+            clearTimeout(searchTimeout);
+            
+            if (query.length < 2) {
+                document.getElementById('searchResults').innerHTML = `
+                    <div class="text-center text-gray-400 py-8">
+                        <i class="fas fa-film text-4xl mb-4 opacity-50"></i>
+                        <p>Start typing to search...</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            searchTimeout = setTimeout(async () => {
+                const response = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`);
+                const data = await response.json();
+                
+                const results = data.results.filter(r => r.media_type === 'movie' || r.media_type === 'tv');
+                
+                if (results.length === 0) {
+                    document.getElementById('searchResults').innerHTML = `
+                        <div class="text-center text-gray-400 py-8">
+                            <i class="fas fa-search text-4xl mb-4 opacity-50"></i>
+                            <p>No results found for "${query}"</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                document.getElementById('searchResults').innerHTML = results.slice(0, 10).map(item => `
+                    <div class="flex gap-4 p-4 hover:bg-white/10 rounded-xl cursor-pointer transition-all animate-float-in" onclick="closeSearch(); showDetails('${item.media_type}', ${item.id})">
+                        <img src="${item.poster_path ? IMG_BASE + item.poster_path : 'https://via.placeholder.com/100x150?text=No+Image'}" 
+                             alt="${item.title || item.name}" 
+                             class="w-16 h-24 object-cover rounded-lg">
+                        <div class="flex-1">
+                            <h3 class="font-semibold">${item.title || item.name}</h3>
+                            <p class="text-sm text-gray-400">${item.media_type === 'movie' ? 'Movie' : 'TV Show'} • ${(item.release_date || item.first_air_date || '').slice(0, 4)}</p>
+                            <div class="flex items-center gap-2 mt-2">
+                                <span class="text-yellow-400 text-sm"><i class="fas fa-star"></i> ${item.vote_average?.toFixed(1)}</span>
+                            </div>
+                        </div>
+                        <button onclick="event.stopPropagation(); closeSearch(); playContent('${item.media_type}', ${item.id})" 
+                                class="self-center px-4 py-2 bg-purple-500 rounded-lg hover:bg-purple-600 transition-all">
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                `).join('');
+            }, 300);
+        }
+
+        // ========== DETAILS MODAL ==========
+        async function showDetails(type, id) {
+            const modal = document.getElementById('detailModal');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            
+            const data = await fetchTMDB(`/${type}/${id}`);
+            const credits = await fetchTMDB(`/${type}/${id}/credits`);
+            
+            const isTV = type === 'tv';
+            
+            document.getElementById('detailContent').innerHTML = `
+                <div class="relative">
+                    <div class="h-80 bg-cover bg-center" style="background-image: url('${data.backdrop_path ? BACKDROP_BASE + data.backdrop_path : ''}')">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                    </div>
+                    <button onclick="closeDetailModal()" class="absolute top-4 right-4 p-3 glass rounded-full hover:bg-white/20 transition-all">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="p-8 -mt-32 relative z-10">
+                    <div class="flex flex-col md:flex-row gap-8">
+                        <img src="${data.poster_path ? IMG_BASE + data.poster_path : 'https://via.placeholder.com/300x450'}" 
+                             alt="${data.title || data.name}" 
+                             class="w-48 rounded-xl shadow-2xl animate-float-in">
+                        
+                        <div class="flex-1 animate-float-in" style="animation-delay: 0.1s">
+                            <h2 class="text-4xl font-bold mb-4">${data.title || data.name}</h2>
+                            
+                            <div class="flex flex-wrap items-center gap-4 mb-6 text-sm">
+                                <span class="flex items-center text-yellow-400">
+                                    <i class="fas fa-star mr-1"></i> ${data.vote_average?.toFixed(1)}
+                                </span>
+                                <span>${isTV ? data.first_air_date?.slice(0, 4) : data.release_date?.slice(0, 4)}</span>
+                                ${isTV ? `<span>${data.number_of_seasons} Season${data.number_of_seasons > 1 ? 's' : ''}</span>` : `<span>${data.runtime} min</span>`}
+                                ${data.genres?.map(g => `<span class="px-3 py-1 glass rounded-full">${g.name}</span>`).join('')}
+                            </div>
+                            
+                            <p class="text-gray-300 mb-6 leading-relaxed">${data.overview}</p>
+                            
+                            <div class="flex flex-wrap gap-4">
+                                <button onclick="closeDetailModal(); playContent('${type}', ${id})" 
+                                        class="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold btn-3d ripple-effect animate-pulse-glow">
+                                    <i class="fas fa-play mr-2"></i>Watch Now
+                                </button>
+                                <button onclick="toggleWatchlist(${id}, '${type}', '${(data.title || data.name).replace(/'/g, "\\'")}', '${data.poster_path}')" 
+                                        class="px-8 py-3 glass rounded-xl font-semibold btn-3d" id="watchlistBtn${id}">
+                                    <i class="fas fa-${isInWatchlist(id) ? 'check' : 'plus'} mr-2"></i>${isInWatchlist(id) ? 'In Watchlist' : 'Add to Watchlist'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Cast & Crew -->
+                    ${credits.cast?.length > 0 ? `
+                        <div class="mt-12 animate-float-in" style="animation-delay: 0.2s">
+                            <h3 class="text-2xl font-bold mb-6"><i class="fas fa-users mr-3"></i>Cast</h3>
+                            <div class="flex gap-4 overflow-x-auto pb-4">
+                                ${credits.cast.slice(0, 10).map(person => `
+                                    <div class="flex-shrink-0 w-32 cursor-pointer card-hover" onclick="showPersonDetails(${person.id})">
+                                        <img src="${person.profile_path ? IMG_BASE + person.profile_path : 'https://via.placeholder.com/200x300?text=No+Photo'}" 
+                                             alt="${person.name}" 
+                                             class="w-full aspect-[2/3] object-cover rounded-xl mb-2">
+                                        <p class="font-semibold text-sm truncate">${person.name}</p>
+                                        <p class="text-xs text-gray-400 truncate">${person.character}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    <!-- Additional Info -->
+                    <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 animate-float-in" style="animation-delay: 0.3s">
+                        ${data.budget ? `<div class="p-4 glass rounded-xl"><p class="text-gray-400 text-sm">Budget</p><p class="font-bold">$${(data.budget/1000000).toFixed(0)}M</p></div>` : ''}
+                        ${data.revenue ? `<div class="p-4 glass rounded-xl"><p class="text-gray-400 text-sm">Revenue</p><p class="font-bold">$${(data.revenue/1000000).toFixed(0)}M</p></div>` : ''}
+                        ${data.status ? `<div class="p-4 glass rounded-xl"><p class="text-gray-400 text-sm">Status</p><p class="font-bold">${data.status}</p></div>` : ''}
+                        ${data.original_language ? `<div class="p-4 glass rounded-xl"><p class="text-gray-400 text-sm">Language</p><p class="font-bold">${data.original_language.toUpperCase()}</p></div>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detailModal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        // ========== PERSON DETAILS ==========
+        async function showPersonDetails(personId) {
+            const data = await fetchTMDB(`/person/${personId}`);
+            const credits = await fetchTMDB(`/person/${personId}/combined_credits`);
+            
+            document.getElementById('detailContent').innerHTML = `
+                <div class="p-8">
+                    <button onclick="closeDetailModal()" class="absolute top-4 right-4 p-3 glass rounded-full hover:bg-white/20 transition-all">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                    
+                    <div class="flex flex-col md:flex-row gap-8">
+                        <img src="${data.profile_path ? IMG_BASE + data.profile_path : 'https://via.placeholder.com/300x450'}" 
+                             alt="${data.name}" 
+                             class="w-48 rounded-xl shadow-2xl animate-float-in">
+                        
+                        <div class="flex-1 animate-float-in" style="animation-delay: 0.1s">
+                            <h2 class="text-4xl font-bold mb-4">${data.name}</h2>
+                            
+                            <div class="grid grid-cols-2 gap-4 mb-6 text-sm">
+                                ${data.birthday ? `<div><span class="text-gray-400">Born:</span> ${data.birthday}</div>` : ''}
+                                ${data.place_of_birth ? `<div><span class="text-gray-400">Birthplace:</span> ${data.place_of_birth}</div>` : ''}
+                                ${data.known_for_department ? `<div><span class="text-gray-400">Known For:</span> ${data.known_for_department}</div>` : ''}
+                            </div>
+                            
+                            <h3 class="text-xl font-bold mb-3">Biography</h3>
+                            <p class="text-gray-300 leading-relaxed max-h-48 overflow-y-auto">${data.biography || 'No biography available.'}</p>
+                        </div>
+                    </div>
+                    
+                    ${credits.cast?.length > 0 ? `
+                        <div class="mt-12 animate-float-in" style="animation-delay: 0.2s">
+                            <h3 class="text-2xl font-bold mb-6"><i class="fas fa-film mr-3"></i>Known For</h3>
+                            <div class="flex gap-4 overflow-x-auto pb-4">
+                                ${credits.cast.slice(0, 10).map(item => `
+                                    <div class="flex-shrink-0 w-32 cursor-pointer card-hover" onclick="showDetails('${item.media_type}', ${item.id})">
+                                        <img src="${item.poster_path ? IMG_BASE + item.poster_path : 'https://via.placeholder.com/200x300'}" 
+                                             alt="${item.title || item.name}" 
+                                             class="w-full aspect-[2/3] object-cover rounded-xl mb-2">
+                                        <p class="font-semibold text-sm truncate">${item.title || item.name}</p>
+                                        <p class="text-xs text-gray-400 truncate">${item.character || ''}</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        // ========== PLAYER ==========
+        async function playContent(type, id) {
+            showPage('player');
+            
+            const data = await fetchTMDB(`/${type}/${id}`);
+            currentPlayingContent = { type, id, data };
+            
+            document.getElementById('playerTitle').textContent = data.title || data.name;
+            
+            // Show/hide TV controls
+            const tvControls = document.getElementById('tvControls');
+            if (type === 'tv') {
+                tvControls.classList.remove('hidden');
+                populateSeasons(data.number_of_seasons || 1);
+                await populateEpisodes(id, 1);
+            } else {
+                tvControls.classList.add('hidden');
+            }
+            
+            loadVideo();
+            loadPlayerInfo(data, type);
+        }
+
+        function loadVideo() {
+            const { type, id } = currentPlayingContent;
+            const source = sources[currentSource];
+            
+            let url;
+            if (type === 'movie') {
+                url = source.movie(id);
+            } else {
+                url = source.tv(id, currentSeason, currentEpisode);
+            }
+            
+            const player = document.getElementById('videoPlayer');
+            const loader = document.getElementById('playerLoader');
+            
+            loader.classList.remove('hidden');
+            player.src = url;
+            
+            player.onload = () => {
+                loader.classList.add('hidden');
+            };
+            
+            // Update source button text
+            document.getElementById('currentSource').textContent = source.name;
+            
+            // Update active source in dropdown
+            document.querySelectorAll('.source-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[onclick="changeSource('${currentSource}')"]`)?.classList.add('active');
+        }
+
+        function loadPlayerInfo(data, type) {
+            document.getElementById('playerInfo').innerHTML = `
+                <div class="flex gap-6">
+                    <img src="${data.poster_path ? IMG_BASE + data.poster_path : ''}" class="w-24 rounded-lg hidden md:block">
+                    <div>
+                        <h3 class="text-xl font-bold mb-2">${data.title || data.name}</h3>
+                        <div class="flex items-center gap-4 text-sm text-gray-400 mb-3">
+                            <span><i class="fas fa-star text-yellow-400 mr-1"></i> ${data.vote_average?.toFixed(1)}</span>
+                            <span>${data.release_date?.slice(0, 4) || data.first_air_date?.slice(0, 4)}</span>
+                            ${type === 'movie' ? `<span>${data.runtime} min</span>` : `<span>${data.number_of_seasons} Seasons</span>`}
+                        </div>
+                        <p class="text-gray-300 text-sm line-clamp-3">${data.overview}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ========== SOURCE SWITCHING ==========
+        function toggleSourceDropdown() {
+            document.getElementById('sourceDropdown').classList.toggle('hidden');
+        }
+
+        function changeSource(sourceName) {
+            currentSource = sourceName;
+            toggleSourceDropdown();
+            loadVideo();
+            showToast(`Switched to ${sources[sourceName].name}`, 'success');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#sourceBtn') && !e.target.closest('#sourceDropdown')) {
+                document.getElementById('sourceDropdown')?.classList.add('hidden');
+            }
+        });
+
+        // ========== SEASON/EPISODE ==========
+        function populateSeasons(count) {
+            const select = document.getElementById('seasonSelect');
+            select.innerHTML = '';
+            for (let i = 1; i <= count; i++) {
+                select.innerHTML += `<option value="${i}">${i}</option>`;
+            }
+            currentSeason = 1;
+        }
+
+        async function populateEpisodes(showId, season) {
+            const data = await fetchTMDB(`/tv/${showId}/season/${season}`);
+            const select = document.getElementById('episodeSelect');
+            select.innerHTML = '';
+            
+            const episodes = data.episodes || [];
+            for (let i = 1; i <= episodes.length; i++) {
+                select.innerHTML += `<option value="${i}">${i}</option>`;
+            }
+            currentEpisode = 1;
+        }
+
+        async function changeSeason() {
+            const season = document.getElementById('seasonSelect').value;
+            currentSeason = parseInt(season);
+            await populateEpisodes(currentPlayingContent.id, currentSeason);
+            loadVideo();
+        }
+
+        function changeEpisode() {
+            currentEpisode = parseInt(document.getElementById('episodeSelect').value);
+            loadVideo();
+        }
+
+        // ========== WATCHLIST ==========
+        function isInWatchlist(id) {
+            return watchlist.some(item => item.id === id);
+        }
+
+        function toggleWatchlist(id, type, title, poster) {
+            if (isInWatchlist(id)) {
+                watchlist = watchlist.filter(item => item.id !== id);
+                showToast('Removed from watchlist', 'info');
+            } else {
+                watchlist.push({ id, type, title, poster });
+                showToast('Added to watchlist', 'success');
+            }
+            
+            localStorage.setItem('zenShowsWatchlist', JSON.stringify(watchlist));
+            updateWatchlistUI();
+        }
+
+        function updateWatchlistUI() {
+            const container = document.getElementById('watchlistContent');
+            
+            if (watchlist.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-16 text-gray-400">
+                        <i class="fas fa-bookmark text-6xl mb-4 opacity-30"></i>
+                        <p class="text-xl">Your watchlist is empty</p>
+                        <p class="mt-2">Start adding movies and shows to watch later!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            container.innerHTML = `
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                    ${watchlist.map(item => `
+                        <div class="card-hover cursor-pointer" onclick="showDetails('${item.type}', ${item.id})">
+                            <div class="relative aspect-[2/3] rounded-xl overflow-hidden mb-3">
+                                <img src="${item.poster ? IMG_BASE + item.poster : 'https://via.placeholder.com/300x450'}" 
+                                     alt="${item.title}" class="w-full h-full object-cover">
+                                <button onclick="event.stopPropagation(); toggleWatchlist(${item.id}, '${item.type}', '${item.title}', '${item.poster}')" 
+                                        class="absolute top-2 right-2 p-2 bg-red-500 rounded-full hover:bg-red-600 transition-all">
+                                    <i class="fas fa-trash text-sm"></i>
+                                </button>
+                            </div>
+                            <h3 class="font-semibold text-sm truncate">${item.title}</h3>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        // ========== SURPRISE ME ==========
+        async function surpriseMe() {
+            showToast('Finding something special...', 'info');
+            
+            const randomPage = Math.floor(Math.random() * 20) + 1;
+            const types = ['movie', 'tv'];
+            const type = types[Math.floor(Math.random() * types.length)];
+            
+            const data = await fetchTMDB(`/${type}/popular?page=${randomPage}`);
+            const randomItem = data.results[Math.floor(Math.random() * data.results.length)];
+            
+            if (randomItem) {
+                showToast(`Surprise! ${randomItem.title || randomItem.name}`, 'success');
+                setTimeout(() => playContent(type, randomItem.id), 500);
+            }
+        }
+
+        // ========== CALENDAR ==========
+        function loadCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            const monthYear = document.getElementById('calendarMonth');
+            
+            const year = calendarDate.getFullYear();
+            const month = calendarDate.getMonth();
+            
+            monthYear.textContent = new Date(year, month).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            let html = '';
+            
+            // Empty cells before first day
+            for (let i = 0; i < firstDay; i++) {
+                html += '<div class="p-2"></div>';
+            }
+            
+            // Days of month
+            for (let day = 1; day <= daysInMonth; day++) {
+                const hasMovie = Math.random() > 0.8; // Random for demo
+                html += `
+                    <div class="calendar-day p-2 text-center rounded-lg cursor-pointer ${hasMovie ? 'has-movie' : 'hover:bg-white/10'}"
+                         onclick="showDayReleases(${year}, ${month}, ${day})">
+                        ${day}
+                    </div>
+                `;
+            }
+            
+            grid.innerHTML = html;
+        }
+
+        function prevMonth() {
+            calendarDate.setMonth(calendarDate.getMonth() - 1);
+            loadCalendar();
+        }
+
+        function nextMonth() {
+            calendarDate.setMonth(calendarDate.getMonth() + 1);
+            loadCalendar();
+        }
+
+        function showDayReleases(year, month, day) {
+            showToast(`Releases for ${month + 1}/${day}/${year}`, 'info');
+        }
+
+        // ========== AUTH ==========
+        function openAuthModal(mode) {
+            authMode = mode;
+            document.getElementById('authModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            updateAuthUI();
+            closeUserMenu();
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function switchAuthMode() {
+            authMode = authMode === 'login' ? 'signup' : 'login';
+            updateAuthUI();
+        }
+
+        function updateAuthUI() {
+            const isLogin = authMode === 'login';
+            document.getElementById('authTitle').textContent = isLogin ? 'Login' : 'Sign Up';
+            document.getElementById('authBtnText').textContent = isLogin ? 'Login' : 'Sign Up';
+            document.getElementById('signupNameField').classList.toggle('hidden', isLogin);
+            document.getElementById('authSwitch').innerHTML = isLogin 
+                ? `Don't have an account? <button onclick="switchAuthMode()" class="text-purple-400 hover:underline">Sign Up</button>`
+                : `Already have an account? <button onclick="switchAuthMode()" class="text-purple-400 hover:underline">Login</button>`;
+        }
+
+        function handleAuth(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+            const name = document.getElementById('authName')?.value;
+            
+            if (authMode === 'signup') {
+                const user = { email, name: name || email.split('@')[0], password };
+                localStorage.setItem('zenShowsUser', JSON.stringify(user));
+                currentUser = user;
+                showToast('Account created successfully!', 'success');
+            } else {
+                const storedUser = JSON.parse(localStorage.getItem('zenShowsUser'));
+                if (storedUser && storedUser.email === email && storedUser.password === password) {
+                    currentUser = storedUser;
+                    showToast('Welcome back!', 'success');
+                } else {
+                    showToast('Invalid credentials', 'error');
+                    return;
+                }
+            }
+            
+            updateUserUI();
+            closeAuthModal();
+        }
+
+        function logout() {
+            currentUser = null;
+            updateUserUI();
+            showToast('Logged out', 'info');
+            closeUserMenu();
+        }
+
+        function updateUserUI() {
+            const displayName = document.getElementById('userDisplayName');
+            const loggedOutMenu = document.getElementById('loggedOutMenu');
+            const loggedInMenu = document.getElementById('loggedInMenu');
+            
+            if (currentUser) {
+                displayName.textContent = currentUser.name;
+                loggedOutMenu.classList.add('hidden');
+                loggedInMenu.classList.remove('hidden');
+                document.getElementById('menuUserName').textContent = currentUser.name;
+                document.getElementById('menuUserEmail').textContent = currentUser.email;
+            } else {
+                displayName.textContent = 'Guest';
+                loggedOutMenu.classList.remove('hidden');
+                loggedInMenu.classList.add('hidden');
+            }
+            
+            updateWatchlistUI();
+        }
+
+        function toggleUserMenu() {
+            document.getElementById('userDropdown').classList.toggle('hidden');
+        }
+
+        function closeUserMenu() {
+            document.getElementById('userDropdown').classList.add('hidden');
+        }
+
+        // ========== SETTINGS ==========
+        function openSettings() {
+            document.getElementById('settingsModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            
+            // Load current settings
+            document.getElementById('themeSelect').value = settings.theme;
+            document.getElementById('defaultSource').value = settings.defaultSource;
+            document.getElementById('autoplayToggle').checked = settings.autoplay;
+            document.getElementById('animationsToggle').checked = settings.animations;
+            document.getElementById('notificationsToggle').checked = settings.notifications;
+            
+            // Update color theme buttons
+            document.querySelectorAll('.theme-color-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[onclick="setColorTheme('${settings.colorTheme || 'purple'}')"]`)?.classList.add('active');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        function saveSettings() {
+            settings = {
+                theme: document.getElementById('themeSelect').value,
+                colorTheme: settings.colorTheme || 'purple',
+                defaultSource: document.getElementById('defaultSource').value,
+                autoplay: document.getElementById('autoplayToggle').checked,
+                animations: document.getElementById('animationsToggle').checked,
+                notifications: document.getElementById('notificationsToggle').checked
+            };
+            
+            localStorage.setItem('zenShowsSettings', JSON.stringify(settings));
+            currentSource = settings.defaultSource;
+            showToast('Settings saved', 'success');
+        }
+
+        function loadSettings() {
+            if (settings.theme === 'light') {
+                document.body.classList.add('light-mode');
+                document.getElementById('themeIcon').className = 'fas fa-sun text-xl';
+            }
+        }
+
+        // ========== THEME ==========
+        function toggleTheme() {
+            const isLight = document.body.classList.toggle('light-mode');
+            const icon = document.getElementById('themeIcon');
+            
+            icon.className = isLight ? 'fas fa-sun text-xl' : 'fas fa-moon text-xl';
+            settings.theme = isLight ? 'light' : 'dark';
+            localStorage.setItem('zenShowsSettings', JSON.stringify(settings));
+            
+            document.body.classList.add('animate-glitch');
+            setTimeout(() => document.body.classList.remove('animate-glitch'), 300);
+        }
+
+        function setTheme(theme) {
+            if (theme === 'light') {
+                document.body.classList.add('light-mode');
+                document.getElementById('themeIcon').className = 'fas fa-sun text-xl';
+            } else {
+                document.body.classList.remove('light-mode');
+                document.getElementById('themeIcon').className = 'fas fa-moon text-xl';
+            }
+            saveSettings();
+        }
+
+        // ========== FILTERS ==========
+        async function filterMovies(filter) {
+            const data = await fetchTMDB(`/movie/${filter}`);
+            renderCards('moviesGrid', data.results, 'movie');
+        }
+
+        async function filterByGenre(genreId) {
+            if (!genreId) {
+                loadMoviesGrid();
+                return;
+            }
+            
+            const response = await fetch(`${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=${genreId}`);
+            const data = await response.json();
+            renderCards('moviesGrid', data.results, 'movie');
+        }
+
+        // ========== TOAST ==========
+        function showToast(message, type = 'info') {
+            if (!settings.notifications) return;
+            
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            const colors = {
+                success: 'from-green-500 to-emerald-500',
+                error: 'from-red-500 to-rose-500',
+                info: 'from-purple-500 to-pink-500'
+            };
+            
+            const icons = {
+                success: 'fa-check-circle',
+                error: 'fa-exclamation-circle',
+                info: 'fa-info-circle'
+            };
+            
+            toast.className = `toast flex items-center gap-3 px-6 py-4 rounded-xl bg-gradient-to-r ${colors[type]} text-white shadow-2xl`;
+            toast.innerHTML = `
+                <i class="fas ${icons[type]} text-xl"></i>
+                <span>${message}</span>
+            `;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('toast-exit');
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
+        // ========== KEYBOARD SHORTCUTS ==========
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeSearch();
+                closeDetailModal();
+                closeSettings();
+                closeAuthModal();
+            }
+            
+            if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
+                if (document.activeElement.tagName !== 'INPUT') {
+                    e.preventDefault();
+                    openSearch();
+                }
+            }
+        });
+        
+        // ========== HERO CAROUSEL ==========
+        async function loadHeroCarousel() {
+            const data = await fetchTMDB('/trending/movie/day');
+            heroMovies = data.results.slice(0, 8);
+            renderHeroCarousel();
+            startHeroAutoplay();
+        }
+        
+        function renderHeroCarousel() {
+            const carousel = document.getElementById('heroCarousel');
+            const indicators = document.getElementById('heroIndicators');
+            
+            carousel.innerHTML = heroMovies.map((movie, index) => `
+                <div class="hero-slide ${index === 0 ? 'active' : ''}" data-index="${index}">
+                    <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('${BACKDROP_BASE}${movie.backdrop_path}')"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                    
+                    <div class="relative h-full flex items-center">
+                        <div class="max-w-7xl mx-auto px-4 w-full">
+                            <div class="max-w-2xl">
+                                <span class="inline-block px-4 py-1 rounded-full bg-purple-500/30 text-purple-300 text-sm mb-4 animate-float-in">
+                                    <i class="fas fa-fire mr-2"></i>#${index + 1} Trending Today
+                                </span>
+                                <h1 class="text-5xl md:text-7xl font-bold mb-4">
+                                    <span class="gradient-text">${movie.title}</span>
+                                </h1>
+                                <p class="text-lg text-gray-300 mb-6 line-clamp-3">
+                                    ${movie.overview}
+                                </p>
+                                <div class="flex items-center gap-4 mb-6">
+                                    <span class="flex items-center"><i class="fas fa-star text-yellow-400 mr-1"></i> ${movie.vote_average.toFixed(1)}</span>
+                                    <span>${movie.release_date?.slice(0, 4)}</span>
+                                    <span class="px-2 py-1 bg-white/20 rounded text-sm">${movie.adult ? 'R' : 'PG-13'}</span>
+                                </div>
+                                <div class="flex gap-4">
+                                    <button onclick="playContent('movie', ${movie.id})" class="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold btn-3d ripple-effect animate-pulse-glow">
+                                        <i class="fas fa-play mr-2"></i>Watch Now
+                                    </button>
+                                    <button onclick="showDetails('movie', ${movie.id})" class="px-8 py-3 glass rounded-xl font-semibold btn-3d">
+                                        <i class="fas fa-info-circle mr-2"></i>More Info
+                                    </button>
+                                    <button onclick="toggleWatchlist(${movie.id}, 'movie', '${movie.title.replace(/'/g, "\\'")}', '${movie.poster_path}')" class="px-4 py-3 glass rounded-xl font-semibold btn-3d">
+                                        <i class="fas fa-${isInWatchlist(movie.id) ? 'check' : 'plus'}"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            indicators.innerHTML = heroMovies.map((_, index) => `
+                <div class="hero-indicator ${index === 0 ? 'active' : ''}" onclick="goToHeroSlide(${index})"></div>
+            `).join('');
+        }
+        
+        function goToHeroSlide(index) {
+            currentHeroSlide = index;
+            updateHeroSlide();
+            resetHeroAutoplay();
+        }
+        
+        function nextHeroSlide() {
+            currentHeroSlide = (currentHeroSlide + 1) % heroMovies.length;
+            updateHeroSlide();
+            resetHeroAutoplay();
+        }
+        
+        function prevHeroSlide() {
+            currentHeroSlide = (currentHeroSlide - 1 + heroMovies.length) % heroMovies.length;
+            updateHeroSlide();
+            resetHeroAutoplay();
+        }
+        
+        function updateHeroSlide() {
+            document.querySelectorAll('.hero-slide').forEach((slide, index) => {
+                slide.classList.toggle('active', index === currentHeroSlide);
+            });
+            document.querySelectorAll('.hero-indicator').forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentHeroSlide);
+            });
+        }
+        
+        function startHeroAutoplay() {
+            heroInterval = setInterval(() => {
+                currentHeroSlide = (currentHeroSlide + 1) % heroMovies.length;
+                updateHeroSlide();
+            }, 6000);
+        }
+        
+        function resetHeroAutoplay() {
+            clearInterval(heroInterval);
+            startHeroAutoplay();
+        }
+        
+        // ========== COLOR THEMES ==========
+        function setColorTheme(color) {
+            // Remove all theme classes
+            document.body.classList.remove('theme-purple', 'theme-blue', 'theme-green', 'theme-red', 'theme-orange', 'theme-cyan', 'theme-pink', 'theme-gold');
+            
+            // Add new theme class
+            document.body.classList.add(`theme-${color}`);
+            
+            // Update active button
+            document.querySelectorAll('.theme-color-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[onclick="setColorTheme('${color}')"]`)?.classList.add('active');
+            
+            // Save setting
+            settings.colorTheme = color;
+            localStorage.setItem('zenShowsSettings', JSON.stringify(settings));
+            
+            // Update gradient text animation based on theme
+            updateGradientColors(color);
+            
+            showToast(`Theme changed to ${color.charAt(0).toUpperCase() + color.slice(1)}`, 'success');
+        }
+        
+        function loadColorTheme() {
+            if (settings.colorTheme && settings.colorTheme !== 'purple') {
+                document.body.classList.add(`theme-${settings.colorTheme}`);
+            }
+        }
+        
+        function updateGradientColors(color) {
+            const gradients = {
+                purple: '90deg, #8b5cf6, #ec4899, #8b5cf6',
+                blue: '90deg, #3b82f6, #06b6d4, #3b82f6',
+                green: '90deg, #10b981, #84cc16, #10b981',
+                red: '90deg, #ef4444, #f97316, #ef4444',
+                orange: '90deg, #f97316, #eab308, #f97316',
+                cyan: '90deg, #06b6d4, #8b5cf6, #06b6d4',
+                pink: '90deg, #ec4899, #f43f5e, #ec4899',
+                gold: '90deg, #eab308, #f97316, #eab308'
+            };
+            
+            const style = document.createElement('style');
+            style.id = 'dynamic-gradient';
+            document.getElementById('dynamic-gradient')?.remove();
+            style.textContent = `
+                .gradient-text {
+                    background: linear-gradient(${gradients[color]});
+                    background-size: 200% auto;
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    animation: textGradient 3s linear infinite;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    </script>
 </body>
 </html>

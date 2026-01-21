@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZenShows - Stream Movies & TV Shows</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { font-family: 'Inter', sans-serif; }
@@ -30,58 +30,20 @@
         }
         
         /* Color Themes */
-        .theme-purple {
-            --accent: #8b5cf6;
-            --accent-hover: #7c3aed;
-            --gradient: linear-gradient(135deg, #8b5cf6, #ec4899);
-        }
-        
-        .theme-blue {
-            --accent: #3b82f6;
-            --accent-hover: #2563eb;
-            --gradient: linear-gradient(135deg, #3b82f6, #06b6d4);
-        }
-        
-        .theme-green {
-            --accent: #10b981;
-            --accent-hover: #059669;
-            --gradient: linear-gradient(135deg, #10b981, #84cc16);
-        }
-        
-        .theme-red {
-            --accent: #ef4444;
-            --accent-hover: #dc2626;
-            --gradient: linear-gradient(135deg, #ef4444, #f97316);
-        }
-        
-        .theme-orange {
-            --accent: #f97316;
-            --accent-hover: #ea580c;
-            --gradient: linear-gradient(135deg, #f97316, #eab308);
-        }
-        
-        .theme-cyan {
-            --accent: #06b6d4;
-            --accent-hover: #0891b2;
-            --gradient: linear-gradient(135deg, #06b6d4, #8b5cf6);
-        }
-        
-        .theme-pink {
-            --accent: #ec4899;
-            --accent-hover: #db2777;
-            --gradient: linear-gradient(135deg, #ec4899, #f43f5e);
-        }
-        
-        .theme-gold {
-            --accent: #eab308;
-            --accent-hover: #ca8a04;
-            --gradient: linear-gradient(135deg, #eab308, #f97316);
-        }
+        .theme-purple { --accent: #8b5cf6; --accent-hover: #7c3aed; --gradient: linear-gradient(135deg, #8b5cf6, #ec4899); }
+        .theme-blue { --accent: #3b82f6; --accent-hover: #2563eb; --gradient: linear-gradient(135deg, #3b82f6, #06b6d4); }
+        .theme-green { --accent: #10b981; --accent-hover: #059669; --gradient: linear-gradient(135deg, #10b981, #84cc16); }
+        .theme-red { --accent: #ef4444; --accent-hover: #dc2626; --gradient: linear-gradient(135deg, #ef4444, #f97316); }
+        .theme-orange { --accent: #f97316; --accent-hover: #ea580c; --gradient: linear-gradient(135deg, #f97316, #eab308); }
+        .theme-cyan { --accent: #06b6d4; --accent-hover: #0891b2; --gradient: linear-gradient(135deg, #06b6d4, #8b5cf6); }
+        .theme-pink { --accent: #ec4899; --accent-hover: #db2777; --gradient: linear-gradient(135deg, #ec4899, #f43f5e); }
+        .theme-gold { --accent: #eab308; --accent-hover: #ca8a04; --gradient: linear-gradient(135deg, #eab308, #f97316); }
         
         body {
             background: var(--bg-primary);
             color: var(--text-primary);
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-x: hidden;
         }
         
         .glass {
@@ -95,107 +57,307 @@
             border: 1px solid rgba(0,0,0,0.1);
         }
         
-        /* Intrusive Animations */
-        @keyframes floatIn {
-            0% { opacity: 0; transform: translateY(100px) scale(0.8) rotateX(20deg); }
-            50% { transform: translateY(-20px) scale(1.05); }
-            100% { opacity: 1; transform: translateY(0) scale(1) rotateX(0); }
+        /* ========== ENHANCED ANIMATIONS ========== */
+        
+        /* Epic Float In with 3D rotation */
+        @keyframes epicFloatIn {
+            0% { 
+                opacity: 0; 
+                transform: translateY(120px) scale(0.5) rotateX(45deg) rotateY(-15deg);
+                filter: blur(10px);
+            }
+            50% { 
+                transform: translateY(-30px) scale(1.1) rotateX(-10deg) rotateY(5deg);
+                filter: blur(0);
+            }
+            70% {
+                transform: translateY(10px) scale(0.98) rotateX(5deg);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0) scale(1) rotateX(0) rotateY(0);
+            }
         }
         
-        @keyframes pulseGlow {
-            0%, 100% { box-shadow: 0 0 20px rgba(139,92,246,0.3); }
-            50% { box-shadow: 0 0 40px rgba(139,92,246,0.6), 0 0 60px rgba(236,72,153,0.3); }
+        /* Mega Pulse Glow */
+        @keyframes megaPulseGlow {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(139,92,246,0.4), 0 0 40px rgba(139,92,246,0.2), 0 0 60px rgba(139,92,246,0.1);
+                transform: scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 40px rgba(139,92,246,0.8), 0 0 80px rgba(236,72,153,0.5), 0 0 120px rgba(139,92,246,0.3);
+                transform: scale(1.02);
+            }
         }
         
-        @keyframes slideInBounce {
-            0% { transform: translateX(-100%) rotate(-5deg); opacity: 0; }
-            60% { transform: translateX(10%) rotate(2deg); }
-            80% { transform: translateX(-5%) rotate(-1deg); }
-            100% { transform: translateX(0) rotate(0); opacity: 1; }
+        /* Elastic Bounce In */
+        @keyframes elasticBounceIn {
+            0% { transform: translateX(-150%) scale(0.3) rotate(-20deg); opacity: 0; }
+            40% { transform: translateX(30%) scale(1.2) rotate(10deg); }
+            60% { transform: translateX(-15%) scale(0.9) rotate(-5deg); }
+            80% { transform: translateX(8%) scale(1.05) rotate(2deg); }
+            100% { transform: translateX(0) scale(1) rotate(0); opacity: 1; }
         }
         
+        /* Morphing Background */
         @keyframes morphBackground {
-            0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
-            50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+            0%, 100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: rotate(0deg); }
+            25% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+            50% { border-radius: 40% 60% 30% 70% / 40% 50% 60% 50%; transform: rotate(180deg); }
+            75% { border-radius: 60% 40% 60% 40% / 70% 30% 70% 30%; }
         }
         
-        @keyframes textGradient {
+        /* Text Gradient Animation */
+        @keyframes textGradientFlow {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
         
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        /* Intense Shake */
+        @keyframes intenseShake {
+            0%, 100% { transform: translateX(0) rotate(0); }
+            10% { transform: translateX(-8px) rotate(-2deg); }
+            20% { transform: translateX(8px) rotate(2deg); }
+            30% { transform: translateX(-6px) rotate(-1deg); }
+            40% { transform: translateX(6px) rotate(1deg); }
+            50% { transform: translateX(-4px) rotate(-0.5deg); }
+            60% { transform: translateX(4px) rotate(0.5deg); }
+            70% { transform: translateX(-2px); }
+            80% { transform: translateX(2px); }
+            90% { transform: translateX(-1px); }
         }
         
-        @keyframes ripple {
-            0% { transform: scale(0); opacity: 1; }
-            100% { transform: scale(4); opacity: 0; }
+        /* Explosive Ripple */
+        @keyframes explosiveRipple {
+            0% { transform: scale(0); opacity: 1; box-shadow: 0 0 0 0 rgba(255,255,255,0.7); }
+            50% { opacity: 0.5; }
+            100% { transform: scale(6); opacity: 0; box-shadow: 0 0 20px 10px rgba(255,255,255,0); }
         }
         
-        @keyframes particleFloat {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            25% { transform: translateY(-20px) rotate(90deg); }
-            50% { transform: translateY(-10px) rotate(180deg); }
-            75% { transform: translateY(-30px) rotate(270deg); }
+        /* Floating Particles */
+        @keyframes floatingParticle {
+            0%, 100% { 
+                transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+                opacity: 0.3;
+            }
+            25% { 
+                transform: translateY(-30px) translateX(15px) rotate(90deg) scale(1.2);
+                opacity: 0.6;
+            }
+            50% { 
+                transform: translateY(-15px) translateX(-10px) rotate(180deg) scale(0.8);
+                opacity: 0.4;
+            }
+            75% { 
+                transform: translateY(-40px) translateX(20px) rotate(270deg) scale(1.1);
+                opacity: 0.7;
+            }
         }
         
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
+        /* Matrix Glitch */
+        @keyframes matrixGlitch {
+            0% { transform: translate(0); filter: hue-rotate(0deg); }
+            10% { transform: translate(-3px, 3px); filter: hue-rotate(90deg); }
+            20% { transform: translate(3px, -3px); filter: hue-rotate(180deg); }
+            30% { transform: translate(-3px, -3px) skewX(2deg); filter: hue-rotate(270deg); }
+            40% { transform: translate(3px, 3px) skewX(-2deg); filter: hue-rotate(360deg); }
+            50% { transform: translate(-2px, 2px); clip-path: inset(40% 0 50% 0); }
+            60% { transform: translate(2px, -2px); clip-path: inset(20% 0 60% 0); }
+            70% { transform: translate(-1px, -1px) skewY(1deg); clip-path: none; }
+            80% { transform: translate(1px, 1px) skewY(-1deg); }
+            90% { transform: translate(-1px, 1px); }
+            100% { transform: translate(0); filter: hue-rotate(0deg); }
         }
         
+        /* Neon Pulse */
         @keyframes neonPulse {
-            0%, 100% { text-shadow: 0 0 5px #8b5cf6, 0 0 10px #8b5cf6, 0 0 20px #8b5cf6; }
-            50% { text-shadow: 0 0 10px #ec4899, 0 0 20px #ec4899, 0 0 40px #ec4899; }
+            0%, 100% { 
+                text-shadow: 0 0 5px var(--accent), 0 0 10px var(--accent), 0 0 20px var(--accent), 0 0 40px var(--accent);
+                filter: brightness(1);
+            }
+            50% { 
+                text-shadow: 0 0 10px #ec4899, 0 0 20px #ec4899, 0 0 40px #ec4899, 0 0 80px #ec4899, 0 0 120px #ec4899;
+                filter: brightness(1.2);
+            }
         }
         
-        .animate-float-in { animation: floatIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
-        .animate-pulse-glow { animation: pulseGlow 2s ease-in-out infinite; }
-        .animate-slide-bounce { animation: slideInBounce 0.8s ease-out forwards; }
-        .animate-morph { animation: morphBackground 8s ease-in-out infinite; }
-        .animate-shake { animation: shake 0.5s ease-in-out; }
-        .animate-glitch { animation: glitch 0.3s ease-in-out; }
+        /* Zoom In Rotate */
+        @keyframes zoomInRotate {
+            0% { 
+                opacity: 0;
+                transform: scale(0) rotate(-180deg);
+            }
+            60% {
+                transform: scale(1.2) rotate(20deg);
+            }
+            100% { 
+                opacity: 1;
+                transform: scale(1) rotate(0);
+            }
+        }
+        
+        /* Slide Up Fade */
+        @keyframes slideUpFade {
+            0% {
+                opacity: 0;
+                transform: translateY(60px) scale(0.9);
+                filter: blur(5px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+        
+        /* Wobble */
+        @keyframes wobble {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+        }
+        
+        /* Heartbeat */
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            10% { transform: scale(1.1); }
+            20% { transform: scale(1); }
+            30% { transform: scale(1.15); }
+            40% { transform: scale(1); }
+        }
+        
+        /* Flip In */
+        @keyframes flipIn {
+            0% { 
+                opacity: 0;
+                transform: perspective(400px) rotateY(90deg);
+            }
+            40% {
+                transform: perspective(400px) rotateY(-15deg);
+            }
+            70% {
+                transform: perspective(400px) rotateY(15deg);
+            }
+            100% { 
+                opacity: 1;
+                transform: perspective(400px) rotateY(0);
+            }
+        }
+        
+        /* Swing */
+        @keyframes swing {
+            20% { transform: rotate(15deg); }
+            40% { transform: rotate(-10deg); }
+            60% { transform: rotate(5deg); }
+            80% { transform: rotate(-5deg); }
+            100% { transform: rotate(0); }
+        }
+        
+        /* Jello */
+        @keyframes jello {
+            0%, 100% { transform: scale3d(1, 1, 1); }
+            30% { transform: scale3d(1.25, 0.75, 1); }
+            40% { transform: scale3d(0.75, 1.25, 1); }
+            50% { transform: scale3d(1.15, 0.85, 1); }
+            65% { transform: scale3d(0.95, 1.05, 1); }
+            75% { transform: scale3d(1.05, 0.95, 1); }
+        }
+        
+        /* Rainbow Border */
+        @keyframes rainbowBorder {
+            0% { border-color: #ff0000; box-shadow: 0 0 20px #ff0000; }
+            14% { border-color: #ff7f00; box-shadow: 0 0 20px #ff7f00; }
+            28% { border-color: #ffff00; box-shadow: 0 0 20px #ffff00; }
+            42% { border-color: #00ff00; box-shadow: 0 0 20px #00ff00; }
+            57% { border-color: #0000ff; box-shadow: 0 0 20px #0000ff; }
+            71% { border-color: #4b0082; box-shadow: 0 0 20px #4b0082; }
+            85% { border-color: #9400d3; box-shadow: 0 0 20px #9400d3; }
+            100% { border-color: #ff0000; box-shadow: 0 0 20px #ff0000; }
+        }
+        
+        /* Spin Loader */
+        @keyframes spinPulse {
+            0% { transform: rotate(0deg); border-width: 3px; }
+            50% { transform: rotate(180deg); border-width: 6px; }
+            100% { transform: rotate(360deg); border-width: 3px; }
+        }
+        
+        /* Animation Classes */
+        .animate-epic-float { animation: epicFloatIn 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        .animate-mega-pulse { animation: megaPulseGlow 2.5s ease-in-out infinite; }
+        .animate-elastic-bounce { animation: elasticBounceIn 1s ease-out forwards; }
+        .animate-morph { animation: morphBackground 12s ease-in-out infinite; }
+        .animate-shake { animation: intenseShake 0.6s ease-in-out; }
+        .animate-glitch { animation: matrixGlitch 0.5s ease-in-out; }
         .animate-neon { animation: neonPulse 2s ease-in-out infinite; }
+        .animate-zoom-rotate { animation: zoomInRotate 0.7s ease-out forwards; }
+        .animate-slide-up { animation: slideUpFade 0.6s ease-out forwards; }
+        .animate-wobble { animation: wobble 1s ease-in-out infinite; }
+        .animate-heartbeat { animation: heartbeat 1.5s ease-in-out infinite; }
+        .animate-flip { animation: flipIn 0.8s ease-out forwards; }
+        .animate-swing { animation: swing 1s ease-out; }
+        .animate-jello { animation: jello 0.9s ease-in-out; }
+        .animate-rainbow-border { animation: rainbowBorder 3s linear infinite; border: 3px solid; }
         
         .gradient-text {
-            background: linear-gradient(90deg, #8b5cf6, #ec4899, #8b5cf6);
-            background-size: 200% auto;
+            background: linear-gradient(90deg, #8b5cf6, #ec4899, #f97316, #8b5cf6);
+            background-size: 300% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: textGradient 3s linear infinite;
+            animation: textGradientFlow 4s linear infinite;
         }
         
+        /* Card Hover Effects */
         .card-hover {
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-style: preserve-3d;
         }
         
         .card-hover:hover {
-            transform: translateY(-15px) scale(1.05) rotateY(5deg);
-            box-shadow: 0 25px 50px -12px rgba(139,92,246,0.4);
+            transform: translateY(-20px) scale(1.08) rotateY(8deg) rotateX(-5deg);
+            box-shadow: 0 30px 60px -15px rgba(139,92,246,0.5), 0 0 40px rgba(236,72,153,0.3);
+            z-index: 10;
         }
         
+        .card-hover:hover img {
+            filter: brightness(1.1) saturate(1.2);
+        }
+        
+        /* 3D Button */
         .btn-3d {
             position: relative;
             transform-style: preserve-3d;
-            transition: all 0.3s;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .btn-3d::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: inherit;
+            border-radius: inherit;
+            transform: translateZ(-10px);
+            filter: blur(15px);
+            opacity: 0.5;
+            transition: all 0.4s;
         }
         
         .btn-3d:hover {
-            transform: translateY(-5px) rotateX(10deg);
+            transform: translateY(-8px) rotateX(15deg) scale(1.05);
+            box-shadow: 0 20px 40px -10px rgba(139,92,246,0.6);
+        }
+        
+        .btn-3d:hover::before {
+            opacity: 0.8;
+            transform: translateZ(-15px) scale(1.1);
         }
         
         .btn-3d:active {
-            transform: translateY(2px);
+            transform: translateY(2px) scale(0.98);
         }
         
+        /* Ripple Effect */
         .ripple-effect {
             position: relative;
             overflow: hidden;
@@ -204,98 +366,113 @@
         .ripple-effect::after {
             content: '';
             position: absolute;
-            width: 100px;
-            height: 100px;
-            background: rgba(255,255,255,0.3);
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%);
             border-radius: 50%;
             transform: scale(0);
             pointer-events: none;
+            left: var(--x, 50%);
+            top: var(--y, 50%);
+            transform-origin: center;
         }
         
         .ripple-effect:active::after {
-            animation: ripple 0.6s linear;
+            animation: explosiveRipple 0.8s ease-out;
         }
         
         /* Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar { width: 10px; }
         ::-webkit-scrollbar-track { background: var(--bg-secondary); }
         ::-webkit-scrollbar-thumb { 
             background: var(--gradient);
             border-radius: 10px;
+            border: 2px solid var(--bg-secondary);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
         }
         
         /* Modal Animations */
         .modal-enter {
-            animation: floatIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation: epicFloatIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
         
         .modal-backdrop {
-            animation: fadeIn 0.3s ease forwards;
+            animation: fadeIn 0.4s ease forwards;
         }
         
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from { opacity: 0; backdrop-filter: blur(0); }
+            to { opacity: 1; backdrop-filter: blur(10px); }
         }
         
         /* Particle Background */
         .particle {
             position: fixed;
             pointer-events: none;
-            animation: particleFloat 10s ease-in-out infinite;
-        }
-        
-        /* Loading Animation */
-        .loader {
-            width: 50px;
-            height: 50px;
-            border: 3px solid transparent;
-            border-top-color: #8b5cf6;
+            animation: floatingParticle 15s ease-in-out infinite;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            filter: blur(1px);
         }
         
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        /* Enhanced Loader */
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 4px solid transparent;
+            border-top-color: #8b5cf6;
+            border-right-color: #ec4899;
+            border-radius: 50%;
+            animation: spinPulse 1s linear infinite;
+            position: relative;
         }
         
-        /* Dropdown styling */
-        .dropdown-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s ease, opacity 0.3s ease;
-            opacity: 0;
-        }
-        
-        .dropdown-content.show {
-            max-height: 300px;
-            opacity: 1;
+        .loader::before {
+            content: '';
+            position: absolute;
+            inset: 5px;
+            border: 4px solid transparent;
+            border-bottom-color: #06b6d4;
+            border-left-color: #10b981;
+            border-radius: 50%;
+            animation: spinPulse 0.8s linear infinite reverse;
         }
         
         /* Source selector */
         .source-btn {
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .source-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gradient);
+            transform: translateX(-100%);
+            transition: transform 0.4s ease;
+        }
+        
+        .source-btn:hover::before {
+            transform: translateX(0);
+        }
+        
+        .source-btn span {
+            position: relative;
+            z-index: 1;
         }
         
         .source-btn.active {
             background: var(--gradient);
             transform: scale(1.05);
-        }
-        
-        .source-btn:hover:not(.active) {
-            background: rgba(139,92,246,0.3);
-            transform: translateX(5px);
-        }
-        
-        /* Hero parallax */
-        .hero-bg {
-            background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(236,72,153,0.2));
-            animation: morphBackground 15s ease-in-out infinite;
+            box-shadow: 0 5px 20px rgba(139,92,246,0.4);
         }
         
         /* Toast notifications */
         .toast {
-            animation: slideInBounce 0.5s ease forwards;
+            animation: elasticBounceIn 0.6s ease forwards;
         }
         
         .toast-exit {
@@ -303,7 +480,7 @@
         }
         
         @keyframes slideOut {
-            to { transform: translateX(150%); opacity: 0; }
+            to { transform: translateX(150%) rotate(10deg); opacity: 0; }
         }
         
         /* Page transitions */
@@ -314,14 +491,23 @@
         
         .page.active {
             display: block;
-            animation: floatIn 0.6s ease forwards;
+            animation: slideUpFade 0.7s ease forwards;
         }
         
-        /* Surprise button special effect */
+        /* Surprise button */
         .surprise-btn {
             background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
             background-size: 400%;
-            animation: rainbow 8s linear infinite;
+            animation: rainbow 5s linear infinite;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .surprise-btn::after {
+            content: '✨';
+            position: absolute;
+            right: -20px;
+            animation: swing 1s ease-in-out infinite;
         }
         
         @keyframes rainbow {
@@ -330,83 +516,195 @@
             100% { background-position: 0% 50%; }
         }
         
-        /* Calendar styling */
-        .calendar-day {
-            transition: all 0.3s ease;
-        }
-        
-        .calendar-day:hover {
-            transform: scale(1.2);
-            background: var(--gradient);
-        }
-        
-        .calendar-day.has-movie {
-            background: rgba(139,92,246,0.3);
-            border: 2px solid #8b5cf6;
-        }
-        
         /* Hero Carousel */
-        .hero-carousel {
-            position: relative;
-            width: 100%;
-            height: 100%;
-        }
-        
         .hero-slide {
             position: absolute;
             inset: 0;
             opacity: 0;
-            transition: opacity 1s ease-in-out, transform 0.5s ease;
-            transform: scale(1.05);
+            transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transform: scale(1.1) translateX(50px);
         }
         
         .hero-slide.active {
             opacity: 1;
-            transform: scale(1);
+            transform: scale(1) translateX(0);
         }
         
-        .hero-indicators {
-            display: flex;
-            gap: 8px;
-            justify-content: center;
-            margin-top: 20px;
+        .hero-slide.active .hero-content {
+            animation: slideUpFade 0.8s ease forwards 0.3s;
         }
         
         .hero-indicator {
-            width: 40px;
-            height: 4px;
+            width: 50px;
+            height: 5px;
             background: rgba(255,255,255,0.3);
-            border-radius: 2px;
+            border-radius: 3px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-indicator::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gradient);
+            transform: translateX(-100%);
+            transition: transform 6s linear;
         }
         
         .hero-indicator.active {
-            background: var(--gradient);
-            width: 60px;
+            width: 80px;
+            box-shadow: 0 0 15px rgba(139,92,246,0.5);
         }
         
-        .hero-indicator:hover:not(.active) {
-            background: rgba(255,255,255,0.5);
+        .hero-indicator.active::before {
+            transform: translateX(0);
         }
         
         /* Theme color preview */
         .theme-color-btn {
-            width: 32px;
-            height: 32px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             border: 3px solid transparent;
+            position: relative;
+        }
+        
+        .theme-color-btn::after {
+            content: '✓';
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s ease;
         }
         
         .theme-color-btn:hover {
-            transform: scale(1.2);
+            transform: scale(1.3) rotate(10deg);
+            box-shadow: 0 10px 30px currentColor;
         }
         
         .theme-color-btn.active {
             border-color: white;
-            box-shadow: 0 0 15px currentColor;
+            transform: scale(1.1);
+            box-shadow: 0 0 25px currentColor;
+        }
+        
+        .theme-color-btn.active::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        /* Hover icon spin */
+        .icon-spin:hover i {
+            animation: zoomInRotate 0.5s ease;
+        }
+        
+        /* Glow text on hover */
+        .glow-hover:hover {
+            text-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent), 0 0 30px var(--accent);
+        }
+        
+        /* Magnetic hover effect */
+        .magnetic {
+            transition: transform 0.3s ease;
+        }
+        
+        /* Stagger animation for grids */
+        .stagger-item {
+            opacity: 0;
+            animation: epicFloatIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+        
+        /* Nav link underline animation */
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient);
+            transition: width 0.4s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        /* Calendar styling */
+        .calendar-day {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .calendar-day:hover {
+            transform: scale(1.3);
+            background: var(--gradient);
+            box-shadow: 0 5px 20px rgba(139,92,246,0.4);
+            z-index: 10;
+        }
+        
+        .calendar-day.has-movie {
+            background: rgba(139,92,246,0.3);
+            border: 2px solid var(--accent);
+            animation: megaPulseGlow 3s ease-in-out infinite;
+        }
+        
+        /* Floating action button */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 10px 40px rgba(139,92,246,0.5);
+        }
+        
+        .fab:hover {
+            transform: scale(1.2) rotate(90deg);
+            box-shadow: 0 15px 50px rgba(139,92,246,0.7);
+        }
+        
+        /* Image shine effect */
+        .shine {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .shine::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: skewX(-20deg);
+            transition: left 0.7s ease;
+        }
+        
+        .shine:hover::before {
+            left: 150%;
         }
     </style>
 </head>
@@ -414,69 +712,74 @@
     <!-- Particles Background -->
     <div id="particles" class="fixed inset-0 pointer-events-none z-0"></div>
     
+    <!-- Floating Action Button -->
+    <div class="fab icon-spin" onclick="openSearch()" title="Quick Search">
+        <i class="fas fa-search text-2xl text-white"></i>
+    </div>
+    
     <!-- Navigation -->
     <nav class="fixed top-0 left-0 right-0 z-50 glass">
         <div class="max-w-7xl mx-auto px-4 py-3">
             <div class="flex items-center justify-between">
                 <div class="flex items-center gap-8">
-                    <h1 class="text-2xl font-bold gradient-text cursor-pointer animate-neon" onclick="showPage('home')">
+                    <h1 class="text-2xl font-black gradient-text cursor-pointer animate-neon" onclick="showPage('home')">
                         <i class="fas fa-film mr-2"></i>ZenShows
                     </h1>
                     <div class="hidden md:flex items-center gap-6">
-                        <a href="#" onclick="showPage('home')" class="nav-link hover:text-purple-400 transition-all hover:scale-110">Home</a>
-                        <a href="#" onclick="showPage('movies')" class="nav-link hover:text-purple-400 transition-all hover:scale-110">Movies</a>
-                        <a href="#" onclick="showPage('tvshows')" class="nav-link hover:text-purple-400 transition-all hover:scale-110">TV Shows</a>
-                        <a href="#" onclick="showPage('calendar')" class="nav-link hover:text-purple-400 transition-all hover:scale-110">Calendar</a>
-                        <a href="#" onclick="showPage('privacy')" class="nav-link hover:text-purple-400 transition-all hover:scale-110">Privacy</a>
+                        <a href="#" onclick="showPage('home')" class="nav-link glow-hover transition-all hover:scale-110">Home</a>
+                        <a href="#" onclick="showPage('movies')" class="nav-link glow-hover transition-all hover:scale-110">Movies</a>
+                        <a href="#" onclick="showPage('tvshows')" class="nav-link glow-hover transition-all hover:scale-110">TV Shows</a>
+                        <a href="#" onclick="showPage('calendar')" class="nav-link glow-hover transition-all hover:scale-110">Calendar</a>
+                        <a href="#" onclick="showPage('privacy')" class="nav-link glow-hover transition-all hover:scale-110">Privacy</a>
                     </div>
                 </div>
                 
                 <div class="flex items-center gap-4">
                     <!-- Search Button -->
-                    <button onclick="openSearch()" class="p-2 rounded-full hover:bg-white/10 transition-all hover:scale-110 hover:rotate-12">
+                    <button onclick="openSearch()" class="p-2 rounded-full hover:bg-white/10 transition-all hover:scale-125 icon-spin">
                         <i class="fas fa-search text-xl"></i>
                     </button>
                     
                     <!-- Surprise Me Button -->
-                    <button onclick="surpriseMe()" class="surprise-btn px-4 py-2 rounded-full font-semibold text-white btn-3d hidden md:block">
-                        <i class="fas fa-magic mr-2"></i>Surprise Me!
+                    <button onclick="surpriseMe()" class="surprise-btn px-5 py-2 rounded-full font-bold text-white btn-3d hidden md:flex items-center gap-2">
+                        <i class="fas fa-magic"></i>Surprise Me!
                     </button>
                     
                     <!-- Settings -->
-                    <button onclick="openSettings()" class="p-2 rounded-full hover:bg-white/10 transition-all hover:scale-110 hover:rotate-90">
+                    <button onclick="openSettings()" class="p-2 rounded-full hover:bg-white/10 transition-all hover:scale-125 hover:rotate-180 duration-500">
                         <i class="fas fa-cog text-xl"></i>
                     </button>
                     
                     <!-- Theme Toggle -->
-                    <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-white/10 transition-all hover:scale-110" id="themeBtn">
+                    <button onclick="toggleTheme()" class="p-2 rounded-full hover:bg-white/10 transition-all hover:scale-125" id="themeBtn">
                         <i class="fas fa-moon text-xl" id="themeIcon"></i>
                     </button>
                     
                     <!-- User Menu -->
                     <div class="relative">
-                        <button onclick="toggleUserMenu()" class="flex items-center gap-2 p-2 rounded-full hover:bg-white/10 transition-all" id="userBtn">
+                        <button onclick="toggleUserMenu()" class="flex items-center gap-2 p-2 rounded-full hover:bg-white/10 transition-all hover:scale-105" id="userBtn">
                             <i class="fas fa-user-circle text-2xl"></i>
-                            <span id="userDisplayName" class="hidden md:block">Guest</span>
+                            <span id="userDisplayName" class="hidden md:block font-medium">Guest</span>
                         </button>
-                        <div id="userDropdown" class="absolute right-0 top-full mt-2 w-48 glass rounded-xl overflow-hidden hidden">
+                        <div id="userDropdown" class="absolute right-0 top-full mt-2 w-56 glass rounded-2xl overflow-hidden hidden transform-gpu">
                             <div id="loggedOutMenu">
-                                <button onclick="openAuthModal('login')" class="w-full px-4 py-3 text-left hover:bg-white/10 transition-all">
-                                    <i class="fas fa-sign-in-alt mr-2"></i>Login
+                                <button onclick="openAuthModal('login')" class="w-full px-4 py-3 text-left hover:bg-white/10 transition-all flex items-center gap-3">
+                                    <i class="fas fa-sign-in-alt text-purple-400"></i>Login
                                 </button>
-                                <button onclick="openAuthModal('signup')" class="w-full px-4 py-3 text-left hover:bg-white/10 transition-all">
-                                    <i class="fas fa-user-plus mr-2"></i>Sign Up
+                                <button onclick="openAuthModal('signup')" class="w-full px-4 py-3 text-left hover:bg-white/10 transition-all flex items-center gap-3">
+                                    <i class="fas fa-user-plus text-pink-400"></i>Sign Up
                                 </button>
                             </div>
                             <div id="loggedInMenu" class="hidden">
-                                <div class="px-4 py-3 border-b border-white/10">
-                                    <p class="font-semibold" id="menuUserName">User</p>
+                                <div class="px-4 py-3 border-b border-white/10 bg-gradient-to-r from-purple-500/20 to-pink-500/20">
+                                    <p class="font-bold" id="menuUserName">User</p>
                                     <p class="text-sm text-gray-400" id="menuUserEmail">email@example.com</p>
                                 </div>
-                                <button onclick="showPage('watchlist')" class="w-full px-4 py-3 text-left hover:bg-white/10 transition-all">
-                                    <i class="fas fa-bookmark mr-2"></i>Watchlist
+                                <button onclick="showPage('watchlist')" class="w-full px-4 py-3 text-left hover:bg-white/10 transition-all flex items-center gap-3">
+                                    <i class="fas fa-bookmark text-yellow-400"></i>Watchlist
                                 </button>
-                                <button onclick="logout()" class="w-full px-4 py-3 text-left hover:bg-white/10 transition-all text-red-400">
-                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                <button onclick="logout()" class="w-full px-4 py-3 text-left hover:bg-white/10 transition-all text-red-400 flex items-center gap-3">
+                                    <i class="fas fa-sign-out-alt"></i>Logout
                                 </button>
                             </div>
                         </div>
@@ -488,23 +791,26 @@
 
     <!-- Search Modal -->
     <div id="searchModal" class="fixed inset-0 z-[100] hidden">
-        <div class="absolute inset-0 bg-black/80 modal-backdrop" onclick="closeSearch()"></div>
-        <div class="relative max-w-3xl mx-auto mt-20 px-4">
-            <div class="glass rounded-2xl overflow-hidden modal-enter">
-                <div class="p-6">
-                    <div class="flex items-center gap-4 mb-6">
-                        <i class="fas fa-search text-2xl text-purple-400"></i>
+        <div class="absolute inset-0 bg-black/90 modal-backdrop" onclick="closeSearch()"></div>
+        <div class="relative max-w-4xl mx-auto mt-20 px-4">
+            <div class="glass rounded-3xl overflow-hidden modal-enter shadow-2xl">
+                <div class="p-8">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="w-14 h-14 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center animate-mega-pulse">
+                            <i class="fas fa-search text-2xl"></i>
+                        </div>
                         <input type="text" id="searchInput" placeholder="Search movies, TV shows, actors..." 
-                            class="flex-1 bg-transparent text-xl outline-none" oninput="handleSearch(this.value)" autofocus>
-                        <button onclick="closeSearch()" class="p-2 hover:bg-white/10 rounded-full transition-all">
-                            <i class="fas fa-times text-xl"></i>
+                            class="flex-1 bg-transparent text-2xl font-light outline-none placeholder-gray-500" oninput="handleSearch(this.value)" autofocus>
+                        <button onclick="closeSearch()" class="p-3 hover:bg-white/10 rounded-full transition-all hover:rotate-90 duration-300">
+                            <i class="fas fa-times text-2xl"></i>
                         </button>
                     </div>
                     
-                    <div id="searchResults" class="max-h-96 overflow-y-auto">
-                        <div class="text-center text-gray-400 py-8">
-                            <i class="fas fa-film text-4xl mb-4 opacity-50"></i>
-                            <p>Start typing to search...</p>
+                    <div id="searchResults" class="max-h-[60vh] overflow-y-auto pr-2">
+                        <div class="text-center text-gray-400 py-12">
+                            <i class="fas fa-film text-6xl mb-6 opacity-30 animate-wobble"></i>
+                            <p class="text-xl">Start typing to search...</p>
+                            <p class="text-sm mt-2">Press <kbd class="px-2 py-1 bg-white/10 rounded">ESC</kbd> to close</p>
                         </div>
                     </div>
                 </div>
@@ -514,33 +820,38 @@
 
     <!-- Auth Modal -->
     <div id="authModal" class="fixed inset-0 z-[100] hidden">
-        <div class="absolute inset-0 bg-black/80 modal-backdrop" onclick="closeAuthModal()"></div>
+        <div class="absolute inset-0 bg-black/90 modal-backdrop" onclick="closeAuthModal()"></div>
         <div class="relative max-w-md mx-auto mt-20 px-4">
-            <div class="glass rounded-2xl overflow-hidden modal-enter p-8">
-                <h2 id="authTitle" class="text-2xl font-bold gradient-text mb-6 text-center">Login</h2>
+            <div class="glass rounded-3xl overflow-hidden modal-enter p-8 shadow-2xl">
+                <div class="text-center mb-8">
+                    <div class="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-content animate-mega-pulse">
+                        <i class="fas fa-user text-3xl mx-auto"></i>
+                    </div>
+                    <h2 id="authTitle" class="text-3xl font-bold gradient-text">Login</h2>
+                </div>
                 
                 <form id="authForm" onsubmit="handleAuth(event)">
-                    <div id="signupNameField" class="mb-4 hidden">
-                        <label class="block text-sm mb-2">Full Name</label>
-                        <input type="text" id="authName" class="w-full p-3 rounded-xl bg-white/10 outline-none focus:ring-2 focus:ring-purple-500 transition-all">
+                    <div id="signupNameField" class="mb-5 hidden">
+                        <label class="block text-sm mb-2 font-medium">Full Name</label>
+                        <input type="text" id="authName" class="w-full p-4 rounded-xl bg-white/10 outline-none focus:ring-2 focus:ring-purple-500 transition-all focus:scale-[1.02]">
                     </div>
-                    <div class="mb-4">
-                        <label class="block text-sm mb-2">Email</label>
-                        <input type="email" id="authEmail" class="w-full p-3 rounded-xl bg-white/10 outline-none focus:ring-2 focus:ring-purple-500 transition-all" required>
+                    <div class="mb-5">
+                        <label class="block text-sm mb-2 font-medium">Email</label>
+                        <input type="email" id="authEmail" class="w-full p-4 rounded-xl bg-white/10 outline-none focus:ring-2 focus:ring-purple-500 transition-all focus:scale-[1.02]" required>
                     </div>
-                    <div class="mb-6">
-                        <label class="block text-sm mb-2">Password</label>
-                        <input type="password" id="authPassword" class="w-full p-3 rounded-xl bg-white/10 outline-none focus:ring-2 focus:ring-purple-500 transition-all" required>
+                    <div class="mb-8">
+                        <label class="block text-sm mb-2 font-medium">Password</label>
+                        <input type="password" id="authPassword" class="w-full p-4 rounded-xl bg-white/10 outline-none focus:ring-2 focus:ring-purple-500 transition-all focus:scale-[1.02]" required>
                     </div>
                     
-                    <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 font-semibold btn-3d ripple-effect">
+                    <button type="submit" class="w-full py-4 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 font-bold text-lg btn-3d ripple-effect">
                         <span id="authBtnText">Login</span>
                     </button>
                 </form>
                 
-                <div class="mt-6 text-center text-sm">
+                <div class="mt-8 text-center">
                     <span id="authSwitch">Don't have an account? 
-                        <button onclick="switchAuthMode()" class="text-purple-400 hover:underline">Sign Up</button>
+                        <button onclick="switchAuthMode()" class="text-purple-400 hover:underline font-semibold">Sign Up</button>
                     </span>
                 </div>
             </div>
@@ -548,38 +859,50 @@
     </div>
 
     <!-- Settings Modal -->
-    <div id="settingsModal" class="fixed inset-0 z-[100] hidden">
-        <div class="absolute inset-0 bg-black/80 modal-backdrop" onclick="closeSettings()"></div>
-        <div class="relative max-w-lg mx-auto mt-20 px-4">
-            <div class="glass rounded-2xl overflow-hidden modal-enter">
-                <div class="p-6">
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-2xl font-bold gradient-text">Settings</h2>
-                        <button onclick="closeSettings()" class="p-2 hover:bg-white/10 rounded-full transition-all">
+    <div id="settingsModal" class="fixed inset-0 z-[100] hidden overflow-y-auto">
+        <div class="absolute inset-0 bg-black/90 modal-backdrop" onclick="closeSettings()"></div>
+        <div class="relative max-w-lg mx-auto my-10 px-4">
+            <div class="glass rounded-3xl overflow-hidden modal-enter shadow-2xl">
+                <div class="p-8">
+                    <div class="flex items-center justify-between mb-8">
+                        <h2 class="text-3xl font-bold gradient-text flex items-center gap-3">
+                            <i class="fas fa-cog animate-spin" style="animation-duration: 3s"></i>Settings
+                        </h2>
+                        <button onclick="closeSettings()" class="p-3 hover:bg-white/10 rounded-full transition-all hover:rotate-90 duration-300">
                             <i class="fas fa-times text-xl"></i>
                         </button>
                     </div>
                     
                     <div class="space-y-6">
                         <!-- Theme Mode -->
-                        <div class="flex items-center justify-between p-4 rounded-xl bg-white/5">
-                            <div>
-                                <h3 class="font-semibold">Theme Mode</h3>
-                                <p class="text-sm text-gray-400">Choose dark or light mode</p>
+                        <div class="flex items-center justify-between p-5 rounded-2xl bg-white/5 hover:bg-white/10 transition-all">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-gray-700 to-gray-500 flex items-center justify-center">
+                                    <i class="fas fa-adjust text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold">Theme Mode</h3>
+                                    <p class="text-sm text-gray-400">Choose dark or light mode</p>
+                                </div>
                             </div>
-                            <select id="themeSelect" onchange="setTheme(this.value)" class="px-4 py-2 rounded-lg bg-white/10 outline-none">
+                            <select id="themeSelect" onchange="setTheme(this.value)" class="px-4 py-2 rounded-xl bg-white/10 outline-none cursor-pointer">
                                 <option value="dark">Dark</option>
                                 <option value="light">Light</option>
                             </select>
                         </div>
                         
                         <!-- Accent Color -->
-                        <div class="p-4 rounded-xl bg-white/5">
-                            <div class="mb-4">
-                                <h3 class="font-semibold">Accent Color</h3>
-                                <p class="text-sm text-gray-400">Choose your favorite color theme</p>
+                        <div class="p-5 rounded-2xl bg-white/5">
+                            <div class="flex items-center gap-4 mb-5">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                                    <i class="fas fa-palette text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold">Accent Color</h3>
+                                    <p class="text-sm text-gray-400">Choose your favorite color theme</p>
+                                </div>
                             </div>
-                            <div class="flex flex-wrap gap-3" id="colorThemes">
+                            <div class="flex flex-wrap gap-4 justify-center" id="colorThemes">
                                 <button onclick="setColorTheme('purple')" class="theme-color-btn active" style="background: linear-gradient(135deg, #8b5cf6, #ec4899);" title="Purple"></button>
                                 <button onclick="setColorTheme('blue')" class="theme-color-btn" style="background: linear-gradient(135deg, #3b82f6, #06b6d4);" title="Blue"></button>
                                 <button onclick="setColorTheme('green')" class="theme-color-btn" style="background: linear-gradient(135deg, #10b981, #84cc16);" title="Green"></button>
@@ -592,13 +915,19 @@
                         </div>
                         
                         <!-- Default Source -->
-                        <div class="flex items-center justify-between p-4 rounded-xl bg-white/5">
-                            <div>
-                                <h3 class="font-semibold">Default Source</h3>
-                                <p class="text-sm text-gray-400">Preferred video source</p>
+                        <div class="flex items-center justify-between p-5 rounded-2xl bg-white/5 hover:bg-white/10 transition-all">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
+                                    <i class="fas fa-server text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold">Default Source</h3>
+                                    <p class="text-sm text-gray-400">Preferred video source</p>
+                                </div>
                             </div>
-                            <select id="defaultSource" onchange="saveSettings()" class="px-4 py-2 rounded-lg bg-white/10 outline-none">
+                            <select id="defaultSource" onchange="saveSettings()" class="px-4 py-2 rounded-xl bg-white/10 outline-none cursor-pointer">
                                 <option value="vidsrc">VidSrc</option>
+                                <option value="bidsrc">BidSrc</option>
                                 <option value="cinemaos">CinemaOS</option>
                                 <option value="vidsrcpro">VidSrc Pro</option>
                                 <option value="embedsu">Embed.su</option>
@@ -612,38 +941,53 @@
                         </div>
                         
                         <!-- Autoplay -->
-                        <div class="flex items-center justify-between p-4 rounded-xl bg-white/5">
-                            <div>
-                                <h3 class="font-semibold">Autoplay Next</h3>
-                                <p class="text-sm text-gray-400">Auto play next episode</p>
+                        <div class="flex items-center justify-between p-5 rounded-2xl bg-white/5 hover:bg-white/10 transition-all">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center">
+                                    <i class="fas fa-forward text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold">Autoplay Next</h3>
+                                    <p class="text-sm text-gray-400">Auto play next episode</p>
+                                </div>
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" id="autoplayToggle" onchange="saveSettings()" class="sr-only peer">
-                                <div class="w-11 h-6 bg-gray-600 peer-focus:ring-2 peer-focus:ring-purple-500 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500"></div>
+                                <div class="w-14 h-7 bg-gray-600 peer-focus:ring-2 peer-focus:ring-purple-500 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-purple-500 peer-checked:to-pink-500"></div>
                             </label>
                         </div>
                         
                         <!-- Animations -->
-                        <div class="flex items-center justify-between p-4 rounded-xl bg-white/5">
-                            <div>
-                                <h3 class="font-semibold">Animations</h3>
-                                <p class="text-sm text-gray-400">Enable fancy animations</p>
+                        <div class="flex items-center justify-between p-5 rounded-2xl bg-white/5 hover:bg-white/10 transition-all">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-yellow-500 to-orange-500 flex items-center justify-center">
+                                    <i class="fas fa-magic text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold">Animations</h3>
+                                    <p class="text-sm text-gray-400">Enable fancy animations</p>
+                                </div>
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" id="animationsToggle" onchange="saveSettings()" checked class="sr-only peer">
-                                <div class="w-11 h-6 bg-gray-600 peer-focus:ring-2 peer-focus:ring-purple-500 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500"></div>
+                                <div class="w-14 h-7 bg-gray-600 peer-focus:ring-2 peer-focus:ring-purple-500 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-purple-500 peer-checked:to-pink-500"></div>
                             </label>
                         </div>
                         
                         <!-- Notifications -->
-                        <div class="flex items-center justify-between p-4 rounded-xl bg-white/5">
-                            <div>
-                                <h3 class="font-semibold">Notifications</h3>
-                                <p class="text-sm text-gray-400">Show toast notifications</p>
+                        <div class="flex items-center justify-between p-5 rounded-2xl bg-white/5 hover:bg-white/10 transition-all">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-red-500 to-pink-500 flex items-center justify-center">
+                                    <i class="fas fa-bell text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-bold">Notifications</h3>
+                                    <p class="text-sm text-gray-400">Show toast notifications</p>
+                                </div>
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" id="notificationsToggle" onchange="saveSettings()" checked class="sr-only peer">
-                                <div class="w-11 h-6 bg-gray-600 peer-focus:ring-2 peer-focus:ring-purple-500 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-500"></div>
+                                <div class="w-14 h-7 bg-gray-600 peer-focus:ring-2 peer-focus:ring-purple-500 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-purple-500 peer-checked:to-pink-500"></div>
                             </label>
                         </div>
                     </div>
@@ -654,56 +998,60 @@
 
     <!-- Movie/Show Detail Modal -->
     <div id="detailModal" class="fixed inset-0 z-[100] hidden overflow-y-auto">
-        <div class="absolute inset-0 bg-black/90 modal-backdrop" onclick="closeDetailModal()"></div>
+        <div class="absolute inset-0 bg-black/95 modal-backdrop" onclick="closeDetailModal()"></div>
         <div class="relative max-w-6xl mx-auto my-10 px-4">
-            <div class="glass rounded-2xl overflow-hidden modal-enter" id="detailContent">
+            <div class="glass rounded-3xl overflow-hidden modal-enter shadow-2xl" id="detailContent">
                 <!-- Content loaded dynamically -->
             </div>
         </div>
     </div>
 
     <!-- Toast Container -->
-    <div id="toastContainer" class="fixed bottom-4 right-4 z-[200] space-y-2"></div>
+    <div id="toastContainer" class="fixed bottom-4 right-4 z-[200] space-y-3"></div>
 
     <!-- Main Content -->
     <main class="pt-20">
         <!-- Home Page -->
         <div id="homePage" class="page active">
             <!-- Hero Section with Carousel -->
-            <section class="relative h-[85vh] overflow-hidden">
+            <section class="relative h-[90vh] overflow-hidden">
                 <div class="hero-carousel" id="heroCarousel">
                     <!-- Slides will be loaded dynamically -->
                 </div>
                 
                 <!-- Hero Navigation -->
-                <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
-                    <div class="hero-indicators" id="heroIndicators">
+                <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-20">
+                    <div class="flex gap-3" id="heroIndicators">
                         <!-- Indicators loaded dynamically -->
                     </div>
                 </div>
                 
                 <!-- Hero Nav Arrows -->
-                <button onclick="prevHeroSlide()" class="absolute left-4 top-1/2 transform -translate-y-1/2 z-20 p-4 glass rounded-full hover:bg-white/20 transition-all hover:scale-110">
-                    <i class="fas fa-chevron-left text-2xl"></i>
+                <button onclick="prevHeroSlide()" class="absolute left-6 top-1/2 transform -translate-y-1/2 z-20 p-5 glass rounded-full hover:bg-white/30 transition-all hover:scale-125 group">
+                    <i class="fas fa-chevron-left text-2xl group-hover:-translate-x-1 transition-transform"></i>
                 </button>
-                <button onclick="nextHeroSlide()" class="absolute right-4 top-1/2 transform -translate-y-1/2 z-20 p-4 glass rounded-full hover:bg-white/20 transition-all hover:scale-110">
-                    <i class="fas fa-chevron-right text-2xl"></i>
+                <button onclick="nextHeroSlide()" class="absolute right-6 top-1/2 transform -translate-y-1/2 z-20 p-5 glass rounded-full hover:bg-white/30 transition-all hover:scale-125 group">
+                    <i class="fas fa-chevron-right text-2xl group-hover:translate-x-1 transition-transform"></i>
                 </button>
                 
                 <!-- Floating elements -->
-                <div class="absolute top-1/4 right-1/4 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl animate-morph pointer-events-none"></div>
-                <div class="absolute bottom-1/4 right-1/3 w-48 h-48 bg-pink-500/20 rounded-full blur-3xl animate-morph pointer-events-none" style="animation-delay: -4s"></div>
+                <div class="absolute top-1/4 right-1/4 w-40 h-40 bg-purple-500/30 rounded-full blur-3xl animate-morph pointer-events-none"></div>
+                <div class="absolute bottom-1/4 right-1/3 w-56 h-56 bg-pink-500/30 rounded-full blur-3xl animate-morph pointer-events-none" style="animation-delay: -4s"></div>
+                <div class="absolute top-1/3 left-1/4 w-32 h-32 bg-cyan-500/20 rounded-full blur-3xl animate-morph pointer-events-none" style="animation-delay: -8s"></div>
             </section>
 
             <!-- Trending Movies -->
-            <section class="py-12 px-4">
+            <section class="py-16 px-4">
                 <div class="max-w-7xl mx-auto">
-                    <div class="flex items-center justify-between mb-8">
-                        <h2 class="text-3xl font-bold">
-                            <i class="fas fa-fire text-orange-500 mr-3"></i>Trending Movies
+                    <div class="flex items-center justify-between mb-10">
+                        <h2 class="text-4xl font-black flex items-center gap-4">
+                            <span class="w-14 h-14 rounded-xl bg-gradient-to-r from-orange-500 to-red-500 flex items-center justify-center animate-heartbeat">
+                                <i class="fas fa-fire"></i>
+                            </span>
+                            <span>Trending Movies</span>
                         </h2>
-                        <button onclick="showPage('movies')" class="text-purple-400 hover:text-purple-300 transition-all">
-                            View All <i class="fas fa-arrow-right ml-2"></i>
+                        <button onclick="showPage('movies')" class="flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-all group font-medium">
+                            View All <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
                         </button>
                     </div>
                     <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6" id="trendingMovies">
@@ -713,14 +1061,17 @@
             </section>
 
             <!-- Popular TV Shows -->
-            <section class="py-12 px-4 bg-white/5">
+            <section class="py-16 px-4 bg-gradient-to-b from-transparent via-white/5 to-transparent">
                 <div class="max-w-7xl mx-auto">
-                    <div class="flex items-center justify-between mb-8">
-                        <h2 class="text-3xl font-bold">
-                            <i class="fas fa-tv text-blue-500 mr-3"></i>Popular TV Shows
+                    <div class="flex items-center justify-between mb-10">
+                        <h2 class="text-4xl font-black flex items-center gap-4">
+                            <span class="w-14 h-14 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center animate-wobble">
+                                <i class="fas fa-tv"></i>
+                            </span>
+                            <span>Popular TV Shows</span>
                         </h2>
-                        <button onclick="showPage('tvshows')" class="text-purple-400 hover:text-purple-300 transition-all">
-                            View All <i class="fas fa-arrow-right ml-2"></i>
+                        <button onclick="showPage('tvshows')" class="flex items-center gap-2 text-purple-400 hover:text-purple-300 transition-all group font-medium">
+                            View All <i class="fas fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
                         </button>
                     </div>
                     <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6" id="popularTVShows">
@@ -730,11 +1081,14 @@
             </section>
 
             <!-- Top Rated -->
-            <section class="py-12 px-4">
+            <section class="py-16 px-4">
                 <div class="max-w-7xl mx-auto">
-                    <div class="flex items-center justify-between mb-8">
-                        <h2 class="text-3xl font-bold">
-                            <i class="fas fa-trophy text-yellow-500 mr-3"></i>Top Rated
+                    <div class="flex items-center justify-between mb-10">
+                        <h2 class="text-4xl font-black flex items-center gap-4">
+                            <span class="w-14 h-14 rounded-xl bg-gradient-to-r from-yellow-500 to-amber-500 flex items-center justify-center animate-heartbeat">
+                                <i class="fas fa-trophy"></i>
+                            </span>
+                            <span>Top Rated</span>
                         </h2>
                     </div>
                     <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6" id="topRated">
@@ -747,18 +1101,18 @@
         <!-- Movies Page -->
         <div id="moviesPage" class="page">
             <div class="max-w-7xl mx-auto px-4 py-12">
-                <h1 class="text-4xl font-bold mb-8 gradient-text">Movies</h1>
+                <h1 class="text-5xl font-black mb-10 gradient-text">Movies</h1>
                 
                 <!-- Filters -->
-                <div class="flex flex-wrap gap-4 mb-8">
-                    <select onchange="filterMovies(this.value)" class="px-4 py-2 rounded-xl bg-white/10 outline-none">
+                <div class="flex flex-wrap gap-4 mb-10">
+                    <select onchange="filterMovies(this.value)" class="px-5 py-3 rounded-xl bg-white/10 outline-none cursor-pointer hover:bg-white/20 transition-all">
                         <option value="popular">Popular</option>
                         <option value="top_rated">Top Rated</option>
                         <option value="upcoming">Upcoming</option>
                         <option value="now_playing">Now Playing</option>
                     </select>
                     
-                    <select id="genreFilter" onchange="filterByGenre(this.value)" class="px-4 py-2 rounded-xl bg-white/10 outline-none">
+                    <select id="genreFilter" onchange="filterByGenre(this.value)" class="px-5 py-3 rounded-xl bg-white/10 outline-none cursor-pointer hover:bg-white/20 transition-all">
                         <option value="">All Genres</option>
                         <option value="28">Action</option>
                         <option value="12">Adventure</option>
@@ -790,7 +1144,7 @@
         <!-- TV Shows Page -->
         <div id="tvshowsPage" class="page">
             <div class="max-w-7xl mx-auto px-4 py-12">
-                <h1 class="text-4xl font-bold mb-8 gradient-text">TV Shows</h1>
+                <h1 class="text-5xl font-black mb-10 gradient-text">TV Shows</h1>
                 
                 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6" id="tvshowsGrid">
                     <!-- Shows loaded dynamically -->
@@ -801,38 +1155,38 @@
         <!-- Calendar Page -->
         <div id="calendarPage" class="page">
             <div class="max-w-7xl mx-auto px-4 py-12">
-                <h1 class="text-4xl font-bold mb-8 gradient-text">
-                    <i class="fas fa-calendar-alt mr-3"></i>Upcoming Releases
+                <h1 class="text-5xl font-black mb-10 gradient-text flex items-center gap-4">
+                    <i class="fas fa-calendar-alt"></i>Upcoming Releases
                 </h1>
                 
-                <div class="glass rounded-2xl p-6 mb-8">
-                    <div class="flex items-center justify-between mb-6">
-                        <button onclick="prevMonth()" class="p-2 hover:bg-white/10 rounded-full transition-all">
-                            <i class="fas fa-chevron-left"></i>
+                <div class="glass rounded-3xl p-8 mb-10">
+                    <div class="flex items-center justify-between mb-8">
+                        <button onclick="prevMonth()" class="p-3 hover:bg-white/10 rounded-full transition-all hover:scale-125">
+                            <i class="fas fa-chevron-left text-xl"></i>
                         </button>
-                        <h2 class="text-2xl font-bold" id="calendarMonth">December 2024</h2>
-                        <button onclick="nextMonth()" class="p-2 hover:bg-white/10 rounded-full transition-all">
-                            <i class="fas fa-chevron-right"></i>
+                        <h2 class="text-3xl font-bold" id="calendarMonth">December 2024</h2>
+                        <button onclick="nextMonth()" class="p-3 hover:bg-white/10 rounded-full transition-all hover:scale-125">
+                            <i class="fas fa-chevron-right text-xl"></i>
                         </button>
                     </div>
                     
-                    <div class="grid grid-cols-7 gap-2 mb-4">
-                        <div class="text-center text-gray-400 text-sm">Sun</div>
-                        <div class="text-center text-gray-400 text-sm">Mon</div>
-                        <div class="text-center text-gray-400 text-sm">Tue</div>
-                        <div class="text-center text-gray-400 text-sm">Wed</div>
-                        <div class="text-center text-gray-400 text-sm">Thu</div>
-                        <div class="text-center text-gray-400 text-sm">Fri</div>
-                        <div class="text-center text-gray-400 text-sm">Sat</div>
+                    <div class="grid grid-cols-7 gap-3 mb-4">
+                        <div class="text-center text-gray-400 font-medium">Sun</div>
+                        <div class="text-center text-gray-400 font-medium">Mon</div>
+                        <div class="text-center text-gray-400 font-medium">Tue</div>
+                        <div class="text-center text-gray-400 font-medium">Wed</div>
+                        <div class="text-center text-gray-400 font-medium">Thu</div>
+                        <div class="text-center text-gray-400 font-medium">Fri</div>
+                        <div class="text-center text-gray-400 font-medium">Sat</div>
                     </div>
                     
-                    <div class="grid grid-cols-7 gap-2" id="calendarGrid">
+                    <div class="grid grid-cols-7 gap-3" id="calendarGrid">
                         <!-- Calendar days loaded dynamically -->
                     </div>
                 </div>
                 
                 <div id="upcomingMovies">
-                    <h3 class="text-2xl font-bold mb-6">Coming Soon</h3>
+                    <h3 class="text-3xl font-bold mb-8">Coming Soon</h3>
                     <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6" id="upcomingGrid">
                         <!-- Upcoming movies loaded dynamically -->
                     </div>
@@ -843,12 +1197,13 @@
         <!-- Privacy Page -->
         <div id="privacyPage" class="page">
             <div class="max-w-4xl mx-auto px-4 py-12">
-                <h1 class="text-4xl font-bold mb-8 gradient-text">Privacy Policy</h1>
+                <h1 class="text-5xl font-black mb-10 gradient-text">Privacy Policy</h1>
                 
-                <div class="glass rounded-2xl p-8 space-y-6">
-                    <section>
-                        <h2 class="text-2xl font-bold mb-4">
-                            <i class="fas fa-shield-alt text-purple-400 mr-2"></i>Introduction
+                <div class="glass rounded-3xl p-10 space-y-8">
+                    <section class="animate-slide-up" style="animation-delay: 0.1s">
+                        <h2 class="text-2xl font-bold mb-4 flex items-center gap-3">
+                            <span class="w-10 h-10 rounded-lg bg-purple-500/30 flex items-center justify-center"><i class="fas fa-shield-alt text-purple-400"></i></span>
+                            Introduction
                         </h2>
                         <p class="text-gray-300 leading-relaxed">
                             Welcome to ZenShows. We respect your privacy and are committed to protecting your personal data. 
@@ -856,12 +1211,13 @@
                         </p>
                     </section>
                     
-                    <section>
-                        <h2 class="text-2xl font-bold mb-4">
-                            <i class="fas fa-server text-blue-400 mr-2"></i>Third-Party Content
+                    <section class="animate-slide-up" style="animation-delay: 0.2s">
+                        <h2 class="text-2xl font-bold mb-4 flex items-center gap-3">
+                            <span class="w-10 h-10 rounded-lg bg-blue-500/30 flex items-center justify-center"><i class="fas fa-server text-blue-400"></i></span>
+                            Third-Party Content
                         </h2>
                         <p class="text-gray-300 leading-relaxed mb-4">
-                            <strong>Important Disclaimer:</strong> ZenShows does not host, store, or upload any video files on our servers. 
+                            <strong class="text-red-400">Important Disclaimer:</strong> ZenShows does not host, store, or upload any video files on our servers. 
                             All movies, TV shows, and other media content displayed on this platform are hosted on third-party servers 
                             and are embedded from external sources.
                         </p>
@@ -873,9 +1229,10 @@
                         </ul>
                     </section>
                     
-                    <section>
-                        <h2 class="text-2xl font-bold mb-4">
-                            <i class="fas fa-database text-green-400 mr-2"></i>Data Collection
+                    <section class="animate-slide-up" style="animation-delay: 0.3s">
+                        <h2 class="text-2xl font-bold mb-4 flex items-center gap-3">
+                            <span class="w-10 h-10 rounded-lg bg-green-500/30 flex items-center justify-center"><i class="fas fa-database text-green-400"></i></span>
+                            Data Collection
                         </h2>
                         <p class="text-gray-300 leading-relaxed">
                             ZenShows collects minimal data to provide our services:
@@ -887,9 +1244,10 @@
                         </ul>
                     </section>
                     
-                    <section>
-                        <h2 class="text-2xl font-bold mb-4">
-                            <i class="fas fa-cookie text-orange-400 mr-2"></i>Cookies & Local Storage
+                    <section class="animate-slide-up" style="animation-delay: 0.4s">
+                        <h2 class="text-2xl font-bold mb-4 flex items-center gap-3">
+                            <span class="w-10 h-10 rounded-lg bg-orange-500/30 flex items-center justify-center"><i class="fas fa-cookie text-orange-400"></i></span>
+                            Cookies & Local Storage
                         </h2>
                         <p class="text-gray-300 leading-relaxed">
                             We use browser localStorage to save your preferences and account data. 
@@ -897,9 +1255,10 @@
                         </p>
                     </section>
                     
-                    <section>
-                        <h2 class="text-2xl font-bold mb-4">
-                            <i class="fas fa-gavel text-red-400 mr-2"></i>Legal Notice
+                    <section class="animate-slide-up" style="animation-delay: 0.5s">
+                        <h2 class="text-2xl font-bold mb-4 flex items-center gap-3">
+                            <span class="w-10 h-10 rounded-lg bg-red-500/30 flex items-center justify-center"><i class="fas fa-gavel text-red-400"></i></span>
+                            Legal Notice
                         </h2>
                         <p class="text-gray-300 leading-relaxed">
                             This service is provided for educational and informational purposes only. Users are responsible 
@@ -909,9 +1268,10 @@
                         </p>
                     </section>
                     
-                    <section>
-                        <h2 class="text-2xl font-bold mb-4">
-                            <i class="fas fa-exclamation-triangle text-yellow-400 mr-2"></i>DMCA
+                    <section class="animate-slide-up" style="animation-delay: 0.6s">
+                        <h2 class="text-2xl font-bold mb-4 flex items-center gap-3">
+                            <span class="w-10 h-10 rounded-lg bg-yellow-500/30 flex items-center justify-center"><i class="fas fa-exclamation-triangle text-yellow-400"></i></span>
+                            DMCA
                         </h2>
                         <p class="text-gray-300 leading-relaxed">
                             If you believe that any content accessible through ZenShows infringes your copyright, 
@@ -920,17 +1280,18 @@
                         </p>
                     </section>
                     
-                    <section>
-                        <h2 class="text-2xl font-bold mb-4">
-                            <i class="fas fa-envelope text-pink-400 mr-2"></i>Contact Us
+                    <section class="animate-slide-up" style="animation-delay: 0.7s">
+                        <h2 class="text-2xl font-bold mb-4 flex items-center gap-3">
+                            <span class="w-10 h-10 rounded-lg bg-pink-500/30 flex items-center justify-center"><i class="fas fa-envelope text-pink-400"></i></span>
+                            Contact Us
                         </h2>
                         <p class="text-gray-300 leading-relaxed">
                             For any questions regarding this privacy policy or our services, please contact us at 
-                            <a href="mailto:contact@zenshows.example" class="text-purple-400 hover:underline">contact@zenshows.example</a>
+                            <a href="mailto:contact@zenshows.example" class="text-purple-400 hover:underline font-semibold">contact@zenshows.example</a>
                         </p>
                     </section>
                     
-                    <div class="text-center text-gray-500 text-sm pt-6 border-t border-white/10">
+                    <div class="text-center text-gray-500 text-sm pt-8 border-t border-white/10">
                         Last updated: December 2024
                     </div>
                 </div>
@@ -940,15 +1301,18 @@
         <!-- Watchlist Page -->
         <div id="watchlistPage" class="page">
             <div class="max-w-7xl mx-auto px-4 py-12">
-                <h1 class="text-4xl font-bold mb-8 gradient-text">
-                    <i class="fas fa-bookmark mr-3"></i>My Watchlist
+                <h1 class="text-5xl font-black mb-10 gradient-text flex items-center gap-4">
+                    <i class="fas fa-bookmark"></i>My Watchlist
                 </h1>
                 
                 <div id="watchlistContent">
-                    <div class="text-center py-16 text-gray-400">
-                        <i class="fas fa-bookmark text-6xl mb-4 opacity-30"></i>
-                        <p class="text-xl">Your watchlist is empty</p>
-                        <p class="mt-2">Start adding movies and shows to watch later!</p>
+                    <div class="text-center py-20 text-gray-400">
+                        <i class="fas fa-bookmark text-8xl mb-6 opacity-30 animate-wobble"></i>
+                        <p class="text-2xl font-medium">Your watchlist is empty</p>
+                        <p class="mt-3">Start adding movies and shows to watch later!</p>
+                        <button onclick="showPage('home')" class="mt-8 px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-bold btn-3d">
+                            Browse Content
+                        </button>
                     </div>
                 </div>
             </div>
@@ -958,47 +1322,48 @@
         <div id="playerPage" class="page">
             <div class="max-w-7xl mx-auto px-4 py-6">
                 <!-- Back Button -->
-                <button onclick="goBack()" class="mb-4 px-4 py-2 glass rounded-xl hover:bg-white/10 transition-all">
-                    <i class="fas fa-arrow-left mr-2"></i>Back
+                <button onclick="goBack()" class="mb-6 px-5 py-3 glass rounded-xl hover:bg-white/10 transition-all flex items-center gap-2 group">
+                    <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>Back
                 </button>
                 
                 <!-- Player Title -->
-                <h1 class="text-3xl font-bold mb-4" id="playerTitle">Now Playing</h1>
+                <h1 class="text-4xl font-black mb-6" id="playerTitle">Now Playing</h1>
                 
                 <!-- Source Selector -->
-                <div class="mb-4">
+                <div class="mb-6">
                     <div class="flex flex-wrap items-center gap-4">
-                        <label class="font-semibold">Select Source:</label>
+                        <label class="font-bold text-lg">Select Source:</label>
                         <div class="relative">
-                            <button onclick="toggleSourceDropdown()" class="px-4 py-2 glass rounded-xl flex items-center gap-2 hover:bg-white/10 transition-all" id="sourceBtn">
-                                <span id="currentSource">VidSrc</span>
-                                <i class="fas fa-chevron-down"></i>
+                            <button onclick="toggleSourceDropdown()" class="px-5 py-3 glass rounded-xl flex items-center gap-3 hover:bg-white/20 transition-all min-w-[180px] justify-between" id="sourceBtn">
+                                <span id="currentSource" class="font-medium">VidSrc</span>
+                                <i class="fas fa-chevron-down transition-transform" id="sourceChevron"></i>
                             </button>
-                            <div id="sourceDropdown" class="absolute top-full left-0 mt-2 w-48 glass rounded-xl overflow-hidden hidden z-50">
-                                <button onclick="changeSource('vidsrc')" class="source-btn w-full px-4 py-3 text-left hover:bg-white/10 active">VidSrc</button>
-                                <button onclick="changeSource('cinemaos')" class="source-btn w-full px-4 py-3 text-left hover:bg-white/10">CinemaOS</button>
-                                <button onclick="changeSource('vidsrcpro')" class="source-btn w-full px-4 py-3 text-left hover:bg-white/10">VidSrc Pro</button>
-                                <button onclick="changeSource('embedsu')" class="source-btn w-full px-4 py-3 text-left hover:bg-white/10">Embed.su</button>
-                                <button onclick="changeSource('autoembed')" class="source-btn w-full px-4 py-3 text-left hover:bg-white/10">AutoEmbed</button>
-                                <button onclick="changeSource('multiembed')" class="source-btn w-full px-4 py-3 text-left hover:bg-white/10">MultiEmbed</button>
-                                <button onclick="changeSource('2embed')" class="source-btn w-full px-4 py-3 text-left hover:bg-white/10">2Embed</button>
-                                <button onclick="changeSource('moviesapi')" class="source-btn w-full px-4 py-3 text-left hover:bg-white/10">MoviesAPI</button>
-                                <button onclick="changeSource('vidsrcme')" class="source-btn w-full px-4 py-3 text-left hover:bg-white/10">VidSrc.me</button>
-                                <button onclick="changeSource('smashystream')" class="source-btn w-full px-4 py-3 text-left hover:bg-white/10">SmashyStream</button>
+                            <div id="sourceDropdown" class="absolute top-full left-0 mt-2 w-56 glass rounded-2xl overflow-hidden hidden z-50 shadow-2xl">
+                                <button onclick="changeSource('vidsrc')" class="source-btn w-full px-5 py-3 text-left flex items-center gap-3 active"><span>VidSrc</span></button>
+                                <button onclick="changeSource('bidsrc')" class="source-btn w-full px-5 py-3 text-left flex items-center gap-3"><span>BidSrc</span></button>
+                                <button onclick="changeSource('cinemaos')" class="source-btn w-full px-5 py-3 text-left flex items-center gap-3"><span>CinemaOS</span></button>
+                                <button onclick="changeSource('vidsrcpro')" class="source-btn w-full px-5 py-3 text-left flex items-center gap-3"><span>VidSrc Pro</span></button>
+                                <button onclick="changeSource('embedsu')" class="source-btn w-full px-5 py-3 text-left flex items-center gap-3"><span>Embed.su</span></button>
+                                <button onclick="changeSource('autoembed')" class="source-btn w-full px-5 py-3 text-left flex items-center gap-3"><span>AutoEmbed</span></button>
+                                <button onclick="changeSource('multiembed')" class="source-btn w-full px-5 py-3 text-left flex items-center gap-3"><span>MultiEmbed</span></button>
+                                <button onclick="changeSource('2embed')" class="source-btn w-full px-5 py-3 text-left flex items-center gap-3"><span>2Embed</span></button>
+                                <button onclick="changeSource('moviesapi')" class="source-btn w-full px-5 py-3 text-left flex items-center gap-3"><span>MoviesAPI</span></button>
+                                <button onclick="changeSource('vidsrcme')" class="source-btn w-full px-5 py-3 text-left flex items-center gap-3"><span>VidSrc.me</span></button>
+                                <button onclick="changeSource('smashystream')" class="source-btn w-full px-5 py-3 text-left flex items-center gap-3"><span>SmashyStream</span></button>
                             </div>
                         </div>
                         
                         <!-- Season/Episode for TV Shows -->
                         <div id="tvControls" class="hidden flex items-center gap-4">
                             <div class="flex items-center gap-2">
-                                <label>Season:</label>
-                                <select id="seasonSelect" onchange="changeSeason()" class="px-3 py-2 rounded-lg bg-white/10 outline-none">
+                                <label class="font-medium">Season:</label>
+                                <select id="seasonSelect" onchange="changeSeason()" class="px-4 py-3 rounded-xl bg-white/10 outline-none cursor-pointer min-w-[80px]">
                                     <option value="1">1</option>
                                 </select>
                             </div>
                             <div class="flex items-center gap-2">
-                                <label>Episode:</label>
-                                <select id="episodeSelect" onchange="changeEpisode()" class="px-3 py-2 rounded-lg bg-white/10 outline-none">
+                                <label class="font-medium">Episode:</label>
+                                <select id="episodeSelect" onchange="changeEpisode()" class="px-4 py-3 rounded-xl bg-white/10 outline-none cursor-pointer min-w-[80px]">
                                     <option value="1">1</option>
                                 </select>
                             </div>
@@ -1007,15 +1372,15 @@
                 </div>
                 
                 <!-- Video Player -->
-                <div class="relative aspect-video bg-black rounded-2xl overflow-hidden mb-6 animate-pulse-glow">
+                <div class="relative aspect-video bg-black rounded-3xl overflow-hidden mb-8 animate-mega-pulse shadow-2xl">
                     <iframe id="videoPlayer" class="w-full h-full" allowfullscreen></iframe>
-                    <div id="playerLoader" class="absolute inset-0 flex items-center justify-center bg-black/50">
+                    <div id="playerLoader" class="absolute inset-0 flex items-center justify-center bg-black/70">
                         <div class="loader"></div>
                     </div>
                 </div>
                 
                 <!-- Player Info -->
-                <div id="playerInfo" class="glass rounded-2xl p-6">
+                <div id="playerInfo" class="glass rounded-3xl p-8">
                     <!-- Content loaded dynamically -->
                 </div>
             </div>
@@ -1023,52 +1388,52 @@
     </main>
 
     <!-- Footer -->
-    <footer class="mt-20 py-12 px-4 glass">
+    <footer class="mt-20 py-16 px-4 glass">
         <div class="max-w-7xl mx-auto">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
                 <div>
-                    <h3 class="text-2xl font-bold gradient-text mb-4">ZenShows</h3>
-                    <p class="text-gray-400">Your ultimate destination for streaming movies and TV shows. Enjoy unlimited entertainment.</p>
+                    <h3 class="text-3xl font-black gradient-text mb-6">ZenShows</h3>
+                    <p class="text-gray-400 leading-relaxed">Your ultimate destination for streaming movies and TV shows. Enjoy unlimited entertainment.</p>
                 </div>
                 <div>
-                    <h4 class="font-semibold mb-4">Navigation</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="#" onclick="showPage('home')" class="hover:text-purple-400 transition-all">Home</a></li>
-                        <li><a href="#" onclick="showPage('movies')" class="hover:text-purple-400 transition-all">Movies</a></li>
-                        <li><a href="#" onclick="showPage('tvshows')" class="hover:text-purple-400 transition-all">TV Shows</a></li>
-                        <li><a href="#" onclick="showPage('calendar')" class="hover:text-purple-400 transition-all">Calendar</a></li>
+                    <h4 class="font-bold text-lg mb-5">Navigation</h4>
+                    <ul class="space-y-3 text-gray-400">
+                        <li><a href="#" onclick="showPage('home')" class="hover:text-purple-400 transition-all flex items-center gap-2"><i class="fas fa-home w-5"></i>Home</a></li>
+                        <li><a href="#" onclick="showPage('movies')" class="hover:text-purple-400 transition-all flex items-center gap-2"><i class="fas fa-film w-5"></i>Movies</a></li>
+                        <li><a href="#" onclick="showPage('tvshows')" class="hover:text-purple-400 transition-all flex items-center gap-2"><i class="fas fa-tv w-5"></i>TV Shows</a></li>
+                        <li><a href="#" onclick="showPage('calendar')" class="hover:text-purple-400 transition-all flex items-center gap-2"><i class="fas fa-calendar w-5"></i>Calendar</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="font-semibold mb-4">Legal</h4>
-                    <ul class="space-y-2 text-gray-400">
-                        <li><a href="#" onclick="showPage('privacy')" class="hover:text-purple-400 transition-all">Privacy Policy</a></li>
-                        <li><a href="#" class="hover:text-purple-400 transition-all">Terms of Service</a></li>
-                        <li><a href="#" class="hover:text-purple-400 transition-all">DMCA</a></li>
-                        <li><a href="#" class="hover:text-purple-400 transition-all">Contact</a></li>
+                    <h4 class="font-bold text-lg mb-5">Legal</h4>
+                    <ul class="space-y-3 text-gray-400">
+                        <li><a href="#" onclick="showPage('privacy')" class="hover:text-purple-400 transition-all flex items-center gap-2"><i class="fas fa-shield-alt w-5"></i>Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-all flex items-center gap-2"><i class="fas fa-file-contract w-5"></i>Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-all flex items-center gap-2"><i class="fas fa-copyright w-5"></i>DMCA</a></li>
+                        <li><a href="#" class="hover:text-purple-400 transition-all flex items-center gap-2"><i class="fas fa-envelope w-5"></i>Contact</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="font-semibold mb-4">Connect</h4>
+                    <h4 class="font-bold text-lg mb-5">Connect</h4>
                     <div class="flex gap-4">
-                        <a href="#" class="p-3 glass rounded-full hover:bg-purple-500 transition-all hover:scale-110">
+                        <a href="#" class="w-12 h-12 glass rounded-xl flex items-center justify-center hover:bg-purple-500 transition-all hover:scale-125 hover:rotate-12">
                             <i class="fab fa-twitter"></i>
                         </a>
-                        <a href="#" class="p-3 glass rounded-full hover:bg-purple-500 transition-all hover:scale-110">
+                        <a href="#" class="w-12 h-12 glass rounded-xl flex items-center justify-center hover:bg-purple-500 transition-all hover:scale-125 hover:rotate-12">
                             <i class="fab fa-discord"></i>
                         </a>
-                        <a href="#" class="p-3 glass rounded-full hover:bg-purple-500 transition-all hover:scale-110">
+                        <a href="#" class="w-12 h-12 glass rounded-xl flex items-center justify-center hover:bg-purple-500 transition-all hover:scale-125 hover:rotate-12">
                             <i class="fab fa-telegram"></i>
                         </a>
-                        <a href="#" class="p-3 glass rounded-full hover:bg-purple-500 transition-all hover:scale-110">
+                        <a href="#" class="w-12 h-12 glass rounded-xl flex items-center justify-center hover:bg-purple-500 transition-all hover:scale-125 hover:rotate-12">
                             <i class="fab fa-reddit"></i>
                         </a>
                     </div>
                 </div>
             </div>
-            <div class="text-center text-gray-500 text-sm pt-8 border-t border-white/10">
-                <p>© 2024 ZenShows. All rights reserved. We do not host any content.</p>
-                <p class="mt-2">All content is provided by third-party services.</p>
+            <div class="text-center text-gray-500 text-sm pt-10 border-t border-white/10">
+                <p class="mb-2">© 2024 ZenShows. All rights reserved. We do not host any content.</p>
+                <p>All content is provided by third-party services.</p>
             </div>
         </div>
     </footer>
@@ -1080,12 +1445,17 @@
         const IMG_BASE = 'https://image.tmdb.org/t/p/w500';
         const BACKDROP_BASE = 'https://image.tmdb.org/t/p/original';
         
-        // Video Sources
+        // Video Sources - 11 total including BIDSRC
         const sources = {
             vidsrc: {
                 name: 'VidSrc',
                 movie: (id) => `https://vidsrc.xyz/embed/movie/${id}`,
                 tv: (id, s, e) => `https://vidsrc.xyz/embed/tv/${id}/${s}/${e}`
+            },
+            bidsrc: {
+                name: 'BidSrc',
+                movie: (id) => `https://bidsrc.pro/movie/${id}`,
+                tv: (id, s, e) => `https://bidsrc.pro/tv/${id}/${s}/${e}`
             },
             cinemaos: {
                 name: 'CinemaOS',
@@ -1098,9 +1468,9 @@
                 tv: (id, s, e) => `https://vidsrc.pro/embed/tv/${id}/${s}/${e}`
             },
             embedsu: {
-                name: 'BidSRC',
-                movie: (id) => `bidsrc.pro/movie/{tmdb_id}${id}`,
-                tv: (id, s, e) => `bidsrc.pro/tv/{id}/{s}/{e}${id}/${s}/${e}`
+                name: 'Embed.su',
+                movie: (id) => `https://embed.su/embed/movie/${id}`,
+                tv: (id, s, e) => `https://embed.su/embed/tv/${id}/${s}/${e}`
             },
             autoembed: {
                 name: 'AutoEmbed',
@@ -1169,18 +1539,22 @@
 
         function createParticles() {
             const container = document.getElementById('particles');
-            for (let i = 0; i < 30; i++) {
+            const colors = ['#8b5cf6', '#ec4899', '#06b6d4', '#10b981', '#f97316'];
+            
+            for (let i = 0; i < 40; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const size = Math.random() * 15 + 5;
                 particle.style.cssText = `
                     left: ${Math.random() * 100}%;
                     top: ${Math.random() * 100}%;
-                    width: ${Math.random() * 10 + 5}px;
-                    height: ${Math.random() * 10 + 5}px;
-                    background: ${Math.random() > 0.5 ? 'rgba(139,92,246,0.3)' : 'rgba(236,72,153,0.3)'};
-                    border-radius: 50%;
-                    animation-delay: ${Math.random() * 10}s;
-                    animation-duration: ${Math.random() * 10 + 10}s;
+                    width: ${size}px;
+                    height: ${size}px;
+                    background: ${color};
+                    opacity: ${Math.random() * 0.5 + 0.2};
+                    animation-delay: ${Math.random() * 15}s;
+                    animation-duration: ${Math.random() * 15 + 10}s;
                 `;
                 container.appendChild(particle);
             }
@@ -1201,7 +1575,7 @@
         // ========== API CALLS ==========
         async function fetchTMDB(endpoint) {
             try {
-                const response = await fetch(`${BASE_URL}${endpoint}?api_key=${API_KEY}`);
+                const response = await fetch(`${BASE_URL}${endpoint}${endpoint.includes('?') ? '&' : '?'}api_key=${API_KEY}`);
                 return await response.json();
             } catch (error) {
                 console.error('API Error:', error);
@@ -1245,28 +1619,28 @@
             if (!container) return;
             
             container.innerHTML = items.map((item, index) => `
-                <div class="card-hover cursor-pointer animate-float-in" style="animation-delay: ${index * 0.05}s" onclick="showDetails('${type}', ${item.id})">
-                    <div class="relative aspect-[2/3] rounded-xl overflow-hidden mb-3">
+                <div class="card-hover cursor-pointer stagger-item shine" style="animation-delay: ${index * 0.08}s" onclick="showDetails('${type}', ${item.id})">
+                    <div class="relative aspect-[2/3] rounded-2xl overflow-hidden mb-3 shadow-lg">
                         <img src="${item.poster_path ? IMG_BASE + item.poster_path : 'https://via.placeholder.com/300x450?text=No+Image'}" 
                              alt="${item.title || item.name}" 
-                             class="w-full h-full object-cover"
+                             class="w-full h-full object-cover transition-transform duration-500"
                              loading="lazy">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 hover:opacity-100 transition-all flex items-end p-4">
-                            <div>
-                                <div class="flex items-center gap-2 mb-2">
-                                    <span class="text-yellow-400"><i class="fas fa-star"></i> ${item.vote_average?.toFixed(1)}</span>
-                                    <span class="text-sm">${(item.release_date || item.first_air_date || '').slice(0, 4)}</span>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-0 hover:opacity-100 transition-all duration-300 flex items-end p-4">
+                            <div class="w-full">
+                                <div class="flex items-center gap-2 mb-3">
+                                    <span class="flex items-center gap-1 text-yellow-400 font-bold"><i class="fas fa-star"></i> ${item.vote_average?.toFixed(1)}</span>
+                                    <span class="text-sm text-gray-300">${(item.release_date || item.first_air_date || '').slice(0, 4)}</span>
                                 </div>
                                 <button onclick="event.stopPropagation(); playContent('${type}', ${item.id})" 
-                                        class="w-full py-2 bg-purple-500 rounded-lg font-semibold text-sm hover:bg-purple-600 transition-all">
-                                    <i class="fas fa-play mr-2"></i>Play
+                                        class="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-bold text-sm hover:scale-105 transition-transform flex items-center justify-center gap-2">
+                                    <i class="fas fa-play"></i>Play Now
                                 </button>
                             </div>
                         </div>
-                        ${isInWatchlist(item.id) ? '<div class="absolute top-2 right-2 p-2 bg-purple-500 rounded-full"><i class="fas fa-bookmark text-sm"></i></div>' : ''}
+                        ${isInWatchlist(item.id) ? '<div class="absolute top-3 right-3 p-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full shadow-lg animate-heartbeat"><i class="fas fa-bookmark text-sm"></i></div>' : ''}
                     </div>
-                    <h3 class="font-semibold text-sm truncate">${item.title || item.name}</h3>
-                    <p class="text-xs text-gray-400">${type === 'movie' ? 'Movie' : 'TV Show'}</p>
+                    <h3 class="font-bold text-sm truncate">${item.title || item.name}</h3>
+                    <p class="text-xs text-gray-400 flex items-center gap-1"><i class="fas fa-${type === 'movie' ? 'film' : 'tv'} text-purple-400"></i>${type === 'movie' ? 'Movie' : 'TV Show'}</p>
                 </div>
             `).join('');
         }
@@ -1286,7 +1660,7 @@
         // ========== SEARCH ==========
         function openSearch() {
             document.getElementById('searchModal').classList.remove('hidden');
-            document.getElementById('searchInput').focus();
+            setTimeout(() => document.getElementById('searchInput').focus(), 100);
             document.body.style.overflow = 'hidden';
         }
 
@@ -1302,13 +1676,22 @@
             
             if (query.length < 2) {
                 document.getElementById('searchResults').innerHTML = `
-                    <div class="text-center text-gray-400 py-8">
-                        <i class="fas fa-film text-4xl mb-4 opacity-50"></i>
-                        <p>Start typing to search...</p>
+                    <div class="text-center text-gray-400 py-12">
+                        <i class="fas fa-film text-6xl mb-6 opacity-30 animate-wobble"></i>
+                        <p class="text-xl">Start typing to search...</p>
+                        <p class="text-sm mt-2">Press <kbd class="px-2 py-1 bg-white/10 rounded">ESC</kbd> to close</p>
                     </div>
                 `;
                 return;
             }
+            
+            // Show loading
+            document.getElementById('searchResults').innerHTML = `
+                <div class="text-center py-12">
+                    <div class="loader mx-auto mb-4"></div>
+                    <p class="text-gray-400">Searching...</p>
+                </div>
+            `;
             
             searchTimeout = setTimeout(async () => {
                 const response = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`);
@@ -1318,28 +1701,34 @@
                 
                 if (results.length === 0) {
                     document.getElementById('searchResults').innerHTML = `
-                        <div class="text-center text-gray-400 py-8">
-                            <i class="fas fa-search text-4xl mb-4 opacity-50"></i>
-                            <p>No results found for "${query}"</p>
+                        <div class="text-center text-gray-400 py-12">
+                            <i class="fas fa-search-minus text-6xl mb-6 opacity-30"></i>
+                            <p class="text-xl">No results found for "${query}"</p>
+                            <p class="text-sm mt-2">Try a different search term</p>
                         </div>
                     `;
                     return;
                 }
                 
-                document.getElementById('searchResults').innerHTML = results.slice(0, 10).map(item => `
-                    <div class="flex gap-4 p-4 hover:bg-white/10 rounded-xl cursor-pointer transition-all animate-float-in" onclick="closeSearch(); showDetails('${item.media_type}', ${item.id})">
+                document.getElementById('searchResults').innerHTML = results.slice(0, 10).map((item, index) => `
+                    <div class="flex gap-5 p-5 hover:bg-white/10 rounded-2xl cursor-pointer transition-all stagger-item group" 
+                         style="animation-delay: ${index * 0.05}s"
+                         onclick="closeSearch(); showDetails('${item.media_type}', ${item.id})">
                         <img src="${item.poster_path ? IMG_BASE + item.poster_path : 'https://via.placeholder.com/100x150?text=No+Image'}" 
                              alt="${item.title || item.name}" 
-                             class="w-16 h-24 object-cover rounded-lg">
-                        <div class="flex-1">
-                            <h3 class="font-semibold">${item.title || item.name}</h3>
-                            <p class="text-sm text-gray-400">${item.media_type === 'movie' ? 'Movie' : 'TV Show'} • ${(item.release_date || item.first_air_date || '').slice(0, 4)}</p>
-                            <div class="flex items-center gap-2 mt-2">
-                                <span class="text-yellow-400 text-sm"><i class="fas fa-star"></i> ${item.vote_average?.toFixed(1)}</span>
+                             class="w-20 h-28 object-cover rounded-xl shadow-lg group-hover:scale-105 transition-transform">
+                        <div class="flex-1 min-w-0">
+                            <h3 class="font-bold text-lg truncate group-hover:text-purple-400 transition-colors">${item.title || item.name}</h3>
+                            <p class="text-sm text-gray-400 mb-2 flex items-center gap-2">
+                                <span class="px-2 py-1 bg-white/10 rounded-lg">${item.media_type === 'movie' ? 'Movie' : 'TV Show'}</span>
+                                <span>${(item.release_date || item.first_air_date || '').slice(0, 4)}</span>
+                            </p>
+                            <div class="flex items-center gap-3">
+                                <span class="text-yellow-400 font-bold flex items-center gap-1"><i class="fas fa-star"></i> ${item.vote_average?.toFixed(1)}</span>
                             </div>
                         </div>
                         <button onclick="event.stopPropagation(); closeSearch(); playContent('${item.media_type}', ${item.id})" 
-                                class="self-center px-4 py-2 bg-purple-500 rounded-lg hover:bg-purple-600 transition-all">
+                                class="self-center px-5 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl hover:scale-110 transition-transform shadow-lg">
                             <i class="fas fa-play"></i>
                         </button>
                     </div>
@@ -1353,6 +1742,13 @@
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
             
+            // Show loading
+            document.getElementById('detailContent').innerHTML = `
+                <div class="flex items-center justify-center h-96">
+                    <div class="loader"></div>
+                </div>
+            `;
+            
             const data = await fetchTMDB(`/${type}/${id}`);
             const credits = await fetchTMDB(`/${type}/${id}/credits`);
             
@@ -1360,42 +1756,46 @@
             
             document.getElementById('detailContent').innerHTML = `
                 <div class="relative">
-                    <div class="h-80 bg-cover bg-center" style="background-image: url('${data.backdrop_path ? BACKDROP_BASE + data.backdrop_path : ''}')">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                    <div class="h-[400px] bg-cover bg-center" style="background-image: url('${data.backdrop_path ? BACKDROP_BASE + data.backdrop_path : ''}')">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent"></div>
+                        <div class="absolute inset-0 bg-gradient-to-r from-black/80 to-transparent"></div>
                     </div>
-                    <button onclick="closeDetailModal()" class="absolute top-4 right-4 p-3 glass rounded-full hover:bg-white/20 transition-all">
+                    <button onclick="closeDetailModal()" class="absolute top-6 right-6 p-4 glass rounded-full hover:bg-white/30 transition-all hover:rotate-90 duration-300 z-10">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                 </div>
                 
-                <div class="p-8 -mt-32 relative z-10">
-                    <div class="flex flex-col md:flex-row gap-8">
+                <div class="p-10 -mt-48 relative z-10">
+                    <div class="flex flex-col md:flex-row gap-10">
                         <img src="${data.poster_path ? IMG_BASE + data.poster_path : 'https://via.placeholder.com/300x450'}" 
                              alt="${data.title || data.name}" 
-                             class="w-48 rounded-xl shadow-2xl animate-float-in">
+                             class="w-56 rounded-2xl shadow-2xl animate-epic-float border-4 border-white/10">
                         
-                        <div class="flex-1 animate-float-in" style="animation-delay: 0.1s">
-                            <h2 class="text-4xl font-bold mb-4">${data.title || data.name}</h2>
+                        <div class="flex-1 animate-slide-up" style="animation-delay: 0.2s">
+                            <h2 class="text-5xl font-black mb-5">${data.title || data.name}</h2>
                             
-                            <div class="flex flex-wrap items-center gap-4 mb-6 text-sm">
-                                <span class="flex items-center text-yellow-400">
-                                    <i class="fas fa-star mr-1"></i> ${data.vote_average?.toFixed(1)}
+                            <div class="flex flex-wrap items-center gap-4 mb-6">
+                                <span class="flex items-center gap-2 text-yellow-400 text-lg font-bold">
+                                    <i class="fas fa-star"></i> ${data.vote_average?.toFixed(1)}
                                 </span>
-                                <span>${isTV ? data.first_air_date?.slice(0, 4) : data.release_date?.slice(0, 4)}</span>
-                                ${isTV ? `<span>${data.number_of_seasons} Season${data.number_of_seasons > 1 ? 's' : ''}</span>` : `<span>${data.runtime} min</span>`}
-                                ${data.genres?.map(g => `<span class="px-3 py-1 glass rounded-full">${g.name}</span>`).join('')}
+                                <span class="px-3 py-1 bg-white/10 rounded-lg">${isTV ? data.first_air_date?.slice(0, 4) : data.release_date?.slice(0, 4)}</span>
+                                ${isTV ? `<span class="px-3 py-1 bg-white/10 rounded-lg">${data.number_of_seasons} Season${data.number_of_seasons > 1 ? 's' : ''}</span>` : `<span class="px-3 py-1 bg-white/10 rounded-lg">${data.runtime} min</span>`}
                             </div>
                             
-                            <p class="text-gray-300 mb-6 leading-relaxed">${data.overview}</p>
+                            <div class="flex flex-wrap gap-2 mb-6">
+                                ${data.genres?.map(g => `<span class="px-4 py-2 glass rounded-full text-sm font-medium">${g.name}</span>`).join('')}
+                            </div>
+                            
+                            <p class="text-gray-300 mb-8 leading-relaxed text-lg">${data.overview}</p>
                             
                             <div class="flex flex-wrap gap-4">
                                 <button onclick="closeDetailModal(); playContent('${type}', ${id})" 
-                                        class="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold btn-3d ripple-effect animate-pulse-glow">
-                                    <i class="fas fa-play mr-2"></i>Watch Now
+                                        class="px-10 py-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl font-bold text-lg btn-3d ripple-effect animate-mega-pulse flex items-center gap-3">
+                                    <i class="fas fa-play"></i>Watch Now
                                 </button>
                                 <button onclick="toggleWatchlist(${id}, '${type}', '${(data.title || data.name).replace(/'/g, "\\'")}', '${data.poster_path}')" 
-                                        class="px-8 py-3 glass rounded-xl font-semibold btn-3d" id="watchlistBtn${id}">
-                                    <i class="fas fa-${isInWatchlist(id) ? 'check' : 'plus'} mr-2"></i>${isInWatchlist(id) ? 'In Watchlist' : 'Add to Watchlist'}
+                                        class="px-10 py-4 glass rounded-2xl font-bold text-lg btn-3d flex items-center gap-3" id="watchlistBtn${id}">
+                                    <i class="fas fa-${isInWatchlist(id) ? 'check' : 'plus'}"></i>${isInWatchlist(id) ? 'In Watchlist' : 'Add to Watchlist'}
                                 </button>
                             </div>
                         </div>
@@ -1403,15 +1803,15 @@
                     
                     <!-- Cast & Crew -->
                     ${credits.cast?.length > 0 ? `
-                        <div class="mt-12 animate-float-in" style="animation-delay: 0.2s">
-                            <h3 class="text-2xl font-bold mb-6"><i class="fas fa-users mr-3"></i>Cast</h3>
-                            <div class="flex gap-4 overflow-x-auto pb-4">
-                                ${credits.cast.slice(0, 10).map(person => `
-                                    <div class="flex-shrink-0 w-32 cursor-pointer card-hover" onclick="showPersonDetails(${person.id})">
+                        <div class="mt-14 animate-slide-up" style="animation-delay: 0.4s">
+                            <h3 class="text-3xl font-bold mb-8 flex items-center gap-3"><i class="fas fa-users text-purple-400"></i>Cast</h3>
+                            <div class="flex gap-5 overflow-x-auto pb-4">
+                                ${credits.cast.slice(0, 10).map((person, i) => `
+                                    <div class="flex-shrink-0 w-36 cursor-pointer card-hover stagger-item" style="animation-delay: ${i * 0.1}s" onclick="showPersonDetails(${person.id})">
                                         <img src="${person.profile_path ? IMG_BASE + person.profile_path : 'https://via.placeholder.com/200x300?text=No+Photo'}" 
                                              alt="${person.name}" 
-                                             class="w-full aspect-[2/3] object-cover rounded-xl mb-2">
-                                        <p class="font-semibold text-sm truncate">${person.name}</p>
+                                             class="w-full aspect-[2/3] object-cover rounded-2xl mb-3 shadow-lg">
+                                        <p class="font-bold text-sm truncate">${person.name}</p>
                                         <p class="text-xs text-gray-400 truncate">${person.character}</p>
                                     </div>
                                 `).join('')}
@@ -1420,11 +1820,11 @@
                     ` : ''}
                     
                     <!-- Additional Info -->
-                    <div class="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4 animate-float-in" style="animation-delay: 0.3s">
-                        ${data.budget ? `<div class="p-4 glass rounded-xl"><p class="text-gray-400 text-sm">Budget</p><p class="font-bold">$${(data.budget/1000000).toFixed(0)}M</p></div>` : ''}
-                        ${data.revenue ? `<div class="p-4 glass rounded-xl"><p class="text-gray-400 text-sm">Revenue</p><p class="font-bold">$${(data.revenue/1000000).toFixed(0)}M</p></div>` : ''}
-                        ${data.status ? `<div class="p-4 glass rounded-xl"><p class="text-gray-400 text-sm">Status</p><p class="font-bold">${data.status}</p></div>` : ''}
-                        ${data.original_language ? `<div class="p-4 glass rounded-xl"><p class="text-gray-400 text-sm">Language</p><p class="font-bold">${data.original_language.toUpperCase()}</p></div>` : ''}
+                    <div class="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4 animate-slide-up" style="animation-delay: 0.6s">
+                        ${data.budget ? `<div class="p-5 glass rounded-2xl"><p class="text-gray-400 text-sm mb-1">Budget</p><p class="font-bold text-xl">$${(data.budget/1000000).toFixed(0)}M</p></div>` : ''}
+                        ${data.revenue ? `<div class="p-5 glass rounded-2xl"><p class="text-gray-400 text-sm mb-1">Revenue</p><p class="font-bold text-xl">$${(data.revenue/1000000).toFixed(0)}M</p></div>` : ''}
+                        ${data.status ? `<div class="p-5 glass rounded-2xl"><p class="text-gray-400 text-sm mb-1">Status</p><p class="font-bold text-xl">${data.status}</p></div>` : ''}
+                        ${data.original_language ? `<div class="p-5 glass rounded-2xl"><p class="text-gray-400 text-sm mb-1">Language</p><p class="font-bold text-xl">${data.original_language.toUpperCase()}</p></div>` : ''}
                     </div>
                 </div>
             `;
@@ -1441,40 +1841,40 @@
             const credits = await fetchTMDB(`/person/${personId}/combined_credits`);
             
             document.getElementById('detailContent').innerHTML = `
-                <div class="p-8">
-                    <button onclick="closeDetailModal()" class="absolute top-4 right-4 p-3 glass rounded-full hover:bg-white/20 transition-all">
+                <div class="p-10">
+                    <button onclick="closeDetailModal()" class="absolute top-6 right-6 p-4 glass rounded-full hover:bg-white/30 transition-all hover:rotate-90 duration-300">
                         <i class="fas fa-times text-xl"></i>
                     </button>
                     
-                    <div class="flex flex-col md:flex-row gap-8">
+                    <div class="flex flex-col md:flex-row gap-10">
                         <img src="${data.profile_path ? IMG_BASE + data.profile_path : 'https://via.placeholder.com/300x450'}" 
                              alt="${data.name}" 
-                             class="w-48 rounded-xl shadow-2xl animate-float-in">
+                             class="w-56 rounded-2xl shadow-2xl animate-epic-float">
                         
-                        <div class="flex-1 animate-float-in" style="animation-delay: 0.1s">
-                            <h2 class="text-4xl font-bold mb-4">${data.name}</h2>
+                        <div class="flex-1 animate-slide-up" style="animation-delay: 0.2s">
+                            <h2 class="text-5xl font-black mb-6">${data.name}</h2>
                             
-                            <div class="grid grid-cols-2 gap-4 mb-6 text-sm">
-                                ${data.birthday ? `<div><span class="text-gray-400">Born:</span> ${data.birthday}</div>` : ''}
-                                ${data.place_of_birth ? `<div><span class="text-gray-400">Birthplace:</span> ${data.place_of_birth}</div>` : ''}
-                                ${data.known_for_department ? `<div><span class="text-gray-400">Known For:</span> ${data.known_for_department}</div>` : ''}
+                            <div class="grid grid-cols-2 gap-4 mb-8">
+                                ${data.birthday ? `<div class="p-4 glass rounded-xl"><p class="text-gray-400 text-sm">Born</p><p class="font-bold">${data.birthday}</p></div>` : ''}
+                                ${data.place_of_birth ? `<div class="p-4 glass rounded-xl"><p class="text-gray-400 text-sm">Birthplace</p><p class="font-bold truncate">${data.place_of_birth}</p></div>` : ''}
+                                ${data.known_for_department ? `<div class="p-4 glass rounded-xl"><p class="text-gray-400 text-sm">Known For</p><p class="font-bold">${data.known_for_department}</p></div>` : ''}
                             </div>
                             
-                            <h3 class="text-xl font-bold mb-3">Biography</h3>
-                            <p class="text-gray-300 leading-relaxed max-h-48 overflow-y-auto">${data.biography || 'No biography available.'}</p>
+                            <h3 class="text-2xl font-bold mb-4">Biography</h3>
+                            <p class="text-gray-300 leading-relaxed max-h-48 overflow-y-auto pr-4">${data.biography || 'No biography available.'}</p>
                         </div>
                     </div>
                     
                     ${credits.cast?.length > 0 ? `
-                        <div class="mt-12 animate-float-in" style="animation-delay: 0.2s">
-                            <h3 class="text-2xl font-bold mb-6"><i class="fas fa-film mr-3"></i>Known For</h3>
-                            <div class="flex gap-4 overflow-x-auto pb-4">
-                                ${credits.cast.slice(0, 10).map(item => `
-                                    <div class="flex-shrink-0 w-32 cursor-pointer card-hover" onclick="showDetails('${item.media_type}', ${item.id})">
+                        <div class="mt-14 animate-slide-up" style="animation-delay: 0.4s">
+                            <h3 class="text-3xl font-bold mb-8 flex items-center gap-3"><i class="fas fa-film text-purple-400"></i>Known For</h3>
+                            <div class="flex gap-5 overflow-x-auto pb-4">
+                                ${credits.cast.slice(0, 10).map((item, i) => `
+                                    <div class="flex-shrink-0 w-36 cursor-pointer card-hover stagger-item" style="animation-delay: ${i * 0.1}s" onclick="showDetails('${item.media_type}', ${item.id})">
                                         <img src="${item.poster_path ? IMG_BASE + item.poster_path : 'https://via.placeholder.com/200x300'}" 
                                              alt="${item.title || item.name}" 
-                                             class="w-full aspect-[2/3] object-cover rounded-xl mb-2">
-                                        <p class="font-semibold text-sm truncate">${item.title || item.name}</p>
+                                             class="w-full aspect-[2/3] object-cover rounded-2xl mb-3 shadow-lg">
+                                        <p class="font-bold text-sm truncate">${item.title || item.name}</p>
                                         <p class="text-xs text-gray-400 truncate">${item.character || ''}</p>
                                     </div>
                                 `).join('')}
@@ -1512,11 +1912,16 @@
             const { type, id } = currentPlayingContent;
             const source = sources[currentSource];
             
+            if (!source) {
+                showToast('Source not found, using default', 'error');
+                currentSource = 'vidsrc';
+            }
+            
             let url;
             if (type === 'movie') {
-                url = source.movie(id);
+                url = sources[currentSource].movie(id);
             } else {
-                url = source.tv(id, currentSeason, currentEpisode);
+                url = sources[currentSource].tv(id, currentSeason, currentEpisode);
             }
             
             const player = document.getElementById('videoPlayer');
@@ -1530,7 +1935,7 @@
             };
             
             // Update source button text
-            document.getElementById('currentSource').textContent = source.name;
+            document.getElementById('currentSource').textContent = sources[currentSource].name;
             
             // Update active source in dropdown
             document.querySelectorAll('.source-btn').forEach(btn => btn.classList.remove('active'));
@@ -1539,16 +1944,16 @@
 
         function loadPlayerInfo(data, type) {
             document.getElementById('playerInfo').innerHTML = `
-                <div class="flex gap-6">
-                    <img src="${data.poster_path ? IMG_BASE + data.poster_path : ''}" class="w-24 rounded-lg hidden md:block">
+                <div class="flex gap-8">
+                    <img src="${data.poster_path ? IMG_BASE + data.poster_path : ''}" class="w-28 rounded-xl hidden md:block shadow-lg">
                     <div>
-                        <h3 class="text-xl font-bold mb-2">${data.title || data.name}</h3>
-                        <div class="flex items-center gap-4 text-sm text-gray-400 mb-3">
-                            <span><i class="fas fa-star text-yellow-400 mr-1"></i> ${data.vote_average?.toFixed(1)}</span>
+                        <h3 class="text-2xl font-bold mb-3">${data.title || data.name}</h3>
+                        <div class="flex flex-wrap items-center gap-4 text-gray-400 mb-4">
+                            <span class="flex items-center gap-2 text-yellow-400 font-bold"><i class="fas fa-star"></i> ${data.vote_average?.toFixed(1)}</span>
                             <span>${data.release_date?.slice(0, 4) || data.first_air_date?.slice(0, 4)}</span>
                             ${type === 'movie' ? `<span>${data.runtime} min</span>` : `<span>${data.number_of_seasons} Seasons</span>`}
                         </div>
-                        <p class="text-gray-300 text-sm line-clamp-3">${data.overview}</p>
+                        <p class="text-gray-300 line-clamp-3">${data.overview}</p>
                     </div>
                 </div>
             `;
@@ -1556,7 +1961,10 @@
 
         // ========== SOURCE SWITCHING ==========
         function toggleSourceDropdown() {
-            document.getElementById('sourceDropdown').classList.toggle('hidden');
+            const dropdown = document.getElementById('sourceDropdown');
+            const chevron = document.getElementById('sourceChevron');
+            dropdown.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
         }
 
         function changeSource(sourceName) {
@@ -1570,6 +1978,10 @@
         document.addEventListener('click', (e) => {
             if (!e.target.closest('#sourceBtn') && !e.target.closest('#sourceDropdown')) {
                 document.getElementById('sourceDropdown')?.classList.add('hidden');
+                document.getElementById('sourceChevron')?.classList.remove('rotate-180');
+            }
+            if (!e.target.closest('#userBtn') && !e.target.closest('#userDropdown')) {
+                document.getElementById('userDropdown')?.classList.add('hidden');
             }
         });
 
@@ -1578,7 +1990,7 @@
             const select = document.getElementById('seasonSelect');
             select.innerHTML = '';
             for (let i = 1; i <= count; i++) {
-                select.innerHTML += `<option value="${i}">${i}</option>`;
+                select.innerHTML += `<option value="${i}">Season ${i}</option>`;
             }
             currentSeason = 1;
         }
@@ -1590,7 +2002,7 @@
             
             const episodes = data.episodes || [];
             for (let i = 1; i <= episodes.length; i++) {
-                select.innerHTML += `<option value="${i}">${i}</option>`;
+                select.innerHTML += `<option value="${i}">Episode ${i}</option>`;
             }
             currentEpisode = 1;
         }
@@ -1600,11 +2012,13 @@
             currentSeason = parseInt(season);
             await populateEpisodes(currentPlayingContent.id, currentSeason);
             loadVideo();
+            showToast(`Switched to Season ${currentSeason}`, 'info');
         }
 
         function changeEpisode() {
             currentEpisode = parseInt(document.getElementById('episodeSelect').value);
             loadVideo();
+            showToast(`Playing Episode ${currentEpisode}`, 'info');
         }
 
         // ========== WATCHLIST ==========
@@ -1618,7 +2032,7 @@
                 showToast('Removed from watchlist', 'info');
             } else {
                 watchlist.push({ id, type, title, poster });
-                showToast('Added to watchlist', 'success');
+                showToast('Added to watchlist!', 'success');
             }
             
             localStorage.setItem('zenShowsWatchlist', JSON.stringify(watchlist));
@@ -1630,10 +2044,13 @@
             
             if (watchlist.length === 0) {
                 container.innerHTML = `
-                    <div class="text-center py-16 text-gray-400">
-                        <i class="fas fa-bookmark text-6xl mb-4 opacity-30"></i>
-                        <p class="text-xl">Your watchlist is empty</p>
-                        <p class="mt-2">Start adding movies and shows to watch later!</p>
+                    <div class="text-center py-20 text-gray-400">
+                        <i class="fas fa-bookmark text-8xl mb-6 opacity-30 animate-wobble"></i>
+                        <p class="text-2xl font-medium">Your watchlist is empty</p>
+                        <p class="mt-3">Start adding movies and shows to watch later!</p>
+                        <button onclick="showPage('home')" class="mt-8 px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-bold btn-3d">
+                            Browse Content
+                        </button>
                     </div>
                 `;
                 return;
@@ -1641,17 +2058,17 @@
             
             container.innerHTML = `
                 <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                    ${watchlist.map(item => `
-                        <div class="card-hover cursor-pointer" onclick="showDetails('${item.type}', ${item.id})">
-                            <div class="relative aspect-[2/3] rounded-xl overflow-hidden mb-3">
+                    ${watchlist.map((item, i) => `
+                        <div class="card-hover cursor-pointer stagger-item" style="animation-delay: ${i * 0.1}s" onclick="showDetails('${item.type}', ${item.id})">
+                            <div class="relative aspect-[2/3] rounded-2xl overflow-hidden mb-3 shadow-lg">
                                 <img src="${item.poster ? IMG_BASE + item.poster : 'https://via.placeholder.com/300x450'}" 
                                      alt="${item.title}" class="w-full h-full object-cover">
                                 <button onclick="event.stopPropagation(); toggleWatchlist(${item.id}, '${item.type}', '${item.title}', '${item.poster}')" 
-                                        class="absolute top-2 right-2 p-2 bg-red-500 rounded-full hover:bg-red-600 transition-all">
+                                        class="absolute top-3 right-3 p-3 bg-red-500 rounded-full hover:bg-red-600 transition-all hover:scale-110 shadow-lg">
                                     <i class="fas fa-trash text-sm"></i>
                                 </button>
                             </div>
-                            <h3 class="font-semibold text-sm truncate">${item.title}</h3>
+                            <h3 class="font-bold text-sm truncate">${item.title}</h3>
                         </div>
                     `).join('')}
                 </div>
@@ -1660,7 +2077,7 @@
 
         // ========== SURPRISE ME ==========
         async function surpriseMe() {
-            showToast('Finding something special...', 'info');
+            showToast('Finding something amazing...', 'info');
             
             const randomPage = Math.floor(Math.random() * 20) + 1;
             const types = ['movie', 'tv'];
@@ -1670,8 +2087,8 @@
             const randomItem = data.results[Math.floor(Math.random() * data.results.length)];
             
             if (randomItem) {
-                showToast(`Surprise! ${randomItem.title || randomItem.name}`, 'success');
-                setTimeout(() => playContent(type, randomItem.id), 500);
+                showToast(`🎉 Surprise! ${randomItem.title || randomItem.name}`, 'success');
+                setTimeout(() => playContent(type, randomItem.id), 800);
             }
         }
 
@@ -1692,14 +2109,14 @@
             
             // Empty cells before first day
             for (let i = 0; i < firstDay; i++) {
-                html += '<div class="p-2"></div>';
+                html += '<div class="p-3"></div>';
             }
             
             // Days of month
             for (let day = 1; day <= daysInMonth; day++) {
-                const hasMovie = Math.random() > 0.8; // Random for demo
+                const hasMovie = Math.random() > 0.85;
                 html += `
-                    <div class="calendar-day p-2 text-center rounded-lg cursor-pointer ${hasMovie ? 'has-movie' : 'hover:bg-white/10'}"
+                    <div class="calendar-day p-3 text-center rounded-xl cursor-pointer font-medium ${hasMovie ? 'has-movie' : 'hover:bg-white/10'}"
                          onclick="showDayReleases(${year}, ${month}, ${day})">
                         ${day}
                     </div>
@@ -1744,12 +2161,12 @@
 
         function updateAuthUI() {
             const isLogin = authMode === 'login';
-            document.getElementById('authTitle').textContent = isLogin ? 'Login' : 'Sign Up';
+            document.getElementById('authTitle').textContent = isLogin ? 'Welcome Back!' : 'Create Account';
             document.getElementById('authBtnText').textContent = isLogin ? 'Login' : 'Sign Up';
             document.getElementById('signupNameField').classList.toggle('hidden', isLogin);
             document.getElementById('authSwitch').innerHTML = isLogin 
-                ? `Don't have an account? <button onclick="switchAuthMode()" class="text-purple-400 hover:underline">Sign Up</button>`
-                : `Already have an account? <button onclick="switchAuthMode()" class="text-purple-400 hover:underline">Login</button>`;
+                ? `Don't have an account? <button onclick="switchAuthMode()" class="text-purple-400 hover:underline font-semibold">Sign Up</button>`
+                : `Already have an account? <button onclick="switchAuthMode()" class="text-purple-400 hover:underline font-semibold">Login</button>`;
         }
 
         function handleAuth(e) {
@@ -1763,14 +2180,14 @@
                 const user = { email, name: name || email.split('@')[0], password };
                 localStorage.setItem('zenShowsUser', JSON.stringify(user));
                 currentUser = user;
-                showToast('Account created successfully!', 'success');
+                showToast('🎉 Account created successfully!', 'success');
             } else {
                 const storedUser = JSON.parse(localStorage.getItem('zenShowsUser'));
                 if (storedUser && storedUser.email === email && storedUser.password === password) {
                     currentUser = storedUser;
-                    showToast('Welcome back!', 'success');
+                    showToast(`👋 Welcome back, ${storedUser.name}!`, 'success');
                 } else {
-                    showToast('Invalid credentials', 'error');
+                    showToast('❌ Invalid credentials', 'error');
                     return;
                 }
             }
@@ -1782,7 +2199,7 @@
         function logout() {
             currentUser = null;
             updateUserUI();
-            showToast('Logged out', 'info');
+            showToast('👋 Logged out successfully', 'info');
             closeUserMenu();
         }
 
@@ -1848,7 +2265,7 @@
             
             localStorage.setItem('zenShowsSettings', JSON.stringify(settings));
             currentSource = settings.defaultSource;
-            showToast('Settings saved', 'success');
+            showToast('✅ Settings saved!', 'success');
         }
 
         function loadSettings() {
@@ -1868,7 +2285,7 @@
             localStorage.setItem('zenShowsSettings', JSON.stringify(settings));
             
             document.body.classList.add('animate-glitch');
-            setTimeout(() => document.body.classList.remove('animate-glitch'), 300);
+            setTimeout(() => document.body.classList.remove('animate-glitch'), 500);
         }
 
         function setTheme(theme) {
@@ -1918,9 +2335,9 @@
                 info: 'fa-info-circle'
             };
             
-            toast.className = `toast flex items-center gap-3 px-6 py-4 rounded-xl bg-gradient-to-r ${colors[type]} text-white shadow-2xl`;
+            toast.className = `toast flex items-center gap-4 px-6 py-4 rounded-2xl bg-gradient-to-r ${colors[type]} text-white shadow-2xl font-medium`;
             toast.innerHTML = `
-                <i class="fas ${icons[type]} text-xl"></i>
+                <i class="fas ${icons[type]} text-2xl"></i>
                 <span>${message}</span>
             `;
             
@@ -1929,7 +2346,7 @@
             setTimeout(() => {
                 toast.classList.add('toast-exit');
                 setTimeout(() => toast.remove(), 500);
-            }, 3000);
+            }, 3500);
         }
 
         // ========== KEYBOARD SHORTCUTS ==========
@@ -1963,35 +2380,35 @@
             
             carousel.innerHTML = heroMovies.map((movie, index) => `
                 <div class="hero-slide ${index === 0 ? 'active' : ''}" data-index="${index}">
-                    <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('${BACKDROP_BASE}${movie.backdrop_path}')"></div>
-                    <div class="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent"></div>
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-[2000ms]" style="background-image: url('${BACKDROP_BASE}${movie.backdrop_path}')"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-transparent"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/30"></div>
                     
-                    <div class="relative h-full flex items-center">
+                    <div class="relative h-full flex items-center hero-content" style="opacity: 0">
                         <div class="max-w-7xl mx-auto px-4 w-full">
                             <div class="max-w-2xl">
-                                <span class="inline-block px-4 py-1 rounded-full bg-purple-500/30 text-purple-300 text-sm mb-4 animate-float-in">
-                                    <i class="fas fa-fire mr-2"></i>#${index + 1} Trending Today
+                                <span class="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-purple-500/30 to-pink-500/30 text-purple-300 text-sm font-medium mb-6 backdrop-blur-sm border border-purple-500/30">
+                                    <i class="fas fa-fire animate-heartbeat"></i>#${index + 1} Trending Today
                                 </span>
-                                <h1 class="text-5xl md:text-7xl font-bold mb-4">
+                                <h1 class="text-6xl md:text-8xl font-black mb-6 leading-tight">
                                     <span class="gradient-text">${movie.title}</span>
                                 </h1>
-                                <p class="text-lg text-gray-300 mb-6 line-clamp-3">
+                                <p class="text-xl text-gray-300 mb-8 line-clamp-3 leading-relaxed">
                                     ${movie.overview}
                                 </p>
-                                <div class="flex items-center gap-4 mb-6">
-                                    <span class="flex items-center"><i class="fas fa-star text-yellow-400 mr-1"></i> ${movie.vote_average.toFixed(1)}</span>
-                                    <span>${movie.release_date?.slice(0, 4)}</span>
-                                    <span class="px-2 py-1 bg-white/20 rounded text-sm">${movie.adult ? 'R' : 'PG-13'}</span>
+                                <div class="flex items-center gap-6 mb-8">
+                                    <span class="flex items-center gap-2 text-yellow-400 text-lg font-bold"><i class="fas fa-star"></i> ${movie.vote_average.toFixed(1)}</span>
+                                    <span class="text-lg">${movie.release_date?.slice(0, 4)}</span>
+                                    <span class="px-3 py-1 bg-white/20 rounded-lg font-medium">${movie.adult ? 'R' : 'PG-13'}</span>
                                 </div>
-                                <div class="flex gap-4">
-                                    <button onclick="playContent('movie', ${movie.id})" class="px-8 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-semibold btn-3d ripple-effect animate-pulse-glow">
-                                        <i class="fas fa-play mr-2"></i>Watch Now
+                                <div class="flex gap-5">
+                                    <button onclick="playContent('movie', ${movie.id})" class="px-10 py-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl font-bold text-lg btn-3d ripple-effect animate-mega-pulse flex items-center gap-3">
+                                        <i class="fas fa-play"></i>Watch Now
                                     </button>
-                                    <button onclick="showDetails('movie', ${movie.id})" class="px-8 py-3 glass rounded-xl font-semibold btn-3d">
-                                        <i class="fas fa-info-circle mr-2"></i>More Info
+                                    <button onclick="showDetails('movie', ${movie.id})" class="px-10 py-4 glass rounded-2xl font-bold text-lg btn-3d flex items-center gap-3">
+                                        <i class="fas fa-info-circle"></i>More Info
                                     </button>
-                                    <button onclick="toggleWatchlist(${movie.id}, 'movie', '${movie.title.replace(/'/g, "\\'")}', '${movie.poster_path}')" class="px-4 py-3 glass rounded-xl font-semibold btn-3d">
+                                    <button onclick="toggleWatchlist(${movie.id}, 'movie', '${movie.title.replace(/'/g, "\\'")}', '${movie.poster_path}')" class="px-5 py-4 glass rounded-2xl font-bold text-lg btn-3d">
                                         <i class="fas fa-${isInWatchlist(movie.id) ? 'check' : 'plus'}"></i>
                                     </button>
                                 </div>
@@ -2047,24 +2464,18 @@
         
         // ========== COLOR THEMES ==========
         function setColorTheme(color) {
-            // Remove all theme classes
             document.body.classList.remove('theme-purple', 'theme-blue', 'theme-green', 'theme-red', 'theme-orange', 'theme-cyan', 'theme-pink', 'theme-gold');
-            
-            // Add new theme class
             document.body.classList.add(`theme-${color}`);
             
-            // Update active button
             document.querySelectorAll('.theme-color-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`[onclick="setColorTheme('${color}')"]`)?.classList.add('active');
             
-            // Save setting
             settings.colorTheme = color;
             localStorage.setItem('zenShowsSettings', JSON.stringify(settings));
             
-            // Update gradient text animation based on theme
             updateGradientColors(color);
             
-            showToast(`Theme changed to ${color.charAt(0).toUpperCase() + color.slice(1)}`, 'success');
+            showToast(`🎨 Theme changed to ${color.charAt(0).toUpperCase() + color.slice(1)}`, 'success');
         }
         
         function loadColorTheme() {
@@ -2075,14 +2486,14 @@
         
         function updateGradientColors(color) {
             const gradients = {
-                purple: '90deg, #8b5cf6, #ec4899, #8b5cf6',
-                blue: '90deg, #3b82f6, #06b6d4, #3b82f6',
-                green: '90deg, #10b981, #84cc16, #10b981',
-                red: '90deg, #ef4444, #f97316, #ef4444',
-                orange: '90deg, #f97316, #eab308, #f97316',
-                cyan: '90deg, #06b6d4, #8b5cf6, #06b6d4',
-                pink: '90deg, #ec4899, #f43f5e, #ec4899',
-                gold: '90deg, #eab308, #f97316, #eab308'
+                purple: '90deg, #8b5cf6, #ec4899, #f97316, #8b5cf6',
+                blue: '90deg, #3b82f6, #06b6d4, #8b5cf6, #3b82f6',
+                green: '90deg, #10b981, #84cc16, #06b6d4, #10b981',
+                red: '90deg, #ef4444, #f97316, #ec4899, #ef4444',
+                orange: '90deg, #f97316, #eab308, #ef4444, #f97316',
+                cyan: '90deg, #06b6d4, #8b5cf6, #3b82f6, #06b6d4',
+                pink: '90deg, #ec4899, #f43f5e, #8b5cf6, #ec4899',
+                gold: '90deg, #eab308, #f97316, #ef4444, #eab308'
             };
             
             const style = document.createElement('style');
@@ -2091,10 +2502,10 @@
             style.textContent = `
                 .gradient-text {
                     background: linear-gradient(${gradients[color]});
-                    background-size: 200% auto;
+                    background-size: 300% auto;
                     -webkit-background-clip: text;
                     -webkit-text-fill-color: transparent;
-                    animation: textGradient 3s linear infinite;
+                    animation: textGradientFlow 4s linear infinite;
                 }
             `;
             document.head.appendChild(style);

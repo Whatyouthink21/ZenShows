@@ -1098,9 +1098,9 @@
                 tv: (id, s, e) => `https://vidsrc.pro/embed/tv/${id}/${s}/${e}`
             },
             embedsu: {
-                name: 'Embed.su',
-                movie: (id) => `https://embed.su/embed/movie/${id}`,
-                tv: (id, s, e) => `https://embed.su/embed/tv/${id}/${s}/${e}`
+                name: 'BidSRC',
+                movie: (id) => `bidsrc.pro/movie/{tmdb_id}${id}`,
+                tv: (id, s, e) => `bidsrc.pro/tv/{id}/{s}/{e}${id}/${s}/${e}`
             },
             autoembed: {
                 name: 'AutoEmbed',
